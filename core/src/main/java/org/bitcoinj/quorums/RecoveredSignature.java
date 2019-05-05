@@ -56,7 +56,7 @@ public class RecoveredSignature extends Message {
     }
 
     public String toString() {
-        return String.format("RecoveredSignature(llmqType=%d, quorumHash=%s, id=%s, msgHash=%s",
+        return String.format("RecoveredSignature(llmqType=%d, quorumHash=%s, id=%s, msgHash=%s)",
                 llmqType, quorumHash, id, msgHash);
     }
 

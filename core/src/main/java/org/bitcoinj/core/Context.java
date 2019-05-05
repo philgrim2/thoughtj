@@ -300,6 +300,7 @@ public class Context {
                 //instantSendManager.start();
                 if(!llmqBackgroundThread.isAlive())
                     llmqBackgroundThread.start();
+                //masternodeListManager.start();
                 //instantSendManager.runWithoutThread = true;
 
             }

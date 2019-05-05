@@ -53,7 +53,7 @@ public class SimplifiedMasternodeListDiff extends Message {
         }
 
         //0.14 format include quorum information
-        if(payload.length > cursor - offset) {
+        if(coinBaseTx.getExtraPayload() != null && coinBaseTx.getExtraPayloadObject().getVersion() >= 2 && payload.length > cursor - offset) {
             size = (int)readVarInt();
             deletedQuorums = new ArrayList<Pair<Integer, Sha256Hash>>(size);
             for(int i = 0; i < size; ++i) {

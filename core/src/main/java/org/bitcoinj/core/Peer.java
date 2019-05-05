@@ -569,7 +569,7 @@ public class Peer extends PeerSocketHandler {
         } else if(m instanceof GovernanceVote) {
             context.governanceManager.processGovernanceObjectVote(this, (GovernanceVote)m);
         } else if (m instanceof SimplifiedMasternodeListDiff) {
-            context.masternodeListManager.processMasternodeListDiff((SimplifiedMasternodeListDiff) m);
+            context.masternodeListManager.processMasternodeListDiffMessage(this, (SimplifiedMasternodeListDiff) m);
         } else if(m instanceof InstantSendLock) {
             context.instantSendManager.processInstantSendLock(this, (InstantSendLock) m);
         } else if(m instanceof ChainLockSignature) {
