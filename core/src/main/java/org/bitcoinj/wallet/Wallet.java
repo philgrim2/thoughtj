@@ -2536,7 +2536,10 @@ public class Wallet extends BaseTaggableObject
 
             //Dash Specific
             if(tx.getConfidence().isIX() && tx.getConfidence().getSource() == Source.SELF) {
-                context.instantSend.processTxLockRequest(tx);
+                if(context.instantSendManager.isOldInstantSendEnabled())
+                    context.instantSend.processTxLockRequest(tx);
+                else if(context.instantSendManager.isNewInstantSendEnabled())
+                    context.instantSendManager.syncTransaction(tx, null, -1);
             }
 
             informConfidenceListenersIfNotReorganizing();
@@ -5212,7 +5215,10 @@ public class Wallet extends BaseTaggableObject
             //Dash Specific
             if(tx.getConfidence().isIX() && tx.getConfidence().getSource() == Source.SELF) {
                 //This transaction was stuck and we need to track it once again with InstantSend
-                context.instantSend.processTxLockRequest(tx);
+                if(context.instantSendManager.isOldInstantSendEnabled())
+                    context.instantSend.processTxLockRequest(tx);
+                else if(context.instantSendManager.isNewInstantSendEnabled())
+                    context.instantSendManager.syncTransaction(tx, null, -1);
             }
             checkState(confidenceType == ConfidenceType.PENDING || confidenceType == ConfidenceType.IN_CONFLICT,
                     "Expected PENDING or IN_CONFLICT, was %s.", confidenceType);

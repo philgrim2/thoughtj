@@ -38,16 +38,11 @@ public class InstantSendManager implements RecoveredSignatureListener {
     // Incoming and not verified yet
     HashMap<Sha256Hash, Pair<Long, InstantSendLock>> pendingInstantSendLocks;
 
-    // a set of recently IS locked TXs for which we can retry locking of children
-    HashSet<Sha256Hash> pendingRetryTxs;
-    boolean pendingRetryAllTxs;
-
     public InstantSendManager(Context context, InstantSendDatabase db) {
         this.context = context;
         this.db = db;
         this.quorumSigningManager = context.signingManager;
         pendingInstantSendLocks = new HashMap<Sha256Hash, Pair<Long, InstantSendLock>>();
-        pendingRetryTxs = new HashSet<Sha256Hash>();
         mapTx = new HashMap<Sha256Hash, Transaction>();
     }
 
@@ -159,7 +154,6 @@ public class InstantSendManager implements RecoveredSignatureListener {
                     boolean didWork = false;
 
                     didWork |= processPendingInstantSendLocks();
-                    didWork |= processPendingRetryLockTxs();
 
                     if (!didWork) {
                         Thread.sleep(100);
@@ -206,21 +200,6 @@ public class InstantSendManager implements RecoveredSignatureListener {
 
     void interuptWorkerThread() {
         workThread.interrupt();
-    }
-
-    boolean processTx(Transaction tx)
-    {
-        if (!isNewInstantSendEnabled()) {
-            return true;
-        }
-
-        LLMQParameters.LLMQType llmqType = context.getParams().getLlmqForInstantSend();
-        if (llmqType == LLMQParameters.LLMQType.LLMQ_NONE) {
-            return true;
-        }
-
-        //we are not a masternode, so return false
-        return false;
     }
 
     boolean checkCanLock(Transaction tx, boolean printDebug)
@@ -489,8 +468,6 @@ public class InstantSendManager implements RecoveredSignatureListener {
             if (minedBlock != null) {
                 db.writeInstantSendLockMined(hash, minedBlock.getHeight());
             }
-
-            pendingRetryTxs.add(islock.txid);
         } finally {
             lock.unlock();
         }
@@ -537,18 +514,6 @@ public class InstantSendManager implements RecoveredSignatureListener {
             }
         } finally {
             lock.unlock();
-        }
-
-        boolean chainlocked = block != null && context.chainLockHandler.hasChainLock(block.getHeight(), block.getHeader().getHash());
-        if (islockHash != null && !islockHash.equals(Sha256Hash.ZERO_HASH) || chainlocked) {
-            lock.lock();
-            try {
-                pendingRetryTxs.add(tx.getHash());
-            } finally {
-                lock.unlock();
-            }
-        } else {
-            processTx(tx);
         }
     }
 
@@ -597,8 +562,6 @@ public class InstantSendManager implements RecoveredSignatureListener {
                         islock.txid.toString(), islockHash.toString());
             }
 
-            // Retry all not yet locked mempool TXs and TX which where mined after the fully confirmed block
-            pendingRetryAllTxs = true;
         } finally {
             lock.unlock();
         }
@@ -623,161 +586,10 @@ public class InstantSendManager implements RecoveredSignatureListener {
 
     void removeMempoolConflictsForLock(Sha256Hash hash, InstantSendLock islock)
     {
-        /*LOCK(mempool.cs);
-
-        std::unordered_map<Sha256Hash, CTransactionRef> toDelete;
-
-        for (auto& in : islock.inputs) {
-        auto it = mempool.mapNextTx.find(in);
-        if (it == mempool.mapNextTx.end()) {
-            continue;
-        }
-        if (it.second.getHash() != islock.txid) {
-            toDelete.add(it.second.getHash(), mempool.get(it.second.getHash()));
-
-            log.info("CInstantSendManager::{} -- txid={}, islock={}: mempool TX {} with input {} conflicts with islock\n", __func__,
-                    islock.txid.toString(), hash.toString(), it.second.getHash().toString(), in.toStringShort());
-        }
+        //TODO:  should full verification mode have this?
     }
 
-        for (auto& p : toDelete) {
-        mempool.removeRecursive(*p.second, MemPoolRemovalReason::CONFLICT);
-    }*/
-    }
-
-    boolean processPendingRetryLockTxs()
-    {
-        boolean retryAllTxs;
-        HashSet<Sha256Hash> parentTxs;
-        lock.lock();
-        try {
-            retryAllTxs = pendingRetryAllTxs;
-            parentTxs = new HashSet<Sha256Hash>(pendingRetryTxs);
-            pendingRetryAllTxs = false;
-        } finally {
-            lock.unlock();
-        }
-
-        if (!retryAllTxs && parentTxs.isEmpty()) {
-            return false;
-        }
-
-        if (!isNewInstantSendEnabled()) {
-            return false;
-        }
-
-        // Let's retry all unlocked TXs from mempool and and recently connected blocks
-
-/*        TxConfidenceTable mempool = context.getConfidenceTable();
-        HashMap<Sha256Hash, Transaction> txs = new HashMap<Sha256Hash, Transaction>();
-
-        {
-            if (retryAllTxs) {
-
-                for (auto it = mempool.mapTx.begin(); it != mempool.mapTx.end(); ++it) {
-                    txs.add(it.GetTx().getHash(), it.GetSharedTx());
-                }
-            } else {
-                for (const auto& parentTx : parentTxs) {
-                    auto it = mempool.mapNextTx.lower_bound(COutPoint(parentTx, 0));
-                    while (it != mempool.mapNextTx.end() && it.first.hash == parentTx) {
-                        txs.add(it.second.getHash(), mempool.get(it.second.getHash()));
-                        ++it;
-                    }
-                }
-            }
-        }
-*/
-
-/*        if(blockChain.getBlockStore() instanceof  FullPrunedBlockStore) {
-            FullPrunedBlockStore blockStore = (FullPrunedBlockStore)blockChain.getBlockStore();
-            StoredBlock pindexWalk = blockChain.getChainHead();
-
-
-            // scan blocks until we hit the last chainlocked block we know of. Also stop scanning after a depth of 6 to avoid
-            // signing thousands of TXs at once. Also, after a depth of 6, blocks get eligible for ChainLocking even if unsafe
-            // TXs are included, so there is no need to retroactively sign these.
-            int depth = 0;
-            while (pindexWalk != null && depth < 6) {
-                if (chainLocksHandler.hasChainLock(pindexWalk.getHeight(), pindexWalk.getHeader().getHash())) {
-                    break;
-                }
-
-                StoredUndoableBlock block = null;
-                try
-                {
-                    block = blockStore.getUndoBlock(pindexWalk.getHeader().getHash())
-                    if (block == null) {
-                        pindexWalk = pindexWalk.getPrev(blockStore);
-                        continue;
-                    }
-                } catch (BlockStoreException x) {
-                    //can't find the block
-                    continue;
-                }
-
-                for (Transaction tx : block.getTransactions()) {
-                    if (retryAllTxs) {
-                        txs.put(tx.getHash(), tx);
-                    } else {
-                        boolean isChild = false;
-                        for (TransactionInput in : tx.getInputs()) {
-                            if (parentTxs.contains(in.getOutpoint().getHash())) {
-                                isChild = true;
-                                break;
-                            }
-                        }
-                        if (isChild) {
-                            txs.put(tx.getHash(), tx);
-                        }
-                    }
-                }
-
-                pindexWalk = pindexWalk.getPrev(blockStore);
-                depth++;
-            }
-        }
-*/
- /*       boolean didWork = false;
-        for (Map.Entry<Sha256Hash, Transaction> p : txs.entrySet()) {
-        Transaction tx = p.getValue();
-        lock.lock();
-        try {
-            if (txToCreatingInstantSendLocks.containsKey(tx.getHash())) {
-                // we're already in the middle of locking this one
-                continue;
-            }
-            if (isLocked(tx.getHash())) {
-                continue;
-            }
-            if (isConflicted(tx)) {
-                // should not really happen as we have already filtered these out
-                continue;
-            }
-        } finally {
-            lock.unlock();
-        }
-
-        // CheckCanLock is already called by ProcessTx, so we should avoid calling it twice. But we also shouldn't spam
-        // the logs when retrying TXs that are not ready yet.
-        //if (LogAcceptCategory("instantsend")) {
-            if (!checkCanLock(tx, false)) {
-                continue;
-            }
-            log.info("instantsend--CInstantSendManager::{} -- txid={}: retrying to lock",
-                    tx.getHash().toString());
-        //}
-
-        processTx(tx);
-        didWork = true;
-    }
-
-        return didWork;
-  */
-        return false;
-    }
-
-    InstantSendLock getInstantSendLockByHash(Sha256Hash hash)
+    public InstantSendLock getInstantSendLockByHash(Sha256Hash hash)
     {
         if (!isNewInstantSendEnabled()) {
             return null;
@@ -806,7 +618,7 @@ public class InstantSendManager implements RecoveredSignatureListener {
         }
     }
 
-    boolean isConflicted(Transaction tx)
+    public boolean isConflicted(Transaction tx)
     {
         lock.lock();
         try {
@@ -817,7 +629,7 @@ public class InstantSendManager implements RecoveredSignatureListener {
         }
     }
 
-    Sha256Hash getConflictingTx(Transaction tx)
+    public Sha256Hash getConflictingTx(Transaction tx)
     {
         if (!isNewInstantSendEnabled()) {
             return null;

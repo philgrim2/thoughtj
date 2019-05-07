@@ -55,19 +55,12 @@ public class ChainLockHandler implements RecoveredSignatureListener {
     Sha256Hash lastSignedRequestId;
     Sha256Hash lastSignedMsgHash;
 
-    // We keep track of txids from recently received blocks so that we can check if all TXs got ixlocked
-    HashMap<Sha256Hash, HashSet<Sha256Hash>> blockTxs;
-    HashMap<Sha256Hash, Long> txFirstSeenTime;
-
     HashMap<Sha256Hash, Long> seenChainLocks;
-
     long lastCleanupTime;
 
 
     public ChainLockHandler(Context context) {
         this.context = context;
-        blockTxs = new HashMap<Sha256Hash, HashSet<Sha256Hash>>();
-        txFirstSeenTime = new HashMap<Sha256Hash, Long>();
         seenChainLocks = new HashMap<Sha256Hash, Long>();
         lastCleanupTime = 0;
         chainLockListeners = new CopyOnWriteArrayList<ListenerRegistration<ChainLockListener>>();
@@ -75,13 +68,10 @@ public class ChainLockHandler implements RecoveredSignatureListener {
 
     public void setBlockChain(AbstractBlockChain blockChain) {
         this.blockChain = blockChain;
-        this.blockChain.addTransactionReceivedListener(this.transactionReceivedInBlockListener);
         this.blockChain.addNewBestBlockListener(this.newBestBlockListener);
         this.quorumSigningManager = context.signingManager;
         this.quorumInstantSendManager = context.instantSendManager;
     }
-
-
 
     @Override
     public void onNewRecoveredSignature(RecoveredSignature recoveredSig) {
@@ -111,18 +101,22 @@ public class ChainLockHandler implements RecoveredSignatureListener {
         processNewChainLock(null, clsig, clsig.getHash());
     }
 
-    void start()
+    public void start()
     {
         quorumSigningManager.addRecoveredSignatureListener(this);
-        /*scheduler->scheduleEvery([&]() {
-        CheckActiveState();
-        EnforceBestChainLock();
-    }, 5000);*/
+        //TODO: start the scheduler here:
+        //  processChainLock();
     }
 
-    void stop()
+    public void stop()
     {
         quorumSigningManager.removeRecoveredSignatureListener(this);
+    }
+
+    void processChainLock() {
+        checkActiveState();
+        enforceBestChainLock();
+        cleanup();
     }
 
     public boolean alreadyHave(InventoryItem inv)
@@ -130,7 +124,7 @@ public class ChainLockHandler implements RecoveredSignatureListener {
         return seenChainLocks.containsKey(inv.hash);
     }
 
-    ChainLockSignature getChainLockByHash(Sha256Hash hash)
+    public ChainLockSignature getChainLockByHash(Sha256Hash hash)
     {
         lock.lock();
         try {
@@ -152,11 +146,8 @@ public class ChainLockHandler implements RecoveredSignatureListener {
             return;
         }
 
-
-            Sha256Hash hash = clsig.getHash();
-
-            processNewChainLock(peer, clsig, hash);
-
+        Sha256Hash hash = clsig.getHash();
+        processNewChainLock(peer, clsig, hash);
     }
 
     void processNewChainLock(Peer from, ChainLockSignature clsig, Sha256Hash hash)
@@ -180,7 +171,7 @@ public class ChainLockHandler implements RecoveredSignatureListener {
         Sha256Hash requestId = clsig.getRequestId();
         Sha256Hash msgHash = clsig.blockHash;
         if (!quorumSigningManager.verifyRecoveredSig(context.getParams().getLlmqChainLocks(), clsig.height, requestId, msgHash, clsig.signature)) {
-            log.info("{} -- invalid CLSIG ({}), peer={}",  clsig.toString(), from);
+            log.info("invalid CLSIG ({}), peer={}",  clsig.toString(), from != null ? from : "null");
             if (from != null) {
                 //LOCK(cs_main);
                 //Misbehaving(from, 10);
@@ -226,16 +217,10 @@ public class ChainLockHandler implements RecoveredSignatureListener {
             lock.unlock();
         }
 
+        //TODO: have this part executed in a different thread, run by a scheduler?
+        processChainLock();
 
-        /*scheduler->scheduleFromNow([&]() {
-        CheckActiveState();
-        EnforceBestChainLock();
-    }, 0);*/
-        checkActiveState();
-        enforceBestChainLock();
-
-        log.info("chainlocks {} -- processed new CLSIG ({}), peer={}",
-                 clsig.toString(), from);
+        log.info("processed new CLSIG ({}), peer={}", clsig.toString(), from);
     }
 
     void acceptedBlockHeader(StoredBlock newBlock)
@@ -276,15 +261,8 @@ public class ChainLockHandler implements RecoveredSignatureListener {
                 return;
             }
             tryLockChainTipScheduled = true;
-            checkActiveState();
-            enforceBestChainLock();
-           /* scheduler -> scheduleFromNow([ &]() {
-                CheckActiveState();
-                EnforceBestChainLock();
-                TrySignChainTip();
-                LOCK(cs);
-                tryLockChainTipScheduled = false;
-            },0);*/
+            processChainLock();
+            tryLockChainTipScheduled = false;
         } finally {
             lock.unlock();
         }
@@ -317,80 +295,12 @@ public class ChainLockHandler implements RecoveredSignatureListener {
 
     }
 
-
-    public void syncTransaction(Transaction tx, StoredBlock block, boolean inBlock)
-    {
-        boolean handleTx = true;
-        if (tx.isCoinBase() || tx.getInputs().isEmpty()) {
-            handleTx = false;
-        }
-
-        lock.lock();
-        try {
-            if (handleTx) {
-                long curTime = Utils.currentTimeSeconds();
-                txFirstSeenTime.put(tx.getHash(), curTime);
-            }
-
-            // We listen for SyncTransaction so that we can collect all TX ids of all included TXs of newly received blocks
-            // We need this information later when we try to sign a new tip, so that we can determine if all included TXs are
-            // safe.
-            if (block != null && !inBlock) {
-                HashSet<Sha256Hash> txs = blockTxs.get(block.getHeader().getHash());
-                if (txs == null) {
-                    // we want this to be run even if handleTx == false, so that the coinbase TX triggers creation of an empty entry
-                    txs = new HashSet<Sha256Hash>();
-                    blockTxs.put(block.getHeader().getHash(), txs);
-                }
-                if (handleTx) {
-                    txs.add(tx.getHash());
-                }
-            }
-        } finally {
-            lock.unlock();
-        }
-
-    }
-
     public boolean isNewInstantSendEnabled()
     {
         return context.sporkManager.isSporkActive(SporkManager.SPORK_2_INSTANTSEND_ENABLED) &&
                 context.sporkManager.isSporkActive(SporkManager.SPORK_20_INSTANTSEND_LLMQ_BASED);
     }
 
-    boolean isTxSafeForMining(Sha256Hash txid)
-    {
-        if (!context.sporkManager.isSporkActive(SporkManager.SPORK_3_INSTANTSEND_BLOCK_FILTERING)) {
-            return true;
-        }
-        if (!isNewInstantSendEnabled()) {
-            return true;
-        }
-
-        long txAge = 0;
-
-        lock.lock();
-        try {
-            if (!isSporkActive) {
-                return true;
-            }
-            Long time = txFirstSeenTime.get(txid);
-            if (time != null) {
-                txAge = Utils.currentTimeSeconds() - time;
-            }
-        } finally {
-            lock.unlock();
-        }
-
-
-        if (txAge < WAIT_FOR_ISLOCK_TIMEOUT && !quorumInstantSendManager.isLocked(txid)) {
-            return false;
-        }
-        return true;
-    }
-
-    // WARNING: cs_main and cs should not be held!
-// This should also not be called from validation signals, as this might result in recursive calls
     void enforceBestChainLock()
     {
         ChainLockSignature clsig;
@@ -584,7 +494,6 @@ public class ChainLockHandler implements RecoveredSignatureListener {
 
     void cleanup()
     {
-
         lock.lock();
         try {
             if (Utils.currentTimeMillis() - lastCleanupTime < CLEANUP_INTERVAL) {
@@ -593,46 +502,14 @@ public class ChainLockHandler implements RecoveredSignatureListener {
         } finally {
             lock.unlock();
         }
-/*
+
         lock.lock();
         try {
-            Iterator<Map.Entry<Sha256Hash, Long>> it = seenChainLocks.entrySet().iterator()
+            Iterator<Map.Entry<Sha256Hash, Long>> it = seenChainLocks.entrySet().iterator();
             while(it.hasNext()) {
                 Map.Entry<Sha256Hash, Long> entry = it.next();
                 if (Utils.currentTimeMillis() - entry.getValue() >= CLEANUP_SEEN_TIMEOUT) {
-                    it.remove();;
-                }
-            }
-
-            Iterator<Map.Entry<Sha256Hash, HashSet<Sha256Hash>>> txs = blockTxs.entrySet().iterator();
-            while(txs.hasNext()) {
-                Map.Entry<Sha256Hash, HashSet<Sha256Hash>> entry = txs.next();
-                StoredBlock block = mapBlockIndex.at(it -> first);
-                if (internalHasChainLock(block.getHeight(), block.getHeader().getHash())) {
-                    for (Sha256Hash txid : entry.getValue()){
-                        txFirstSeenTime.remove(txid);
-                    }
-                    txs.remove();
-                } else if (internalHasConflictingChainLock(block.getHeight(), block.getHeader().getHash())) {
-                    txs.remove();
-                }
-            }
-
-            Iterator<Map.Entry<Sha256Hash, Long>> it2 = txFirstSeenTime.entrySet().iterator();
-            while (it2.hasNext()) {
-                Map.Entry<Sha256Hash, Long> entry = it2.next();
-                Transaction tx;
-                Sha256Hash hashBlock;
-                if (!GetTransaction(it -> first, tx, Params().GetConsensus(), hashBlock)) {
-                    // tx has vanished, probably due to conflicts
-                    it = txFirstSeenTime.erase(it);
-                } else if (!hashBlock.IsNull()) {
-                    StoredBlock block = blockChain.getBlockStore().get(hashBlock);
-                    if (chainActive.Tip()->
-                    GetAncestor(pindex -> height) == pindex && chainActive.Height() - pindex -> height >= 6){
-                        // tx got confirmed >= 6 times, so we can stop keeping track of it
-                        it2.remove();
-                    }
+                    it.remove();
                 }
             }
 
@@ -640,29 +517,13 @@ public class ChainLockHandler implements RecoveredSignatureListener {
         } finally {
             lock.unlock();
         }
-*/
+
     }
 
     NewBestBlockListener newBestBlockListener = new NewBestBlockListener() {
         @Override
         public void notifyNewBestBlock(StoredBlock block) throws VerificationException {
             updatedBlockTip(block, null);
-        }
-    };
-
-    TransactionReceivedInBlockListener transactionReceivedInBlockListener = new TransactionReceivedInBlockListener() {
-        @Override
-        public void receiveFromBlock(Transaction tx, StoredBlock block, BlockChain.NewBlockType blockType, int relativityOffset) throws VerificationException {
-
-            // Call syncTransaction to update lock candidates and votes
-            if(blockType == AbstractBlockChain.NewBlockType.BEST_CHAIN) {
-                syncTransaction(tx, block, true);
-            }
-        }
-
-        @Override
-        public boolean notifyTransactionIsInBlock(Sha256Hash txHash, StoredBlock block, BlockChain.NewBlockType blockType, int relativityOffset) throws VerificationException {
-            return false;
         }
     };
 
