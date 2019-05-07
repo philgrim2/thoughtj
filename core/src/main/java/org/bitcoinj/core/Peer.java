@@ -882,7 +882,7 @@ public class Peer extends PeerSocketHandler {
                                         log.info("{}: Dependency download complete!", getAddress());
                                         wallet.receivePending(tx, dependencies);
 
-                                        if(context.instantSendManager.isOldInstantSendEnabled() && tx instanceof TransactionLockRequest)
+                                        if(context.instantSendManager != null && context.instantSendManager.isOldInstantSendEnabled() && tx instanceof TransactionLockRequest)
                                         {
                                             context.instantSend.acceptLockRequest((TransactionLockRequest)tx);
                                         }
