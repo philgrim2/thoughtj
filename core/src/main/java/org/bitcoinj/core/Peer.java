@@ -905,7 +905,7 @@ public class Peer extends PeerSocketHandler {
                         } else {
                             wallet.receivePending(tx, null);
 
-                            if(context.instantSendManager.isOldInstantSendEnabled() && tx instanceof TransactionLockRequest)
+                            if(context.instantSendManager != null && context.instantSendManager.isOldInstantSendEnabled() && tx instanceof TransactionLockRequest)
                             {
                                 context.instantSend.acceptLockRequest((TransactionLockRequest)tx);
                             }
