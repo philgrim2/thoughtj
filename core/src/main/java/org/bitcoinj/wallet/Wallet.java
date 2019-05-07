@@ -2536,12 +2536,12 @@ public class Wallet extends BaseTaggableObject
             isConsistentOrThrow();
 
             //Dash Specific
-            if(tx.getConfidence().isIX() && tx.getConfidence().getSource() == Source.SELF) {
-                if(context.instantSendManager.isOldInstantSendEnabled())
+            if(context.instantSendManager.isOldInstantSendEnabled()) {
+                if (tx.getConfidence().isIX() && tx.getConfidence().getSource() == Source.SELF) {
                     context.instantSend.processTxLockRequest(tx);
-                else if(context.instantSendManager.isNewInstantSendEnabled())
-                    context.instantSendManager.syncTransaction(tx, null, -1);
-            }
+                }
+            } else if(context.instantSendManager.isNewInstantSendEnabled())
+                context.instantSendManager.syncTransaction(tx, null, -1);
 
             informConfidenceListenersIfNotReorganizing();
             saveNow();
@@ -5214,12 +5214,12 @@ public class Wallet extends BaseTaggableObject
 
             }
             //Dash Specific
-            if(tx.getConfidence().isIX() && tx.getConfidence().getSource() == Source.SELF) {
-                //This transaction was stuck and we need to track it once again with InstantSend
-                if(context.instantSendManager.isOldInstantSendEnabled())
+            if(context.instantSendManager.isOldInstantSendEnabled()) {
+                if (tx.getConfidence().isIX() && tx.getConfidence().getSource() == Source.SELF) {
+                    //This transaction was stuck and we need to track it once again with InstantSend
                     context.instantSend.processTxLockRequest(tx);
-                else if(context.instantSendManager.isNewInstantSendEnabled())
-                    context.instantSendManager.syncTransaction(tx, null, -1);
+            } else if (context.instantSendManager.isNewInstantSendEnabled())
+                context.instantSendManager.syncTransaction(tx, null, -1);
             }
             checkState(confidenceType == ConfidenceType.PENDING || confidenceType == ConfidenceType.IN_CONFLICT,
                     "Expected PENDING or IN_CONFLICT, was %s.", confidenceType);

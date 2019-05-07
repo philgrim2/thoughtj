@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import org.bitcoinj.params.UnitTestParams;
 import org.bitcoinj.store.FlatDB;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.InetAddress;
@@ -90,6 +91,7 @@ public class SimplifiedMasternodesTest {
         assertEquals(expectedMerkleRoot, calculatedMerkleRoot);
     }
 
+    @Ignore
     @Test
     public void loadFromFile() throws Exception {
         URL datafile = getClass().getResource("simplifiedmasternodelistmanager.dat");
