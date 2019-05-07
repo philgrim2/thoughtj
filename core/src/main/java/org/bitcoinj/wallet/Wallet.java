@@ -2502,7 +2502,7 @@ public class Wallet extends BaseTaggableObject
                 // Add to the pending pool and schedule confidence listener notifications.
                 log.info("->pending: {}", tx.getHashAsString());
                 tx.getConfidence().setConfidenceType(ConfidenceType.PENDING);
-                if(context.instantSendManager.isOldInstantSendEnabled()) {
+                if(context.instantSendManager != null && context.instantSendManager.isOldInstantSendEnabled()) {
                     if (tx instanceof TransactionLockRequest ||
                             (InstantSend.canAutoLock() && tx.isSimple())) //TODO:InstantX - may need to adjust the ones above too?
                         tx.getConfidence().setIXType(IXType.IX_REQUEST);
@@ -2536,11 +2536,11 @@ public class Wallet extends BaseTaggableObject
             isConsistentOrThrow();
 
             //Dash Specific
-            if(context.instantSendManager.isOldInstantSendEnabled()) {
+            if(context.instantSendManager != null && context.instantSendManager.isOldInstantSendEnabled()) {
                 if (tx.getConfidence().isIX() && tx.getConfidence().getSource() == Source.SELF) {
                     context.instantSend.processTxLockRequest(tx);
                 }
-            } else if(context.instantSendManager.isNewInstantSendEnabled())
+            } else if(context.instantSendManager != null && context.instantSendManager.isNewInstantSendEnabled())
                 context.instantSendManager.syncTransaction(tx, null, -1);
 
             informConfidenceListenersIfNotReorganizing();
