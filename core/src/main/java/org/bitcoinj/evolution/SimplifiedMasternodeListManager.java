@@ -243,12 +243,14 @@ public class SimplifiedMasternodeListManager extends AbstractManager {
                     downloadPeer.sendMessage(new GetSimplifiedMasternodeListDiff(tipBlockHash, nextBlock.getHeader().getHash()));
                     waitingForMNListDiff = true;
                 }
-                log.info("removing {} blocks from the pending queue", count);
+
                 if(count == 0) {
+                    log.info("removing {} blocks from the pending queue", 1);
                     StoredBlock block = pendingBlocks.get(0);
                     pendingBlocksMap.remove(block);
                     pendingBlocks.remove(0);
                 } else {
+                    log.info("removing {} blocks from the pending queue", count);
                     for (int i = count - 1; i >= 0; --i) {
                         StoredBlock block = pendingBlocks.get(i);
                         pendingBlocksMap.remove(block);

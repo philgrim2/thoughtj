@@ -239,13 +239,13 @@ public class SigningManager {
                 if (!retQuorums.containsKey(quorumKey)) {
                     Quorum quorum = quorumManager.getQuorum(llmqType, recSig.quorumHash);
                     if (quorum == null) {
-                        log.error("llmq--CSigningManager::%s -- quorum {} not found, node={}",
+                        log.error("quorum {} not found, node={}",
                                 recSig.quorumHash.toString(), nodeId);
                         it.remove();
                         continue;
                     }
                     if (quorumManager.isQuorumActive(llmqType, quorum.commitment.quorumHash)) {
-                        log.info("llmq", "CSigningManager::%s -- quorum {} not active anymore, node={}",
+                        log.info("quorum {} not active anymore, node={}",
                                 recSig.quorumHash.toString(), nodeId);
                         it.remove();
                         continue;
@@ -312,7 +312,7 @@ public class SigningManager {
         long end = Utils.currentTimeMillis();
         //verifyTimer.stop();
 
-        log.info("llmq--CSigningManager:: -- verified recovered sig(s). count={}, vt={}, nodes={}", verifyCount, end-start, recSigsByNode.size());
+        log.info("verified recovered sig(s). count={}, vt={}, nodes={}", verifyCount, end-start, recSigsByNode.size());
 
         HashSet<Sha256Hash> processed = new HashSet<Sha256Hash>();
         for (Map.Entry<Integer, ArrayList<RecoveredSignature>> p : recSigsByNode.entrySet()) {
@@ -350,7 +350,7 @@ public class SigningManager {
 
             Sha256Hash signHash = LLMQUtils.buildSignHash(recoveredSig);
 
-            log.info("llmq--processRecoveredSig -- valid recSig. signHash={}, id={}, msgHash={}, node={}",
+            log.info("valid recSig. signHash={}, id={}, msgHash={}, node={}",
                     signHash.toString(), recoveredSig.id.toString(), recoveredSig.msgHash.toString(), nodeId);
 
             if (db.hasRecoveredSigForId(llmqType, recoveredSig.id)) {

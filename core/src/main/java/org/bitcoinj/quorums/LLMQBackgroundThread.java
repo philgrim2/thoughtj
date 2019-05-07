@@ -27,7 +27,6 @@ public class LLMQBackgroundThread extends Thread {
                 boolean didWork = false;
 
                 didWork |= context.instantSendManager.processPendingInstantSendLocks();
-                didWork |= context.instantSendManager.processPendingRetryLockTxs();
 
                 didWork |= context.signingManager.processPendingRecoveredSigs();
 

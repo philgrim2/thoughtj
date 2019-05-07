@@ -2502,11 +2502,12 @@ public class Wallet extends BaseTaggableObject
                 // Add to the pending pool and schedule confidence listener notifications.
                 log.info("->pending: {}", tx.getHashAsString());
                 tx.getConfidence().setConfidenceType(ConfidenceType.PENDING);
-                if(tx instanceof TransactionLockRequest ||
-                        (InstantSend.canAutoLock() && tx.isSimple())) //TODO:InstantX - may need to adjust the ones above too?
-                    tx.getConfidence().setIXType(IXType.IX_REQUEST);//setConfidenceType(ConfidenceType.INSTANTX_PENDING);
-                //else tx.getConfidence().setConfidenceType(ConfidenceType.PENDING);
-                confidenceChanged.put(tx, TransactionConfidence.Listener.ChangeReason.TYPE);
+                if(context.instantSendManager.isOldInstantSendEnabled()) {
+                    if (tx instanceof TransactionLockRequest ||
+                            (InstantSend.canAutoLock() && tx.isSimple())) //TODO:InstantX - may need to adjust the ones above too?
+                        tx.getConfidence().setIXType(IXType.IX_REQUEST);
+                    confidenceChanged.put(tx, TransactionConfidence.Listener.ChangeReason.TYPE);
+                }
                 addWalletTransaction(Pool.PENDING, tx);
             }
             if (log.isInfoEnabled())
@@ -4165,7 +4166,7 @@ public class Wallet extends BaseTaggableObject
         Coin fee = feePerKb.multiply(size).divide(1000);
         if (ensureMinRequiredFee && fee.compareTo(params.isDIP0001ActiveAtTip() ? Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.div(10) : Transaction.REFERENCE_DEFAULT_MIN_TX_FEE) < 0)
             fee = params.isDIP0001ActiveAtTip() ? Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.div(10) : Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
-        if(useInstantSend)
+        if(useInstantSend && context.instantSendManager.isOldInstantSendEnabled())
             fee = TransactionLockRequest.MIN_FEE.multiply(tx.getInputs().size()).div(params.isDIP0001ActiveAtTip() ? 10 : 1);
         TransactionOutput output = tx.getOutput(0);
         output.setValue(output.getValue().subtract(fee));
@@ -4972,7 +4973,7 @@ public class Wallet extends BaseTaggableObject
                 fees = dip0001Active ? Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.div(10) : Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
 
             //Dash instantSend
-            if(req.useInstantSend) {
+            if(req.useInstantSend && context.instantSendManager.isOldInstantSendEnabled()) {
                 Coin ixFee = dip0001Active ? TransactionLockRequest.MIN_FEE.div(10) : TransactionLockRequest.MIN_FEE;
                 fees = Coin.valueOf(max(ixFee.getValue(), ixFee.multiply(lastCalculatedInputs).getValue()));
             }

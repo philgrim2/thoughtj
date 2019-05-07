@@ -102,7 +102,7 @@ public class InstantSendManager implements RecoveredSignatureListener {
                 return;
             }
 
-            log.info("instantsend-CInstantSendManager::processInstantSendLock -- txid={}, islock={}: received islock, peer={}",
+            log.info("received islock:  txid={}, islock={} , peer={}",
                     isLock.txid.toString(), hash.toString(), peer.hashCode());
 
             pendingInstantSendLocks.put(hash, new Pair((long)peer.hashCode(), isLock));
@@ -202,7 +202,11 @@ public class InstantSendManager implements RecoveredSignatureListener {
         workThread.interrupt();
     }
 
-    boolean checkCanLock(Transaction tx, boolean printDebug)
+    public boolean checkCanLock(Transaction tx) {
+        return checkCanLock(tx, false);
+    }
+
+    public boolean checkCanLock(Transaction tx, boolean printDebug)
     {
         if (context.sporkManager.isSporkActive(SporkManager.SPORK_16_INSTANTSEND_AUTOLOCKS) ) {
             return false;
@@ -213,27 +217,41 @@ public class InstantSendManager implements RecoveredSignatureListener {
             return false;
         }
 
-        //Coin nValueIn = Coin.valueOf(0);
+        BlockStore blockStore = blockChain.getBlockStore();
+        Coin value = Coin.valueOf(0);
         for (TransactionInput  in : tx.getInputs()) {
-            //Coin v = Coin.valueOf(0);
             if (!checkCanLock(in.getOutpoint(), printDebug, tx.getHash())) {
                 return false;
             }
 
-            //nValueIn += v;
+            if(blockStore instanceof FullPrunedBlockStore) {
+                // this relies on enabled txindex and won't work if we ever try to remove the requirement for txindex for masternodes
+                try {
+                    UTXO utxo = ((FullPrunedBlockStore) blockStore).getTransactionOutput(in.getOutpoint().getHash(), in.getOutpoint().getIndex());
+                    value = value.add(utxo.getValue());
+
+                } catch (BlockStoreException x) {
+                    log.error("BlockStoreException:  "+ x.getMessage());
+                }
+
+            } else {
+                if(in.getValue() != null)
+                    value = value.add(in.getValue());
+            }
         }
 
         // TODO decide if we should limit max input values. This was ok to do in the old system, but in the new system
         // where we want to have all TXs locked at some point, this is counterproductive (especially when ChainLocks later
         // depend on all TXs being locked first)
-//    CAmount maxValueIn = sporkManager.GetSporkValue(SPORK_5_INSTANTSEND_MAX_VALUE);
-//    if (nValueIn > maxValueIn * COIN) {
-//        if (printDebug) {
-//            log.info("instantsend", "CInstantSendManager::{} -- txid={}: TX input value too high. nValueIn=%f, maxValueIn={}", __func__,
-//                     tx.getHash().toString(), nValueIn / (double)COIN, maxValueIn);
-//        }
-//        return false;
-//    }
+        Coin maxValueIn = Coin.valueOf(context.sporkManager.getSporkValue(SporkManager.SPORK_5_INSTANTSEND_MAX_VALUE));
+
+        if (value.compareTo(maxValueIn) > 0) {
+            if (printDebug) {
+                log.info("txid={}: TX input value too high. nValueIn={}, maxValueIn={}",
+                         tx.getHash().toString(), value, maxValueIn);
+            }
+            return false;
+        }
 
         return true;
     }
@@ -251,47 +269,77 @@ public class InstantSendManager implements RecoveredSignatureListener {
         TransactionConfidence mempoolTx = mempool.get(outpoint.getHash());
         if (mempoolTx != null) {
             if (printDebug) {
-                log.info("instantsend -- txid={}: parent mempool TX {} is not locked",
+                log.info("txid={}: parent mempool TX {} is not locked",
                         txHash.toString(), outpoint.getHash().toString());
             }
             return false;
         }
 
         Transaction tx;
-        Sha256Hash hashBlock;
+        Sha256Hash hashBlock = null;
         BlockStore blockStore = blockChain.getBlockStore();
         UTXO utxo;
         if(blockStore instanceof FullPrunedBlockStore) {
             // this relies on enabled txindex and won't work if we ever try to remove the requirement for txindex for masternodes
             try {
                 utxo = ((FullPrunedBlockStore) blockStore).getTransactionOutput(outpoint.getHash(), outpoint.getIndex());
+                StoredBlock block = blockStore.get(utxo.getHeight());
+                if(block != null)
+                    hashBlock = block.getHeader().getHash();
                 if (printDebug) {
-                    log.info("instantsend--CInstantSendManager::{} -- txid={}: failed to find parent TX {}",
+                    log.info("txid={}: failed to find parent TX {}",
                             txHash.toString(), outpoint.getHash().toString());
+                    return false;
                 }
-                return false;
 
             } catch (BlockStoreException x) {
                 log.error("BlockStoreException:  "+ x.getMessage());
                 return false;
             }
 
-            //try {
-                //StoredUndoableBlock block = ((FullPrunedBlockStore) blockStore).getUndoBlock(hashBlock);
+            try {
+                if(hashBlock == null)
+                    return false;
 
-//                int txAge = blockChain.getBestChainHeight() - utxo.getHeight();
-//                if (txAge < nInstantSendConfirmationsRequired) {
-//                    if (context.chainLocksHandler.hasChainLock(utxo.notify(), block.getHash())*/) {
-//                        if (printDebug) {
-//                            log.info("instantsend", "CInstantSendManager::{} -- txid={}: outpoint {} too new and not ChainLocked. nTxAge={}, nInstantSendConfirmationsRequired={}",
-//                                    txHash.toString(), outpoint.toStringShort(), txAge, nInstantSendConfirmationsRequired);
-//                        }
-//                        return false;
-//                    }
-//                }
-            //} catch (BlockStoreException x) {
+                StoredUndoableBlock block = ((FullPrunedBlockStore) blockStore).getUndoBlock(hashBlock);
+
+                int txAge = blockChain.getBestChainHeight() - utxo.getHeight();
+                if (txAge < nInstantSendConfirmationsRequired) {
+                    if (context.chainLockHandler.hasChainLock(utxo.getHeight(), block.getHash())) {
+                        if (printDebug) {
+                            log.info("txid={}: outpoint {} too new and not ChainLocked. nTxAge={}, nInstantSendConfirmationsRequired={}",
+                                    txHash.toString(), outpoint.toStringShort(), txAge, nInstantSendConfirmationsRequired);
+                        }
+                        return false;
+                    }
+                }
+            } catch (BlockStoreException x) {
                 //swallow
-            //}
+                return false;
+            }
+        } else {
+            try {
+                TransactionOutput output = outpoint.getConnectedOutput();
+                if(output != null) {
+                    Transaction parent = output.getParentTransaction();
+                    TransactionConfidence confidence = parent.getConfidence();
+                    if(confidence != null) {
+                        if (confidence.getDepthInBlocks() < nInstantSendConfirmationsRequired) {
+                            StoredBlock block = blockStore.get(confidence.getAppearedAtChainHeight());
+                            if (context.chainLockHandler.hasChainLock(confidence.getAppearedAtChainHeight(), block.getHeader().getHash()))
+                            {
+                                if (printDebug) {
+                                    log.info("txid={}: outpoint {} too new and not ChainLocked. nTxAge={}, nInstantSendConfirmationsRequired={}",
+                                            txHash.toString(), outpoint.toStringShort(), confidence.getDepthInBlocks(), nInstantSendConfirmationsRequired);
+                                }
+                                return false;
+                            }
+                        }
+                    }
+                }
+            } catch (BlockStoreException x) {
+                return false;
+            }
         }
 
         return true;
@@ -400,7 +448,7 @@ public class InstantSendManager implements RecoveredSignatureListener {
                 RecoveredSignature recSig = it.getSecond();
                 if (!quorumSigningManager.hasRecoveredSigForId(llmqType, recSig.id)) {
                     recSig.updateHash();
-                    log.info("instantsend--CInstantSendManager::{} -- txid={}, islock={}: passing reconstructed recSig to signing mgr, peer={}",
+                    log.info("passing reconstructed recSig to signing mgr -- txid={}, islock={}: peer={}",
                             islock.txid.toString(), hash.toString(), nodeId);
                     quorumSigningManager.pushReconstructedRecoveredSig(recSig, quorum);
                 }
@@ -416,35 +464,34 @@ public class InstantSendManager implements RecoveredSignatureListener {
         Transaction tx = null;
 
         tx = mapTx.get(islock.txid);
-        /*if(blockChain.getBlockStore() instanceof FullPrunedBlockStore) {
-            FullPrunedBlockStore blockStore = (FullPrunedBlockStore)blockChain.getBlockStore();
-            Transaction tx;
-            Sha256Hash hashBlock;
-            // we ignore failure here as we must be able to propagate the lock even if we don't have the TX locally
 
-            minedBlock = blockStore.get()
-            if (GetTransaction(islock.txid, tx, Params().GetConsensus(), hashBlock)) {
-                if (!hashBlock.IsNull()) {
-                    {
-                        LOCK(cs_main);
-                        pindexMined = mapBlockIndex.at(hashBlock);
-                    }
+        if(tx != null && tx.getConfidence() != null) {
+            TransactionConfidence confidence = tx.getConfidence();
+            if(confidence.getConfidenceType() == TransactionConfidence.ConfidenceType.BUILDING)
+            {
+                long height = confidence.getAppearedAtChainHeight();
 
-                    // Let's see if the TX that was locked by this islock is already mined in a ChainLocked block. If yes,
-                    // we can simply ignore the islock, as the ChainLock implies locking of all TXs in that chain
-                    if (context.chainLocksHandler.hasChainLock(pindexMined.nHeight, pindexMined.GetBlockHash())){
-                        log.info("instantsend", "CInstantSendManager::{} -- txlock={}, islock={}: dropping islock as it already got a ChainLock in block {}, peer={}\n", __func__,
-                                islock.txid.toString(), hash.toString(), hashBlock.toString(), from);
-                        return;
+                try {
+                    StoredBlock block = blockChain.getBlockStore().get((int)height);
+                    if(block != null) {
+                        // Let's see if the TX that was locked by this islock is already mined in a ChainLocked block. If yes,
+                        // we can simply ignore the islock, as the ChainLock implies locking of all TXs in that chain
+                        if (context.chainLockHandler.hasChainLock(height, block.getHeader().getHash())) {
+                            log.info("txlock={}, islock={}: dropping islock as it already got a ChainLock in block {}, peer={}",
+                                    islock.txid.toString(), hash.toString(), block.getHeader().getHash().toString(), from);
+                            return;
+                        }
                     }
+                } catch (BlockStoreException x) {
+                    //swallow
                 }
             }
-        }*/
+        }
 
         lock.lock();
         try
         {
-            log.info("instantsend-- txid={}, islock={}: processsing islock, peer={}",
+            log.info("processing islock txid={}, islock={}:  peer={}",
                     islock.txid.toString(), hash.toString(), from);
 
             InstantSendLock otherIsLock;
@@ -453,7 +500,7 @@ public class InstantSendManager implements RecoveredSignatureListener {
             }
             otherIsLock = db.getInstantSendLockByTxid(islock.txid);
             if (otherIsLock != null) {
-                log.info("CInstantSendManager::{} -- txid={}, islock={}: duplicate islock, other islock={}, peer={}",
+                log.info("duplicate islock:  txid={}, islock={}: other islock={}, peer={}",
                         islock.txid.toString(), hash.toString(),otherIsLock.getHash().toString(), from);
             }
             for (TransactionOutPoint in : islock.inputs) {
@@ -523,11 +570,6 @@ public class InstantSendManager implements RecoveredSignatureListener {
         }
     };
 
-    void notifyChainLock(StoredBlock pindexChainLock)
-    {
-        handleFullyConfirmedBlock(pindexChainLock.getHeight());
-    }
-
     NewBestBlockListener newBestBlockListener = new NewBestBlockListener() {
         @Override
         public void notifyNewBestBlock(StoredBlock block) throws VerificationException {
@@ -558,7 +600,7 @@ public class InstantSendManager implements RecoveredSignatureListener {
             for (Map.Entry<Sha256Hash, InstantSendLock> p : removeISLocks.entrySet()) {
                 Sha256Hash islockHash = p.getKey();
                 InstantSendLock islock = p.getValue();
-                log.info("instantsend--CInstantSendManager::{} -- txid={}, islock={}: removed islock as it got fully confirmed",
+                log.info("removed islock as it got fully confirmed -- txid={}, islock={}",
                         islock.txid.toString(), islockHash.toString());
             }
 
