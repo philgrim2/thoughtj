@@ -5471,6 +5471,13 @@ public class Wallet extends BaseTaggableObject
         authenticationGroup.addAndActivateHDChain(blockchainUserKeyChain);
     }
 
+    KeyChainGroup getAuthenticationGroup() {
+        if(authenticationGroup == null) {
+            authenticationGroup = new KeyChainGroup(getParams());
+        }
+        return authenticationGroup;
+    }
+
     public AuthenticationKeyChain getProviderOwnerKeyChain() {
         return providerOwnerKeyChain;
     }

@@ -601,6 +601,8 @@ public class WalletProtobufSerializer {
                 keyCrypter = new KeyCrypterScrypt(encryptionParameters);
             }
 
+            KeyChainGroup authenticationGroup = wallet.getAuthenticationGroup();
+
             for(int i = 0; i < walletProto.getExtKeyChainsCount(); ++i) {
                 Protos.ExtendedKeyChain extendedKeyChain = walletProto.getExtKeyChains(i);
                 AuthenticationKeyChain.KeyChainType type;
@@ -625,9 +627,11 @@ public class WalletProtobufSerializer {
                 }
                 if(extendedKeyChain.getKeyType() == Protos.ExtendedKeyChain.KeyType.ECDSA) {
                     if (extendedKeyChain.getKeyCount() > 0) {
-                        List<DeterministicKeyChain> chains = DeterministicKeyChain.fromProtobuf(extendedKeyChain.getKeyList(), keyCrypter, factory);
-                        if (!chains.isEmpty())
-                            wallet.setAuthenticationKeyChain((AuthenticationKeyChain)chains.get(0), type);
+                        List<DeterministicKeyChain> chains = AuthenticationKeyChain.fromProtobuf(extendedKeyChain.getKeyList(), keyCrypter, factory);
+                        if (!chains.isEmpty()) {
+                            wallet.setAuthenticationKeyChain((AuthenticationKeyChain) chains.get(0), type);
+                            authenticationGroup.addAndActivateHDChain(chains.get(0));
+                        }
                     }
                 }
 
