@@ -5,6 +5,7 @@ import org.dashj.core.listeners.ChainDownloadStartedEventListener;
 import org.dashj.core.listeners.NewBestBlockListener;
 import org.dashj.core.listeners.PeerConnectedEventListener;
 import org.dashj.core.listeners.PeerDisconnectedEventListener;
+import org.dashj.core.listeners.ReorganizeListener;
 import org.dashj.quorums.LLMQParameters;
 import org.dashj.quorums.LLMQUtils;
 import org.dashj.store.BlockStoreException;
