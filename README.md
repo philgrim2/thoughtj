@@ -46,7 +46,7 @@ The outputs are under the `target` directory.
 
 Alternatively, just import the project using your IDE. [IntelliJ](http://www.jetbrains.com/idea/download/) has Maven integration built-in and has a free Community Edition. Simply use `File | Import Project` and locate the `pom.xml` in the root of the cloned project source tree.
 
-The dashjbls library must still be built with `mvn`.
+The thoughtjbls library must still be built with `mvn`.
 
 ### Example applications
 
