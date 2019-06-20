@@ -1,12 +1,11 @@
-# dashj
+# thoughtj
 
-> A Java library for working with Dash
+> A Java library for working with the Thought Network blockchain
 
-[![Build Status](https://travis-ci.com/dashevo/dashj.svg?token=Pzix7aqnMuGS9c6BmBz2&branch=master)](https://travis-ci.com/dashevo/dashj)
 
-### Welcome to dashj
+### Welcome to thoughtj
 
-The dashj library is a Java implementation of the Dash protocol, which allows it to maintain a wallet and send/receive transactions without needing a local copy of Dash Core. It comes with full documentation and some example apps showing how to use it.
+The thoughtj library is a Java implementation of the Thought protocol, which allows it to maintain a wallet and send/receive transactions without needing a local copy of Thought Core. It comes with full documentation and some example apps showing how to use it.
 
 ### Technologies
 
@@ -23,7 +22,7 @@ To initialize the repo after cloning it:
 ```
 git submodule update  --init --recursive
 ```
-To perform a full build use (this includes the dashjbls shared library):
+To perform a full build use (this includes the thoughtjbls shared library):
 ```
 mvn clean package
 ```
@@ -47,7 +46,7 @@ The outputs are under the `target` directory.
 
 Alternatively, just import the project using your IDE. [IntelliJ](http://www.jetbrains.com/idea/download/) has Maven integration built-in and has a free Community Edition. Simply use `File | Import Project` and locate the `pom.xml` in the root of the cloned project source tree.
 
-The dashjbls library must still be built with `mvn`.
+The thoughtjbls library must still be built with `mvn`.
 
 ### Example applications
 
@@ -61,7 +60,7 @@ If you send coins to that address, it will forward them on to the address you sp
 
 ```
   cd examples
-  mvn exec:java -Dexec.mainClass=org.dashj.examples.ForwardingService -Dexec.args="<insert a dash address here>"
+  mvn exec:java -Dexec.mainClass=live.thought.thoughtj.examples.ForwardingService -Dexec.args="<insert a thought address here>"
 ```
 
 Note that this example app *does not use checkpointing*, so the initial chain sync will be pretty slow. You can make an app that starts up and does the initial sync much faster by including a checkpoints file; see the documentation for
