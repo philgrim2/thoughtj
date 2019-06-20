@@ -14,13 +14,13 @@
 
 package org.bitcoinj.examples;
 
-import org.bitcoinj.core.listeners.DownloadProgressTracker;
-import org.bitcoinj.core.*;
-import org.bitcoinj.net.discovery.DnsDiscovery;
-import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.store.SPVBlockStore;
-import org.bitcoinj.wallet.DeterministicSeed;
-import org.bitcoinj.wallet.Wallet;
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.core.listeners.DownloadProgressTracker;
+import live.thought.thoughtj.net.discovery.DnsDiscovery;
+import live.thought.thoughtj.params.TestNet3Params;
+import live.thought.thoughtj.store.SPVBlockStore;
+import live.thought.thoughtj.wallet.DeterministicSeed;
+import live.thought.thoughtj.wallet.Wallet;
 
 import java.io.File;
 

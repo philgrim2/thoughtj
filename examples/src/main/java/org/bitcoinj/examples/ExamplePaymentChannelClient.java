@@ -20,17 +20,17 @@ package org.bitcoinj.examples;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import org.bitcoinj.core.*;
-import org.bitcoinj.kits.WalletAppKit;
-import org.bitcoinj.params.RegTestParams;
-import org.bitcoinj.protocols.channels.PaymentChannelClient;
-import org.bitcoinj.protocols.channels.PaymentChannelClientConnection;
-import org.bitcoinj.protocols.channels.StoredPaymentChannelClientStates;
-import org.bitcoinj.protocols.channels.ValueOutOfRangeException;
-import org.bitcoinj.utils.BriefLogFormatter;
-import org.bitcoinj.utils.Threading;
-import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.WalletExtension;
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.kits.WalletAppKit;
+import live.thought.thoughtj.params.RegTestParams;
+import live.thought.thoughtj.protocols.channels.PaymentChannelClient;
+import live.thought.thoughtj.protocols.channels.PaymentChannelClientConnection;
+import live.thought.thoughtj.protocols.channels.StoredPaymentChannelClientStates;
+import live.thought.thoughtj.protocols.channels.ValueOutOfRangeException;
+import live.thought.thoughtj.utils.BriefLogFormatter;
+import live.thought.thoughtj.utils.Threading;
+import live.thought.thoughtj.wallet.Wallet;
+import live.thought.thoughtj.wallet.WalletExtension;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
@@ -39,14 +39,14 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.slf4j.LoggerFactory;
 
+import static live.thought.thoughtj.core.Coin.CENT;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-
-import static org.bitcoinj.core.Coin.CENT;
 
 /**
  * Simple client that connects to the given host, opens a channel, and pays one cent.

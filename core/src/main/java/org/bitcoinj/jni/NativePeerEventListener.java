@@ -16,10 +16,11 @@
 
 package org.bitcoinj.jni;
 
-import org.bitcoinj.core.listeners.*;
-import org.bitcoinj.core.*;
-
 import javax.annotation.*;
+
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.core.listeners.*;
+
 import java.util.List;
 import java.util.Set;
 

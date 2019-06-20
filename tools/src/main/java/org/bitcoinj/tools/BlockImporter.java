@@ -14,16 +14,17 @@
 
 package org.bitcoinj.tools;
 
-import org.bitcoinj.core.*;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.store.*;
-import org.bitcoinj.utils.BlockFileLoader;
 import com.google.common.base.Preconditions;
+
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.params.MainNetParams;
+import live.thought.thoughtj.params.TestNet3Params;
+import live.thought.thoughtj.store.*;
+import live.thought.thoughtj.utils.BlockFileLoader;
 
 import java.io.File;
 
-/** Very thin wrapper around {@link org.bitcoinj.utils.BlockFileLoader} */
+/** Very thin wrapper around {@link live.thought.thoughtj.utils.BlockFileLoader} */
 public class BlockImporter {
     public static void main(String[] args) throws BlockStoreException, VerificationException, PrunedException {
         System.out.println("USAGE: BlockImporter (prod|test) (H2|Disk|MemFull|Mem|SPV) [blockStore]");

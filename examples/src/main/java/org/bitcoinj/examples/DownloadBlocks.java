@@ -1,11 +1,11 @@
 package org.bitcoinj.examples;
 
-import org.bitcoinj.core.*;
-import org.bitcoinj.net.discovery.DnsDiscovery;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.store.BlockStore;
-import org.bitcoinj.store.BlockStoreException;
-import org.bitcoinj.store.MemoryBlockStore;
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.net.discovery.DnsDiscovery;
+import live.thought.thoughtj.params.MainNetParams;
+import live.thought.thoughtj.store.BlockStore;
+import live.thought.thoughtj.store.BlockStoreException;
+import live.thought.thoughtj.store.MemoryBlockStore;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;

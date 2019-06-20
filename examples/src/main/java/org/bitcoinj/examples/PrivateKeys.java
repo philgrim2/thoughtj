@@ -17,10 +17,10 @@
 
 package org.bitcoinj.examples;
 
-import org.bitcoinj.core.*;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.store.MemoryBlockStore;
-import org.bitcoinj.wallet.Wallet;
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.params.MainNetParams;
+import live.thought.thoughtj.store.MemoryBlockStore;
+import live.thought.thoughtj.wallet.Wallet;
 
 import java.math.BigInteger;
 import java.net.InetAddress;

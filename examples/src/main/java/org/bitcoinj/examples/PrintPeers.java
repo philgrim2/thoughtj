@@ -16,21 +16,22 @@
 
 package org.bitcoinj.examples;
 
-import org.bitcoinj.core.listeners.PeerConnectedEventListener;
-import org.bitcoinj.core.listeners.PeerDisconnectedEventListener;
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Peer;
-import org.bitcoinj.core.PeerAddress;
-import org.bitcoinj.core.VersionMessage;
-import org.bitcoinj.net.discovery.DnsDiscovery;
-import org.bitcoinj.net.discovery.PeerDiscoveryException;
-import org.bitcoinj.net.NioClientManager;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.utils.BriefLogFormatter;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+
+import live.thought.thoughtj.core.NetworkParameters;
+import live.thought.thoughtj.core.Peer;
+import live.thought.thoughtj.core.PeerAddress;
+import live.thought.thoughtj.core.VersionMessage;
+import live.thought.thoughtj.core.listeners.PeerConnectedEventListener;
+import live.thought.thoughtj.core.listeners.PeerDisconnectedEventListener;
+import live.thought.thoughtj.net.NioClientManager;
+import live.thought.thoughtj.net.discovery.DnsDiscovery;
+import live.thought.thoughtj.net.discovery.PeerDiscoveryException;
+import live.thought.thoughtj.params.MainNetParams;
+import live.thought.thoughtj.utils.BriefLogFormatter;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;

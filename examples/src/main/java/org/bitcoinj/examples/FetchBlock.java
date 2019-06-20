@@ -17,11 +17,11 @@
 
 package org.bitcoinj.examples;
 
-import org.bitcoinj.core.*;
-import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.store.BlockStore;
-import org.bitcoinj.store.MemoryBlockStore;
-import org.bitcoinj.utils.BriefLogFormatter;
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.params.TestNet3Params;
+import live.thought.thoughtj.store.BlockStore;
+import live.thought.thoughtj.store.MemoryBlockStore;
+import live.thought.thoughtj.utils.BriefLogFormatter;
 
 import java.net.InetAddress;
 import java.util.concurrent.Future;

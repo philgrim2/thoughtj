@@ -14,10 +14,11 @@
 
 package org.bitcoinj.jni;
 
-import org.bitcoinj.protocols.channels.PaymentChannelServerListener;
-import org.bitcoinj.protocols.channels.ServerConnectionEventHandler;
-
 import javax.annotation.Nullable;
+
+import live.thought.thoughtj.protocols.channels.PaymentChannelServerListener;
+import live.thought.thoughtj.protocols.channels.ServerConnectionEventHandler;
+
 import java.net.SocketAddress;
 
 /**

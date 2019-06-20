@@ -17,23 +17,6 @@
 
 package org.bitcoinj.tools;
 
-import org.bitcoinj.core.*;
-import org.bitcoinj.crypto.*;
-import org.bitcoinj.net.discovery.DnsDiscovery;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.params.RegTestParams;
-import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.protocols.payments.PaymentProtocol;
-import org.bitcoinj.protocols.payments.PaymentProtocolException;
-import org.bitcoinj.protocols.payments.PaymentSession;
-import org.bitcoinj.script.ScriptBuilder;
-import org.bitcoinj.store.*;
-import org.bitcoinj.uri.BitcoinURI;
-import org.bitcoinj.uri.BitcoinURIParseException;
-import org.bitcoinj.utils.BriefLogFormatter;
-import org.bitcoinj.wallet.DeterministicSeed;
-import org.bitcoinj.wallet.DeterministicUpgradeRequiredException;
-import org.bitcoinj.wallet.DeterministicUpgradeRequiresPassword;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -45,20 +28,37 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import joptsimple.util.DateConverter;
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.core.listeners.BlocksDownloadedEventListener;
+import live.thought.thoughtj.core.listeners.DownloadProgressTracker;
+import live.thought.thoughtj.crypto.*;
+import live.thought.thoughtj.net.discovery.DnsDiscovery;
+import live.thought.thoughtj.params.MainNetParams;
+import live.thought.thoughtj.params.RegTestParams;
+import live.thought.thoughtj.params.TestNet3Params;
+import live.thought.thoughtj.protocols.payments.PaymentProtocol;
+import live.thought.thoughtj.protocols.payments.PaymentProtocolException;
+import live.thought.thoughtj.protocols.payments.PaymentSession;
+import live.thought.thoughtj.script.ScriptBuilder;
+import live.thought.thoughtj.store.*;
+import live.thought.thoughtj.uri.BitcoinURI;
+import live.thought.thoughtj.uri.BitcoinURIParseException;
+import live.thought.thoughtj.utils.BriefLogFormatter;
+import live.thought.thoughtj.wallet.DeterministicSeed;
+import live.thought.thoughtj.wallet.DeterministicUpgradeRequiredException;
+import live.thought.thoughtj.wallet.DeterministicUpgradeRequiresPassword;
+import live.thought.thoughtj.wallet.MarriedKeyChain;
+import live.thought.thoughtj.wallet.Protos;
+import live.thought.thoughtj.wallet.SendRequest;
+import live.thought.thoughtj.wallet.Wallet;
+import live.thought.thoughtj.wallet.WalletExtension;
+import live.thought.thoughtj.wallet.WalletProtobufSerializer;
+import live.thought.thoughtj.wallet.Wallet.BalanceType;
+import live.thought.thoughtj.wallet.listeners.WalletChangeEventListener;
+import live.thought.thoughtj.wallet.listeners.WalletCoinsReceivedEventListener;
+import live.thought.thoughtj.wallet.listeners.WalletCoinsSentEventListener;
+import live.thought.thoughtj.wallet.listeners.WalletReorganizeEventListener;
 
-import org.bitcoinj.core.listeners.BlocksDownloadedEventListener;
-import org.bitcoinj.core.listeners.DownloadProgressTracker;
-import org.bitcoinj.wallet.MarriedKeyChain;
-import org.bitcoinj.wallet.Protos;
-import org.bitcoinj.wallet.SendRequest;
-import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.WalletExtension;
-import org.bitcoinj.wallet.WalletProtobufSerializer;
-import org.bitcoinj.wallet.Wallet.BalanceType;
-import org.bitcoinj.wallet.listeners.WalletChangeEventListener;
-import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
-import org.bitcoinj.wallet.listeners.WalletCoinsSentEventListener;
-import org.bitcoinj.wallet.listeners.WalletReorganizeEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
@@ -82,8 +82,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
-import static org.bitcoinj.core.Coin.parseCoin;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static live.thought.thoughtj.core.Coin.parseCoin;
 
 /**
  * A command line tool for manipulating wallets and working with Bitcoin.

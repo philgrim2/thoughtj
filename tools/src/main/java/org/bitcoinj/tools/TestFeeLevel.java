@@ -14,14 +14,14 @@
 
 package org.bitcoinj.tools;
 
-import org.bitcoinj.core.*;
-import org.bitcoinj.core.listeners.PeerConnectedEventListener;
-import org.bitcoinj.core.listeners.PeerDisconnectedEventListener;
-import org.bitcoinj.kits.WalletAppKit;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.utils.BriefLogFormatter;
-import org.bitcoinj.wallet.SendRequest;
-import org.bitcoinj.wallet.Wallet;
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.core.listeners.PeerConnectedEventListener;
+import live.thought.thoughtj.core.listeners.PeerDisconnectedEventListener;
+import live.thought.thoughtj.kits.WalletAppKit;
+import live.thought.thoughtj.params.MainNetParams;
+import live.thought.thoughtj.utils.BriefLogFormatter;
+import live.thought.thoughtj.wallet.SendRequest;
+import live.thought.thoughtj.wallet.Wallet;
 
 import java.io.File;
 

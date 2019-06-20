@@ -18,7 +18,7 @@ package org.bitcoinj.examples;
 
 import java.io.File;
 
-import org.bitcoinj.wallet.Wallet;
+import live.thought.thoughtj.wallet.Wallet;
 
 /**
  * DumpWallet loads a serialized wallet and prints information about what it contains.

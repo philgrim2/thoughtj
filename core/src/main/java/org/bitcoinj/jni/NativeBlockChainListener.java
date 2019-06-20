@@ -16,12 +16,12 @@
 
 package org.bitcoinj.jni;
 
-import org.bitcoinj.core.*;
-
 import java.util.List;
-import org.bitcoinj.core.listeners.NewBestBlockListener;
-import org.bitcoinj.core.listeners.ReorganizeListener;
-import org.bitcoinj.core.listeners.TransactionReceivedInBlockListener;
+
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.core.listeners.NewBestBlockListener;
+import live.thought.thoughtj.core.listeners.ReorganizeListener;
+import live.thought.thoughtj.core.listeners.TransactionReceivedInBlockListener;
 
 /**
  * An event listener that relays events to a native C++ object. A pointer to that object is stored in

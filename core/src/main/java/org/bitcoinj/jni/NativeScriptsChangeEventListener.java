@@ -16,9 +16,9 @@
 
 package org.bitcoinj.jni;
 
-import org.bitcoinj.script.Script;
-import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.listeners.ScriptsChangeEventListener;
+import live.thought.thoughtj.script.Script;
+import live.thought.thoughtj.wallet.Wallet;
+import live.thought.thoughtj.wallet.listeners.ScriptsChangeEventListener;
 
 import java.util.List;
 

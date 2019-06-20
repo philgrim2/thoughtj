@@ -14,17 +14,17 @@
 
 package org.bitcoinj.examples;
 
-import org.bitcoinj.core.listeners.PreMessageReceivedEventListener;
-import org.bitcoinj.core.*;
-import org.bitcoinj.kits.WalletAppKit;
-import org.bitcoinj.params.RegTestParams;
-import org.bitcoinj.utils.BriefLogFormatter;
-import org.bitcoinj.utils.Threading;
-import org.bitcoinj.wallet.Wallet;
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.core.listeners.PreMessageReceivedEventListener;
+import live.thought.thoughtj.kits.WalletAppKit;
+import live.thought.thoughtj.params.RegTestParams;
+import live.thought.thoughtj.utils.BriefLogFormatter;
+import live.thought.thoughtj.utils.Threading;
+import live.thought.thoughtj.wallet.Wallet;
+
+import static live.thought.thoughtj.core.Coin.*;
 
 import java.io.File;
-
-import static org.bitcoinj.core.Coin.*;
 
 /**
  * This is a little test app that waits for a coin on a local regtest node, then  generates two transactions that double

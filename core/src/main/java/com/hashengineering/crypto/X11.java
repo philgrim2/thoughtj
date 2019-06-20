@@ -1,8 +1,8 @@
 package com.hashengineering.crypto;
 
-import org.bitcoinj.core.Sha256Hash;
-
 import fr.cryptohash.*;
+import live.thought.thoughtj.core.Sha256Hash;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

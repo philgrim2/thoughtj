@@ -16,12 +16,12 @@
 
 package org.bitcoinj.jni;
 
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.script.Script;
-import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.listeners.WalletEventListener;
+import live.thought.thoughtj.core.Coin;
+import live.thought.thoughtj.core.ECKey;
+import live.thought.thoughtj.core.Transaction;
+import live.thought.thoughtj.script.Script;
+import live.thought.thoughtj.wallet.Wallet;
+import live.thought.thoughtj.wallet.listeners.WalletEventListener;
 
 import java.util.List;
 

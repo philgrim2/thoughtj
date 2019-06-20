@@ -16,12 +16,13 @@
 
 package org.bitcoinj.tools;
 
-import org.bitcoinj.crypto.TrustStoreLoader;
-import org.bitcoinj.protocols.payments.PaymentProtocol;
-import org.bitcoinj.protocols.payments.PaymentProtocolException;
-import org.bitcoinj.protocols.payments.PaymentSession;
-import org.bitcoinj.uri.BitcoinURI;
-import org.bitcoinj.uri.BitcoinURIParseException;
+import live.thought.thoughtj.crypto.TrustStoreLoader;
+import live.thought.thoughtj.protocols.payments.PaymentProtocol;
+import live.thought.thoughtj.protocols.payments.PaymentProtocolException;
+import live.thought.thoughtj.protocols.payments.PaymentSession;
+import live.thought.thoughtj.uri.BitcoinURI;
+import live.thought.thoughtj.uri.BitcoinURIParseException;
+
 import org.bitcoin.protocols.payments.Protos;
 
 import java.io.FileInputStream;

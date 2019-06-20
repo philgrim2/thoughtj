@@ -17,23 +17,23 @@
 
 package org.bitcoinj.examples;
 
-import org.bitcoinj.core.*;
-import org.bitcoinj.crypto.KeyCrypterException;
-import org.bitcoinj.kits.LevelDBWalletAppKit;
-import org.bitcoinj.kits.WalletAppKit;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.params.RegTestParams;
-import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.store.FlatDB;
-import org.bitcoinj.store.MasternodeDB;
-import org.bitcoinj.utils.BriefLogFormatter;
-import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
-
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
-import org.bitcoinj.utils.Pair;
+
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.crypto.KeyCrypterException;
+import live.thought.thoughtj.kits.LevelDBWalletAppKit;
+import live.thought.thoughtj.kits.WalletAppKit;
+import live.thought.thoughtj.params.MainNetParams;
+import live.thought.thoughtj.params.RegTestParams;
+import live.thought.thoughtj.params.TestNet3Params;
+import live.thought.thoughtj.store.FlatDB;
+import live.thought.thoughtj.store.MasternodeDB;
+import live.thought.thoughtj.utils.BriefLogFormatter;
+import live.thought.thoughtj.utils.Pair;
+import live.thought.thoughtj.wallet.Wallet;
+import live.thought.thoughtj.wallet.listeners.WalletCoinsReceivedEventListener;
 
 import java.io.File;
 import java.util.ArrayList;

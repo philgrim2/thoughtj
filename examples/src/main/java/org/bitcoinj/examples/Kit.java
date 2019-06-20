@@ -14,20 +14,19 @@
 
 package org.bitcoinj.examples;
 
-import org.bitcoinj.core.*;
-import org.bitcoinj.kits.WalletAppKit;
-import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.script.Script;
-import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.listeners.KeyChainEventListener;
-import org.bitcoinj.wallet.listeners.ScriptsChangeEventListener;
-import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
-import org.bitcoinj.wallet.listeners.WalletCoinsSentEventListener;
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.core.listeners.TransactionConfidenceEventListener;
+import live.thought.thoughtj.kits.WalletAppKit;
+import live.thought.thoughtj.params.TestNet3Params;
+import live.thought.thoughtj.script.Script;
+import live.thought.thoughtj.wallet.Wallet;
+import live.thought.thoughtj.wallet.listeners.KeyChainEventListener;
+import live.thought.thoughtj.wallet.listeners.ScriptsChangeEventListener;
+import live.thought.thoughtj.wallet.listeners.WalletCoinsReceivedEventListener;
+import live.thought.thoughtj.wallet.listeners.WalletCoinsSentEventListener;
 
 import java.io.File;
 import java.util.List;
-
-import org.bitcoinj.core.listeners.TransactionConfidenceEventListener;
 
 /**
  * The following example shows how to use the by bitcoinj provided WalletAppKit.

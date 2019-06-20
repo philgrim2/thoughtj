@@ -17,10 +17,10 @@
 
 package org.bitcoinj.examples;
 
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.params.RegTestParams;
-import org.bitcoinj.params.TestNet3Params;
+import live.thought.thoughtj.core.NetworkParameters;
+import live.thought.thoughtj.params.MainNetParams;
+import live.thought.thoughtj.params.RegTestParams;
+import live.thought.thoughtj.params.TestNet3Params;
 
 public enum NetworkEnum {
     MAIN,

@@ -16,11 +16,11 @@
 
 package org.bitcoinj.examples;
 
-import org.bitcoinj.core.FullPrunedBlockChain;
-import org.bitcoinj.core.PeerGroup;
-import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.store.FullPrunedBlockStore;
-import org.bitcoinj.store.LevelDBFullPrunedBlockStore;
+import live.thought.thoughtj.core.FullPrunedBlockChain;
+import live.thought.thoughtj.core.PeerGroup;
+import live.thought.thoughtj.params.MainNetParams;
+import live.thought.thoughtj.store.FullPrunedBlockStore;
+import live.thought.thoughtj.store.LevelDBFullPrunedBlockStore;
 
 import java.net.InetAddress;
 

@@ -16,8 +16,8 @@
 
 package org.bitcoinj.jni;
 
-import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.listeners.WalletReorganizeEventListener;
+import live.thought.thoughtj.wallet.Wallet;
+import live.thought.thoughtj.wallet.listeners.WalletReorganizeEventListener;
 
 /**
  * An event listener that relays events to a native C++ object. A pointer to that object is stored in

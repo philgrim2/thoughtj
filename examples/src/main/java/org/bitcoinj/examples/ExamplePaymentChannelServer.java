@@ -20,15 +20,15 @@ package org.bitcoinj.examples;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Sha256Hash;
-import org.bitcoinj.core.VerificationException;
-import org.bitcoinj.kits.WalletAppKit;
-import org.bitcoinj.params.RegTestParams;
-import org.bitcoinj.protocols.channels.*;
-import org.bitcoinj.utils.BriefLogFormatter;
-import org.bitcoinj.wallet.WalletExtension;
+import live.thought.thoughtj.core.Coin;
+import live.thought.thoughtj.core.NetworkParameters;
+import live.thought.thoughtj.core.Sha256Hash;
+import live.thought.thoughtj.core.VerificationException;
+import live.thought.thoughtj.kits.WalletAppKit;
+import live.thought.thoughtj.params.RegTestParams;
+import live.thought.thoughtj.protocols.channels.*;
+import live.thought.thoughtj.utils.BriefLogFormatter;
+import live.thought.thoughtj.wallet.WalletExtension;
 
 import com.google.common.collect.ImmutableList;
 

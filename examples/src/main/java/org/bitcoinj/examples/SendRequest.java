@@ -19,11 +19,11 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 
-import org.bitcoinj.core.*;
-import org.bitcoinj.kits.WalletAppKit;
-import org.bitcoinj.params.TestNet3Params;
-import org.bitcoinj.wallet.Wallet;
-import org.bitcoinj.wallet.Wallet.BalanceType;
+import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.kits.WalletAppKit;
+import live.thought.thoughtj.params.TestNet3Params;
+import live.thought.thoughtj.wallet.Wallet;
+import live.thought.thoughtj.wallet.Wallet.BalanceType;
 
 import java.io.File;
 
