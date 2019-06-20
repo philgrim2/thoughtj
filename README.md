@@ -22,7 +22,7 @@ To initialize the repo after cloning it:
 ```
 git submodule update  --init --recursive
 ```
-To perform a full build use (this includes the dashjbls shared library):
+To perform a full build use (this includes the thoughtjbls shared library):
 ```
 mvn clean package
 ```
