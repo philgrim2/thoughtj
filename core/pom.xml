@@ -20,19 +20,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.dashj</groupId>
-        <artifactId>dashj-parent</artifactId>
-        <version>0.15.3</version>
+        <groupId>live.thought</groupId>
+        <artifactId>thoughtj-parent</artifactId>
+        <version>0.17.1</version>
     </parent>
 
-    <artifactId>dashj-core</artifactId>
+    <artifactId>thoughtj-core</artifactId>
 
-    <name>dashj</name>
-    <description>A Java Dash library</description>
+    <name>thoughtj</name>
+    <description>A Java Thought library</description>
 
     <packaging>jar</packaging>
 
+    <!-- Change to Thought Network github
     <url>https://bitcoinj.github.io</url>
+    -->
 
     <licenses>
         <license>
@@ -45,8 +47,8 @@
     <!-- Dummy block to make Maven Central happy: authors list is in AUTHORS -->
     <developers>
         <developer>
-            <name>The bitcoinj team</name>
-            <email>bitcoinj@googlegroups.com</email>
+            <name>Thought Networks, LLC</name>
+            <email></email>
         </developer>
     </developers>
 
@@ -346,8 +348,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.dashj</groupId>
-            <artifactId>dashj-bls</artifactId>
+            <groupId>live.thought</groupId>
+            <artifactId>thoughtj-bls</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
@@ -362,7 +364,7 @@
             <version>3.2</version>
             <scope>test</scope>
         </dependency>
-        <!-- dashj consumers are expected to provide their own SLF4J adapters
+        <!-- thoughtj consumers are expected to provide their own SLF4J adapters
              such as logback, slf4j-log4j12, slf4j-jcl and so on
              see http://www.slf4j.org/faq.html -->
         <dependency>

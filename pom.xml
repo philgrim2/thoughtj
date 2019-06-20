@@ -2,16 +2,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.dashj</groupId>
-  <artifactId>dashj-parent</artifactId>
-  <version>0.15.3</version>
+  <groupId>live.thought</groupId>
+  <artifactId>thoughtj-parent</artifactId>
+  <version>0.17.1</version>
   <packaging>pom</packaging>
 
   <modules>
     <module>core</module>
     <module>examples</module>
     <module>tools</module>
-    <module>wallettemplate</module>
+    <!--    Put this back when we get JavaFX sorted out. <module>wallettemplate</module> -->
     <module>bls</module>
   </modules>
 
@@ -21,16 +21,17 @@
     <version>7</version>
   </parent>
 
-
+  <!-- Put this back when the project moves to Thought Networks Github account 
   <scm>
     <connection>scm:git:https://github.com/HashEngineering/darkcoinj</connection>
     <developerConnection>scm:git:https://github.com/HashEngineering/darkcoinj</developerConnection>
     <url>scm:git:https://github.com/bitcoinj/darkcoinj</url>
   </scm>
+  -->
 
-  <name>dashj Parent</name>
-  <description>Provides the common configuration for the dashj modules</description>
-  <url>http://dash.org/dashj/</url>
+  <name>thoughtj Parent</name>
+  <description>Provides the common configuration for the thoughtj modules</description>
+  <!-- Update this to Thought Networks Github pages <url>http://dash.org/dashj/</url> -->
 
   <licenses>
     <license>
@@ -41,6 +42,7 @@
     </license>
   </licenses>
 
+  <!-- Put this back when the project moves to Thought Networks Github account 
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/HashEngineering/dashj/issues</url>
@@ -68,6 +70,7 @@
     </snapshotRepository>
 
   </distributionManagement>
+  -->
 
   <!-- Common build plugin configuration -->
   <build>
@@ -153,7 +156,7 @@
         <artifactId>slf4j-api</artifactId>
         <version>1.7.20</version>
       </dependency>
-      <!-- dashj consumers are expected to provide their own SLF4J adapters
+      <!-- thoughtj consumers are expected to provide their own SLF4J adapters
     such as logback, slf4j-log4j12, slf4j-jcl and so on
     see http://www.slf4j.org/faq.html -->
       <dependency>
