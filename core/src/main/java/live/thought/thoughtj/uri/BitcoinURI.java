@@ -17,7 +17,7 @@
 package live.thought.thoughtj.uri;
 
 import live.thought.thoughtj.core.*;
-import live.thought.thoughtj.params.AbstractBitcoinNetParams;
+import live.thought.thoughtj.params.AbstractThoughtNetParams;
 
 import javax.annotation.Nullable;
 import java.io.UnsupportedEncodingException;
@@ -77,7 +77,7 @@ public class BitcoinURI {
     public static final String FIELD_INSTANTSEND = "is";
 
     /**
-     * URI for Bitcoin network. Use {@link live.thought.thoughtj.params.AbstractBitcoinNetParams#BITCOIN_SCHEME} if you specifically
+     * URI for Bitcoin network. Use {@link live.thought.thoughtj.params.AbstractThoughtNetParams#BITCOIN_SCHEME} if you specifically
      * need Bitcoin, or use {@link live.thought.thoughtj.core.NetworkParameters#getUriScheme} to get the scheme
      * from network parameters.
      */
@@ -115,7 +115,7 @@ public class BitcoinURI {
         checkNotNull(input);
 
         String scheme = null == params
-            ? AbstractBitcoinNetParams.BITCOIN_SCHEME
+            ? AbstractThoughtNetParams.COIN_SCHEME
             : params.getUriScheme();
 
         // Attempt to form the URI (fail fast syntax checking to official standards).

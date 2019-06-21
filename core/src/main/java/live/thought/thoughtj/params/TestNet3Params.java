@@ -31,7 +31,7 @@ import static live.thought.thoughtj.core.Utils.HEX;
  * Parameters for the testnet, a separate public instance of Dash that has relaxed rules suitable for development
  * and testing of applications and new Dash versions.
  */
-public class TestNet3Params extends AbstractBitcoinNetParams {
+public class TestNet3Params extends AbstractThoughtNetParams {
 
     public static final int TESTNET_MAJORITY_DIP0001_WINDOW = 4032;
     public static final int TESTNET_MAJORITY_DIP0001_THRESHOLD = 3226;

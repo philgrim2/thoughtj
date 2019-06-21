@@ -34,11 +34,11 @@ import static com.google.common.base.Preconditions.checkState;
 import static live.thought.thoughtj.core.Utils.HEX;
 
 /**
- * Parameters for a named devnet, a separate instance of Dash that has relaxed rules suitable for development
- * and testing of applications and new Dash versions.  The name of the devnet is used to generate the
+ * Parameters for a named devnet, a separate instance of Thought that has relaxed rules suitable for development
+ * and testing of applications and new Thought versions.  The name of the devnet is used to generate the
  * second block of the blockchain.
  */
-public class DevNetParams extends AbstractBitcoinNetParams {
+public class DevNetParams extends AbstractThoughtNetParams {
     private static final Logger log = LoggerFactory.getLogger(DevNetParams.class);
 
     public static final int DEVNET_MAJORITY_DIP0001_WINDOW = 4032;
@@ -48,7 +48,7 @@ public class DevNetParams extends AbstractBitcoinNetParams {
     BigInteger maxUint256 = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16);
 
 
-    private static int DEFAULT_PROTOCOL_VERSION = 70211;
+    private static int DEFAULT_PROTOCOL_VERSION = 70017;
     private int protocolVersion;
 
 

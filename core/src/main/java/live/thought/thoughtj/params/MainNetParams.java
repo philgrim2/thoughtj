@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.*;
 /**
  * Parameters for the main production network on which people trade goods and services.
  */
-public class MainNetParams extends AbstractBitcoinNetParams {
+public class MainNetParams extends AbstractThoughtNetParams {
     private static final Logger log = LoggerFactory.getLogger(MainNetParams.class);
 
     public static final int MAINNET_MAJORITY_WINDOW = 1000;

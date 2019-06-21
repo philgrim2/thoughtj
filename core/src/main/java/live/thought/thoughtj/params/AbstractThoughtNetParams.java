@@ -33,20 +33,20 @@ import live.thought.thoughtj.utils.MonetaryFormat;
 /**
  * Parameters for Bitcoin-like networks.
  */
-public abstract class AbstractBitcoinNetParams extends NetworkParameters {
+public abstract class AbstractThoughtNetParams extends NetworkParameters {
     /**
      * Scheme part for Bitcoin URIs.
      */
-    public static final String BITCOIN_SCHEME = CoinDefinition.coinURIScheme;
+    public static final String COIN_SCHEME = CoinDefinition.coinURIScheme;
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractBitcoinNetParams.class);
+    private static final Logger log = LoggerFactory.getLogger(AbstractThoughtNetParams.class);
 
     protected int powDGWHeight;
     protected int powKGWHeight;
     protected boolean powAllowMinimumDifficulty;
     protected boolean powNoRetargeting;
 
-    public AbstractBitcoinNetParams() {
+    public AbstractThoughtNetParams() {
         super();
     }
 
@@ -349,7 +349,7 @@ public abstract class AbstractBitcoinNetParams extends NetworkParameters {
 
     @Override
     public String getUriScheme() {
-        return BITCOIN_SCHEME;
+        return COIN_SCHEME;
     }
 
     @Override
