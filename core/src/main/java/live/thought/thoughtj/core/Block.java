@@ -46,7 +46,7 @@ import java.util.*;
  *
  * <p>To get a block, you can either build one from the raw bytes you can get from another implementation, or request one
  * specifically using {@link Peer#getBlock(Sha256Hash)}, or grab one from a downloaded {@link BlockChain}.</p>
- * 
+ *
  * <p>Instances of this class are not safe for use by multiple threads.</p>
  */
 public class Block extends Message {
@@ -72,7 +72,7 @@ public class Block extends Message {
      * avoid somebody creating a titanically huge but valid block and forcing everyone to download/store it forever.
      */
     public static final int MAX_BLOCK_SIZE = 1 * 1000 * 1000;
-    public static final int MAX_BLOCK_SIZE_DIP0001 = 2 * 1000 * 1000;
+    public static final int MAX_BLOCK_SIZE_DIP0001 = 4 * 1000 * 1000; //consensus.h
     /**
      * A "sigop" is a signature verification operation. Because they're expensive we also impose a separate limit on
      * the number in a block to prevent somebody mining a huge block that has way more sigops than normal, so is very
@@ -228,15 +228,40 @@ public class Block extends Message {
         return getBlockInflation(params, height, nPrevBits, fSuperblockPartOnly);
     }
 
+/* Thought GetBlockSubsidy using getBlockInflation */
+
+    public static Coin getBlockInflation(NetworkParameters params, int height, long nPrevBits, boolean fSuperblockPartOnly) {
+
+      int halvings = (nPrevHeight + 1) / consensusParams.nSubsidyHalvingInterval;
+          // Force block reward to zero when right shift is undefined.
+      	if (halvings >=64)
+                  return 0;
+
+          nSubsidy = 314 * COIN;
+          // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
+          // Special case for the first block allows premine.
+          if ((nPrevHeight + 1) == 1)
+          {
+              nSubsidy = 809016994 * COIN;
+          }
+          else
+          {
+            nSubsidy >>= halvings;
+          }
+
+          return Coin nSubsidy;
+
+    }
+
+/* Dash inflation plus superblock, need to enable superblock when already
+
     public static Coin getBlockInflation(NetworkParameters params, int height, long nPrevBits, boolean fSuperblockPartOnly) {
         double dDiff;
         long nSubsidyBase;
         int nPrevHeight = height - 1;
 
-
-
         if (nPrevHeight <= 4500 && params.getId().equals(NetworkParameters.ID_MAINNET)) {
-        /* a bug which caused diff to not be correctly calculated */
+        // a bug which caused diff to not be correctly calculated
             dDiff = (double)0x0000ffff / (double)(nPrevBits & 0x00ffffff);
         } else {
             dDiff = Utils.convertBitsToDouble(nPrevBits);
@@ -275,10 +300,11 @@ public class Block extends Message {
 
         return fSuperblockPartOnly ? nSuperblockPart : nSubsidy.minus(nSuperblockPart);
     }
+*/
 
     /**
      * Parse transactions from the block.
-     * 
+     *
      * @param transactionsOffset Offset of the transactions within the block.
      * Useful for non-Bitcoin chains where the block header may not be a fixed
      * size.
@@ -309,11 +335,11 @@ public class Block extends Message {
     private static final long START_MASTERNODE_PAYMENTS_1 = 1401033600L; //Sun, 25 May 2014 16:00:00 GMT
     private static final long START_MASTERNODE_PAYMENTS_STOP_1 = 1401134533L; // Mon, 26 May 2014 20:02:13 GMT
 
-    private static final long START_MASTERNODE_PAYMENTS = 1403728576L; //Fri, 20 Jun 2014 16:00:00 GMT
+    private static final long START_MASTERNODE_PAYMENTS = 1559121024L; //May 29, 2019 9:10:24 AM, block 385627
     //private static final long START_MASTERNODE_PAYMENTS_STOP = ?
 
-    private static final long START_MASTERNODE_PAYMENTS_TESTNET_1 = 1401757793;
-    private static final long START_MASTERNODE_PAYMENTS_TESTNET = 1403568776L;
+    private static final long START_MASTERNODE_PAYMENTS_TESTNET_1 = 1559121024L; //block 153668, using same time as mainnet
+    //private static final long START_MASTERNODE_PAYMENTS_TESTNET = 1403568776L;
 
     @Override
     protected void parse() throws ProtocolException {
@@ -332,7 +358,7 @@ public class Block extends Message {
         parseTransactions(offset + HEADER_SIZE);
         length = cursor - offset;
     }
-    
+
     public int getOptimalEncodingMessageSize() {
         if (optimalEncodingMessageSize != 0)
             return optimalEncodingMessageSize;
@@ -934,7 +960,7 @@ public class Block extends Message {
     private static int txCounter;
 
     /** Adds a coinbase transaction to the block. This exists for unit tests.
-     * 
+     *
      * @param height block height, if known, or -1 otherwise.
      */
     @VisibleForTesting
@@ -980,7 +1006,7 @@ public class Block extends Message {
     /**
      * Returns a solved block that builds on top of this one. This exists for unit tests.
      * In this variant you can specify a public key (pubkey) for use in generating coinbase blocks.
-     * 
+     *
      * @param height block height, if known, or -1 otherwise.
      */
     Block createNextBlock(@Nullable final Address to, final long version,
@@ -1073,7 +1099,7 @@ public class Block extends Message {
 
     /**
      * Return whether this block contains any transactions.
-     * 
+     *
      * @return  true if the block contains transactions, false otherwise (is
      * purely a header).
      */
