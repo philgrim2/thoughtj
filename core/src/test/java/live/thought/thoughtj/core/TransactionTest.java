@@ -93,13 +93,13 @@ public class TransactionTest {
 
     @Test(expected = VerificationException.NegativeValueOutput.class)
     public void negativeOutput() throws Exception {
-        tx.getOutput(0).setValue(Coin.NEGATIVE_SATOSHI);
+        tx.getOutput(0).setValue(Coin.NEGATIVE_NOTION);
         tx.verify();
     }
 
     @Test(expected = VerificationException.ExcessiveValue.class)
     public void exceedsMaxMoney2() throws Exception {
-        Coin half = PARAMS.getMaxMoney().divide(2).add(Coin.SATOSHI);
+        Coin half = PARAMS.getMaxMoney().divide(2).add(Coin.NOTION);
         tx.getOutput(0).setValue(half);
         tx.addOutput(half, ADDRESS);
         tx.verify();

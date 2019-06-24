@@ -4976,7 +4976,7 @@ public class Wallet extends BaseTaggableObject
                     // This solution definitely fits in category 3
                     isCategory3 = true;
                     additionalValueForNextCategory = (params.isDIP0001ActiveAtTip() ? Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.div(10) : Transaction.REFERENCE_DEFAULT_MIN_TX_FEE).add(
-                                                     changeOutput.getMinNonDustValue().add(Coin.SATOSHI));
+                                                     changeOutput.getMinNonDustValue().add(Coin.NOTION));
                 } else {
                     size += changeOutput.unsafeBitcoinSerialize().length + VarInt.sizeOf(req.tx.getOutputs().size()) - VarInt.sizeOf(req.tx.getOutputs().size() - 1);
                     // This solution is either category 1 or 2
@@ -4987,7 +4987,7 @@ public class Wallet extends BaseTaggableObject
                 if (eitherCategory2Or3) {
                     // This solution definitely fits in category 3 (we threw away change because it was smaller than MIN_TX_FEE)
                     isCategory3 = true;
-                    additionalValueForNextCategory = (params.isDIP0001ActiveAtTip() ? Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.div(10) : Transaction.REFERENCE_DEFAULT_MIN_TX_FEE).add(Coin.SATOSHI);
+                    additionalValueForNextCategory = (params.isDIP0001ActiveAtTip() ? Transaction.REFERENCE_DEFAULT_MIN_TX_FEE.div(10) : Transaction.REFERENCE_DEFAULT_MIN_TX_FEE).add(Coin.NOTION);
                 }
             }
 

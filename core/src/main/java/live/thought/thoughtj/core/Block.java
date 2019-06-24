@@ -231,25 +231,28 @@ public class Block extends Message {
 /* Thought GetBlockSubsidy using getBlockInflation */
 
     public static Coin getBlockInflation(NetworkParameters params, int height, long nPrevBits, boolean fSuperblockPartOnly) {
+      int nPrevHeight = height - 1;
 
-      int halvings = (nPrevHeight + 1) / consensusParams.nSubsidyHalvingInterval;
+      
+      int halvings = (nPrevHeight + 1) / params.subsidyDecreaseBlockCount;
           // Force block reward to zero when right shift is undefined.
-      	if (halvings >=64)
-                  return 0;
+      if (halvings >=64)
+          return Coin.ZERO;
 
-          nSubsidy = 314 * COIN;
-          // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
-          // Special case for the first block allows premine.
-          if ((nPrevHeight + 1) == 1)
-          {
-              nSubsidy = 809016994 * COIN;
-          }
-          else
-          {
-            nSubsidy >>= halvings;
-          }
+      Coin nSubsidy = Coin.COIN.multiply(314);
+      // Special case for the first block allows premine.
+      if ((nPrevHeight + 1) == 1)
+      {
+          nSubsidy =  Coin.COIN.multiply(809016994);
+      }
+      else
+      {
+          long adj = nSubsidy.getValue();
+          adj >>= halvings;
+          nSubsidy = Coin.COIN.multiply(adj);
+      }
 
-          return Coin nSubsidy;
+      return nSubsidy;
 
     }
 

@@ -31,67 +31,69 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public final class Coin implements Monetary, Comparable<Coin>, Serializable {
 
+     private static final long serialVersionUID = 1L;
+
     /**
-     * Number of decimals for one Bitcoin. This constant is useful for quick adapting to other coins because a lot of
+     * Number of decimals for one Thought. This constant is useful for quick adapting to other coins because a lot of
      * constants derive from it.
      */
     public static final int SMALLEST_UNIT_EXPONENT = 8;
 
     /**
-     * The number of satoshis equal to one bitcoin.
+     * The number of notions equal to one Thought.
      */
     private static final long COIN_VALUE = LongMath.pow(10, SMALLEST_UNIT_EXPONENT);
 
     /**
-     * Zero Bitcoins.
+     * Zero Thought.
      */
     public static final Coin ZERO = Coin.valueOf(0);
 
     /**
-     * One Bitcoin.
+     * One Thought.
      */
     public static final Coin COIN = Coin.valueOf(COIN_VALUE);
 
     /**
-     * 0.01 Bitcoins. This unit is not really used much.
+     * 0.01 Thought. This unit is not really used much.
      */
     public static final Coin CENT = COIN.divide(100);
 
     /**
-     * 0.001 Bitcoins, also known as 1 mBTC.
+     * 0.001 Thought, also known as 1 mTHT.
      */
     public static final Coin MILLICOIN = COIN.divide(1000);
 
     /**
-     * 0.000001 Bitcoins, also known as 1 µBTC or 1 uBTC.
+     * 0.000001 Thought, also known as 1 µTHT or 1 uTHT.
      */
     public static final Coin MICROCOIN = MILLICOIN.divide(1000);
 
     /**
-     * A satoshi is the smallest unit that can be transferred. 100 million of them fit into a Bitcoin.
+     * A notion is the smallest unit that can be transferred. 100 million of them fit into a THT.
      */
-    public static final Coin SATOSHI = Coin.valueOf(1);
+    public static final Coin NOTION = Coin.valueOf(1);
 
     public static final Coin FIFTY_COINS = COIN.multiply(50);
 
     /**
-     * Represents a monetary value of minus one satoshi.
+     * Represents a monetary value of minus one notion.
      */
-    public static final Coin NEGATIVE_SATOSHI = Coin.valueOf(-1);
+    public static final Coin NEGATIVE_NOTION = Coin.valueOf(-1);
 
     /**
      * The number of satoshis of this monetary value.
      */
     public final long value;
 
-    private final long MAX_SATOSHIS = COIN_VALUE * NetworkParameters.MAX_COINS;
+    private final long MAX_NOTIONS = COIN_VALUE * NetworkParameters.MAX_COINS;
 
-    private Coin(final long satoshis) {
-        this.value = satoshis;
+    private Coin(final long notions) {
+        this.value = notions;
     }
 
-    public static Coin valueOf(final long satoshis) {
-        return new Coin(satoshis);
+    public static Coin valueOf(final long notions) {
+        return new Coin(notions);
     }
 
     @Override
@@ -100,7 +102,7 @@ public final class Coin implements Monetary, Comparable<Coin>, Serializable {
     }
 
     /**
-     * Returns the number of satoshis of this monetary value.
+     * Returns the number of notions of this monetary value.
      */
     @Override
     public long getValue() {
@@ -108,7 +110,7 @@ public final class Coin implements Monetary, Comparable<Coin>, Serializable {
     }
 
     /**
-     * Convert an amount expressed in the way humans are used to into satoshis.
+     * Convert an amount expressed in the way humans are used to into notions.
      */
     public static Coin valueOf(final int coins, final int cents) {
         checkArgument(cents < 100);
@@ -128,8 +130,8 @@ public final class Coin implements Monetary, Comparable<Coin>, Serializable {
      */
     public static Coin parseCoin(final String str) {
         try {
-            long satoshis = new BigDecimal(str).movePointRight(SMALLEST_UNIT_EXPONENT).toBigIntegerExact().longValue();
-            return Coin.valueOf(satoshis);
+            long notions = new BigDecimal(str).movePointRight(SMALLEST_UNIT_EXPONENT).toBigIntegerExact().longValue();
+            return Coin.valueOf(notions);
         } catch (ArithmeticException e) {
             throw new IllegalArgumentException(e); // Repackage exception to honor method contract
         }
@@ -249,7 +251,7 @@ public final class Coin implements Monetary, Comparable<Coin>, Serializable {
     }
 
     /**
-     * Returns the number of satoshis of this monetary value. It's deprecated in favour of accessing {@link #value}
+     * Returns the number of notions of this monetary value. It's deprecated in favour of accessing {@link #value}
      * directly.
      */
     public long longValue() {
@@ -272,7 +274,7 @@ public final class Coin implements Monetary, Comparable<Coin>, Serializable {
      * <p>
      * Returns the value as a plain string denominated in BTC.
      * The result is unformatted with no trailing zeroes.
-     * For instance, a value of 150000 satoshis gives an output string of "0.0015" BTC
+     * For instance, a value of 150000 notions gives an output string of "0.0015" THT
      * </p>
      */
     public String toPlainString() {

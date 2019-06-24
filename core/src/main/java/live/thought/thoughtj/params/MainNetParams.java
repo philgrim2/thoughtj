@@ -480,4 +480,6 @@ public class MainNetParams extends AbstractThoughtNetParams {
 
         return dDiff;
     }
+    
+    
 }

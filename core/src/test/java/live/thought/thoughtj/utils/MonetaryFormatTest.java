@@ -18,7 +18,7 @@ package live.thought.thoughtj.utils;
 
 import static live.thought.thoughtj.core.Coin.CENT;
 import static live.thought.thoughtj.core.Coin.COIN;
-import static live.thought.thoughtj.core.Coin.SATOSHI;
+import static live.thought.thoughtj.core.Coin.NOTION;
 import static live.thought.thoughtj.core.Coin.ZERO;
 import static org.junit.Assert.assertEquals;
 
@@ -76,7 +76,7 @@ public class MonetaryFormatTest {
         assertEquals("1.000", format(COIN, 0, 3));
         assertEquals("1.0000", format(COIN, 0, 4));
 
-        final Coin justNot = COIN.subtract(SATOSHI);
+        final Coin justNot = COIN.subtract(NOTION);
         assertEquals("1", format(justNot, 0, 0));
         assertEquals("1.0", format(justNot, 0, 1));
         assertEquals("1.00", format(justNot, 0, 2, 2));
@@ -85,7 +85,7 @@ public class MonetaryFormatTest {
         assertEquals("1.000", format(justNot, 0, 3));
         assertEquals("1.0000", format(justNot, 0, 4));
 
-        final Coin slightlyMore = COIN.add(SATOSHI);
+        final Coin slightlyMore = COIN.add(NOTION);
         assertEquals("1", format(slightlyMore, 0, 0));
         assertEquals("1.0", format(slightlyMore, 0, 1));
         assertEquals("1.00", format(slightlyMore, 0, 2, 2));
@@ -94,7 +94,7 @@ public class MonetaryFormatTest {
         assertEquals("1.000", format(slightlyMore, 0, 3));
         assertEquals("1.0000", format(slightlyMore, 0, 4));
 
-        final Coin pivot = COIN.add(SATOSHI.multiply(5));
+        final Coin pivot = COIN.add(NOTION.multiply(5));
         assertEquals("1.00000005", format(pivot, 0, 8));
         assertEquals("1.00000005", format(pivot, 0, 7, 1));
         assertEquals("1.0000001", format(pivot, 0, 7));
@@ -121,7 +121,7 @@ public class MonetaryFormatTest {
         assertEquals("1000.000", format(COIN, 3, 3));
         assertEquals("1000.0000", format(COIN, 3, 4));
 
-        final Coin justNot = COIN.subtract(SATOSHI.multiply(10));
+        final Coin justNot = COIN.subtract(NOTION.multiply(10));
         assertEquals("1000", format(justNot, 3, 0));
         assertEquals("1000.0", format(justNot, 3, 1));
         assertEquals("1000.00", format(justNot, 3, 2));
@@ -129,7 +129,7 @@ public class MonetaryFormatTest {
         assertEquals("1000.000", format(justNot, 3, 3));
         assertEquals("999.9999", format(justNot, 3, 4));
 
-        final Coin slightlyMore = COIN.add(SATOSHI.multiply(10));
+        final Coin slightlyMore = COIN.add(NOTION.multiply(10));
         assertEquals("1000", format(slightlyMore, 3, 0));
         assertEquals("1000.0", format(slightlyMore, 3, 1));
         assertEquals("1000.00", format(slightlyMore, 3, 2));
@@ -137,7 +137,7 @@ public class MonetaryFormatTest {
         assertEquals("1000.0001", format(slightlyMore, 3, 2, 2));
         assertEquals("1000.0001", format(slightlyMore, 3, 4));
 
-        final Coin pivot = COIN.add(SATOSHI.multiply(50));
+        final Coin pivot = COIN.add(NOTION.multiply(50));
         assertEquals("1000.0005", format(pivot, 3, 4));
         assertEquals("1000.0005", format(pivot, 3, 3, 1));
         assertEquals("1000.001", format(pivot, 3, 3));
@@ -161,19 +161,19 @@ public class MonetaryFormatTest {
         assertEquals("1000000.0", format(COIN, 6, 1));
         assertEquals("1000000.00", format(COIN, 6, 2));
 
-        final Coin justNot = COIN.subtract(SATOSHI);
+        final Coin justNot = COIN.subtract(NOTION);
         assertEquals("1000000", format(justNot, 6, 0));
         assertEquals("999999.99", format(justNot, 6, 0, 2));
         assertEquals("1000000.0", format(justNot, 6, 1));
         assertEquals("999999.99", format(justNot, 6, 2));
 
-        final Coin slightlyMore = COIN.add(SATOSHI);
+        final Coin slightlyMore = COIN.add(NOTION);
         assertEquals("1000000", format(slightlyMore, 6, 0));
         assertEquals("1000000.01", format(slightlyMore, 6, 0, 2));
         assertEquals("1000000.0", format(slightlyMore, 6, 1));
         assertEquals("1000000.01", format(slightlyMore, 6, 2));
 
-        final Coin pivot = COIN.add(SATOSHI.multiply(5));
+        final Coin pivot = COIN.add(NOTION.multiply(5));
         assertEquals("1000000.05", format(pivot, 6, 2));
         assertEquals("1000000.05", format(pivot, 6, 0, 2));
         assertEquals("1000000.1", format(pivot, 6, 1));
@@ -192,13 +192,13 @@ public class MonetaryFormatTest {
 
     @Test
     public void repeatOptionalDecimals() {
-        assertEquals("0.00000001", formatRepeat(SATOSHI, 2, 4));
-        assertEquals("0.00000010", formatRepeat(SATOSHI.multiply(10), 2, 4));
+        assertEquals("0.00000001", formatRepeat(NOTION, 2, 4));
+        assertEquals("0.00000010", formatRepeat(NOTION.multiply(10), 2, 4));
         assertEquals("0.01", formatRepeat(CENT, 2, 4));
         assertEquals("0.10", formatRepeat(CENT.multiply(10), 2, 4));
 
-        assertEquals("0", formatRepeat(SATOSHI, 2, 2));
-        assertEquals("0", formatRepeat(SATOSHI.multiply(10), 2, 2));
+        assertEquals("0", formatRepeat(NOTION, 2, 2));
+        assertEquals("0", formatRepeat(NOTION.multiply(10), 2, 2));
         assertEquals("0.01", formatRepeat(CENT, 2, 2));
         assertEquals("0.10", formatRepeat(CENT.multiply(10), 2, 2));
 
