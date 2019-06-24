@@ -32,7 +32,7 @@ public class DarkSendPool {
     public static final int  POOL_STATUS_ERROR                   =   7; // error
     public static final int  POOL_STATUS_SUCCESS                 =   8; // success
 
-    static final int MIN_PEER_PROTO_VERSION = 70054;
+    static final int MIN_PEER_PROTO_VERSION = 70016;
 
     // masternode entries
     ArrayList<DarkSendEntry> entries;

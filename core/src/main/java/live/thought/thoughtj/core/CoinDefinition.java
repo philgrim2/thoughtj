@@ -12,8 +12,8 @@ public class CoinDefinition {
     public static final String coinURIScheme = "thought";
     //public static final String cryptsyMarketId = "155";
     //public static final String cryptsyMarketCurrency = "BTC";
-    public static final String PATTERN_PRIVATE_KEY_START_UNCOMPRESSED = "[7]";
-    public static final String PATTERN_PRIVATE_KEY_START_COMPRESSED = "[X]";
+    public static final String PATTERN_PRIVATE_KEY_START_UNCOMPRESSED = "[K]";
+    public static final String PATTERN_PRIVATE_KEY_START_COMPRESSED = "[X]"; //ajh need to check if we need this
 
     public enum CoinPrecision {
         Coins,
@@ -49,17 +49,17 @@ public class CoinDefinition {
 
     public static final int TARGET_TIMESPAN = (int)(1.618 * 24 * 60 * 60); // Thought: 1 day
     public static final int TARGET_SPACING = (int)(1.618 * 60); // Thought: 1.6 minutes
-    public static final int INTERVAL = TARGET_TIMESPAN / TARGET_SPACING;  
+    public static final int INTERVAL = TARGET_TIMESPAN / TARGET_SPACING;
 
     public static final int getInterval(int height, boolean testNet) {
-            return INTERVAL;     
+            return INTERVAL;
     }
     public static final int getIntervalCheckpoints() {
             return INTERVAL;
 
     }
     public static final int getTargetTimespan(int height, boolean testNet) {
-            return TARGET_TIMESPAN;    
+            return TARGET_TIMESPAN;
     }
 
     public static int spendableCoinbaseDepth = 100; //main.h: static const int COINBASE_MATURITY
@@ -78,7 +78,7 @@ public class CoinDefinition {
     public static final int MIN_PROTOCOL_VERSION = 70016;        //version.h MIN_PROTO_VERSION
 
     public static final int BLOCK_CURRENTVERSION = 7;   //CBlock::CURRENT_VERSION
-    public static final int MAX_BLOCK_SIZE = 2 * 1000 * 1000;
+    public static final int MAX_BLOCK_SIZE = 4 * 1000 * 1000;
 
 
     public static final boolean supportsBloomFiltering = true; //Requires PROTOCOL_VERSION 70000 in the client
@@ -89,22 +89,22 @@ public class CoinDefinition {
     //
     //  Production
     //
-    public static final int AddressHeader = 76;             //base58.h CBitcoinAddress::PUBKEY_ADDRESS
-    public static final int p2shHeader = 16;             //base58.h CBitcoinAddress::SCRIPT_ADDRESS
-    public static final int dumpedPrivateKeyHeader = 128;   //common to all coins
-    public static final long oldPacketMagic = 0xfbc0b6db;      //0xfb, 0xc0, 0xb6, 0xdb
-    public static final long PacketMagic = 0xbf0c6bbd;
+    public static final int AddressHeader = 7;             //base58.h CBitcoinAddress::PUBKEY_ADDRESS
+    public static final int p2shHeader = 9;             //base58.h CBitcoinAddress::SCRIPT_ADDRESS
+    public static final int dumpedPrivateKeyHeader = 123;   //common to all coins
+    public static final long oldPacketMagic = 0xfbc0b6db;      //0xfb, 0xc0, 0xb6, 0xdb - ajh - this is bitcoins
+    public static final long PacketMagic = 0x59472ee4; //ajh - this is thought's
 
     //Genesis Block Information from main.cpp: LoadBlockIndex
-    static public long genesisBlockDifficultyTarget = (0x1d00ffffL);         
-    static public long genesisBlockTime = 1521039602L;                       
-    static public long genesisBlockNonce = (2074325340);                        
+    static public long genesisBlockDifficultyTarget = (0x1d00ffffL);
+    static public long genesisBlockTime = 1521039602L;
+    static public long genesisBlockNonce = (2074325340);
     static public String genesisHash = "00000000917e049641189c33d6b1275155e89b7b498b3b4f16d488f60afe513b"; //chainparams.cpp: hashGenesisBlock
     static public String genesisMerkleRoot = "483a98bfa350f319e52eceaa79585fab8e5ac49c6235f720915e9c671a03c2d6";
-    static public int genesisBlockValue = 50;       // Not sure where this is                                                       
-    
+    static public int genesisBlockValue = 50;       // Not sure where this is
 
-    // TxOut from chainparams.cpp.  Not sure yet what to use for TxIn.  Block explorer doesn't show one.    
+
+    // TxOut from chainparams.cpp.  Not sure yet what to use for TxIn.  Block explorer doesn't show one.
     static public String genesisTxInBytes = "04ffff001d01044c5957697265642030392f4a616e2f3230313420546865204772616e64204578706572696d656e7420476f6573204c6976653a204f76657273746f636b2e636f6d204973204e6f7720416363657074696e6720426974636f696e73";   //"limecoin se convertira en una de las monedas mas segura del mercado, checa nuestros avances"
     static public String genesisTxOutBytes = "04ed28f11f74795344edfdbc1fccb1e6de37c909ab0c2a535aa6a054fca6fd34b05e3ed9822fa00df98698555d7582777afbc355ece13b7a47004ffe58c0b66c08";
 
@@ -123,13 +123,13 @@ public class CoinDefinition {
     // TestNet - DASH
     //
     public static final boolean supportsTestNet = true;
-    public static final int testnetAddressHeader = 140;             //base58.h CBitcoinAddress::PUBKEY_ADDRESS_TEST
-    public static final int testnetp2shHeader = 19;             //base58.h CBitcoinAddress::SCRIPT_ADDRESS_TEST
-    public static final long testnetPacketMagic = 0xcee2caff;      //
-    public static final String testnetGenesisHash = "00000bafbc94add76cb75e2ec92894837288a481e5c005f6563d91623bf8bc2c";
-    static public long testnetGenesisBlockDifficultyTarget = (0x1e0ffff0L);         //main.cpp: LoadBlockIndex
-    static public long testnetGenesisBlockTime = 1390666206L;                       //main.cpp: LoadBlockIndex
-    static public long testnetGenesisBlockNonce = (3861367235L);                         //main.cpp: LoadBlockIndex
+    public static final int testnetAddressHeader = 109;             //base58.h CBitcoinAddress::PUBKEY_ADDRESS_TEST
+    public static final int testnetp2shHeader = 193;             //base58.h CBitcoinAddress::SCRIPT_ADDRESS_TEST
+    public static final long testnetPacketMagic = 0x2b9939bf;      //
+    public static final String testnetGenesisHash = "00000000917e049641189c33d6b1275155e89b7b498b3b4f16d488f60afe513b";
+    static public long testnetGenesisBlockDifficultyTarget = (0x1d00ffffL);         //main.cpp: LoadBlockIndex
+    static public long testnetGenesisBlockTime = 1521039602L;                       //main.cpp: LoadBlockIndex
+    static public long testnetGenesisBlockNonce = (2074325340L);                         //main.cpp: LoadBlockIndex
 
 
 
@@ -139,13 +139,13 @@ public class CoinDefinition {
     public static final Coin GetBlockReward(int height)
     {
         int COIN = 1;
-        Coin nSubsidy = Coin.valueOf(100, 0);
+        Coin nSubsidy = Coin.valueOf(314, 0);
         if (height == 1)
-            nSubsidy = Coin.valueOf(420000, 0);
+            nSubsidy = Coin.valueOf(809016994, 0);
         return nSubsidy;
     }
 
-    public static int subsidyDecreaseBlockCount = 210240;     //main.cpp GetBlockValue(height, fee)
+    public static int subsidyDecreaseBlockCount = 1299382;     //main.cpp GetBlockValue(height, fee) //ajh halving interval
 
     public static BigInteger proofOfWorkLimit = Utils.decodeCompactBits(0x1e0fffffL);  //main.cpp bnProofOfWorkLimit (~uint256(0) >> 20); // digitalcoin: starting difficulty is 1 / 2^12
 

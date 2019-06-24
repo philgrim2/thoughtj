@@ -27,7 +27,7 @@ public class DarkCoinSystem {
     int nAnonymizeDarkcoinAmount = 1000;
     int nLiquidityProvider = 0;
     /** Spork enforcement enabled time */
-    long enforceMasternodePaymentsTime = 4085657524L;
+    long enforceMasternodePaymentsTime = 4085657524L; //ajh - need to set this, this is a spork
     int nMasternodeMinProtocol = 0;
     boolean fSucessfullyLoaded = false;
     boolean fEnableDarksend = false;

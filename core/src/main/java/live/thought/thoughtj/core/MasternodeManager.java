@@ -38,7 +38,7 @@ public class MasternodeManager extends AbstractManager {
 
     static final int LAST_PAID_SCAN_BLOCKS      = 100;
 
-    static final int MIN_POSE_PROTO_VERSION     = 70203;
+    static final int MIN_POSE_PROTO_VERSION     = 70017;
     static final int MAX_POSE_CONNECTIONS       = 10;
     static final int MAX_POSE_RANK              = 10;
     static final int MAX_POSE_BLOCKS            = 10;
@@ -830,7 +830,7 @@ public class MasternodeManager extends AbstractManager {
         if(nCount != 0)
             log.info("CMasternodeMan::ProcessVerifyBroadcast -- PoSe score increased for {} fake masternodes, addr {}",
                     nCount, mn1.info.address.toString());
-       
+
         } finally {
             lock.unlock();
         }

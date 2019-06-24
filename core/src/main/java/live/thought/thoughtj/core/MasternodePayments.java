@@ -9,8 +9,8 @@ public class MasternodePayments {
     //! minimum peer version that can receive masternode payments
     // V1 - Last protocol version before update
     // V2 - Newest protocol version
-    static final int MIN_MASTERNODE_PAYMENT_PROTO_VERSION_1 = 70208;
-    static final int MIN_MASTERNODE_PAYMENT_PROTO_VERSION_2 = 70208;
+    static final int MIN_MASTERNODE_PAYMENT_PROTO_VERSION_1 = 70017;
+    static final int MIN_MASTERNODE_PAYMENT_PROTO_VERSION_2 = 70017;
 
     final float nStorageCoeff = 1.25f;
     final int nMinBlocksToStore = 5000;

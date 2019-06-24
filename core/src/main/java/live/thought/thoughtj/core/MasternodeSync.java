@@ -598,7 +598,7 @@ public class MasternodeSync {
                         }
                         pnode.fulfilledRequest("governance-sync");
 
-                        if (pnode.getVersionMessage().clientVersion < 70208/*MIN_GOVERNANCE_PEER_PROTO_VERSION*/)
+                        if (pnode.getVersionMessage().clientVersion < 70017/*MIN_GOVERNANCE_PEER_PROTO_VERSION*/)
                             continue;
                         RequestedMasternodeAttempt++;
 

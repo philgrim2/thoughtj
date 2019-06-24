@@ -22,7 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class InstantSend {
     private static final Logger log = LoggerFactory.getLogger(InstantSend.class);
-    public static final int MIN_INSTANTSEND_PROTO_VERSION           = 70208;
+    public static final int MIN_INSTANTSEND_PROTO_VERSION           = 70017;
     public static final int INSTANTSEND_TIMEOUT_SECONDS             = 65;
     public static final long INSTANTSEND_LOCK_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(10);
 
@@ -1160,4 +1160,3 @@ public class InstantSend {
         }
     };
 }
-

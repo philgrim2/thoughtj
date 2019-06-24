@@ -33,8 +33,8 @@ import static live.thought.thoughtj.core.Utils.HEX;
  */
 public class TestNet3Params extends AbstractThoughtNetParams {
 
-    public static final int TESTNET_MAJORITY_DIP0001_WINDOW = 4032;
-    public static final int TESTNET_MAJORITY_DIP0001_THRESHOLD = 3226;
+    public static final int TESTNET_MAJORITY_DIP0001_WINDOW = 100;
+    public static final int TESTNET_MAJORITY_DIP0001_THRESHOLD = 2;
 
     public TestNet3Params() {
         super();
@@ -51,7 +51,7 @@ public class TestNet3Params extends AbstractThoughtNetParams {
         addressHeader = CoinDefinition.testnetAddressHeader;
         p2shHeader = CoinDefinition.testnetp2shHeader;
         acceptableAddressCodes = new int[] { addressHeader, p2shHeader };
-        dumpedPrivateKeyHeader = 239;
+        dumpedPrivateKeyHeader = 235;
         genesisBlock.setTime(CoinDefinition.testnetGenesisBlockTime);
         genesisBlock.setDifficultyTarget(CoinDefinition.testnetGenesisBlockDifficultyTarget);
         genesisBlock.setNonce(CoinDefinition.testnetGenesisBlockNonce);
@@ -64,57 +64,20 @@ public class TestNet3Params extends AbstractThoughtNetParams {
         alertSigningKey = HEX.decode(CoinDefinition.TESTNET_SATOSHI_KEY);
 
         dnsSeeds = new String[] {
-                "testnet-seed.dashdot.io",
-                "35.161.101.35",
-                "54.91.130.170",
-                "95.183.51.146"
+
         };
 
-        checkpoints.put(    261, Sha256Hash.wrap("00000c26026d0815a7e2ce4fa270775f61403c040647ff2c3091f99e894a4618"));
-        checkpoints.put(   1999, Sha256Hash.wrap("00000052e538d27fa53693efe6fb6892a0c1d26c0235f599171c48a3cce553b1"));
-        checkpoints.put(   2999, Sha256Hash.wrap("0000024bc3f4f4cb30d29827c13d921ad77d2c6072e586c7f60d83c2722cdcc5"));
+        checkpoints.put(    0, Sha256Hash.wrap("00000000917e049641189c33d6b1275155e89b7b498b3b4f16d488f60afe513b"));
+        checkpoints.put(   128, Sha256Hash.wrap("000b288b55c8f6c919369ee26f517861f6552c294b7d262339c80de906fe01c8"));
+        checkpoints.put(   154509, Sha256Hash.wrap("001ecb9553a2d270c7055fee8b91401ac63f6c5f8e8926d958d88b679d8ccb70"));
 
         addrSeeds = new int[] {
-                0xaa34ca12,
-                0xaa34ca12,
-                0xaa34ca12,
-                0xaa34ca12,
-                0xaa34ca12,
-                0xaa34ca12,
-                0x140fff22,
-                0x140fff22,
-                0x140fff22,
-                0x140fff22,
-                0x140fff22,
-                0x140fff22,
-                0x35d03234,
-                0x35d03234,
-                0x35d03234,
-                0x35d03234,
-                0x35d03234,
-                0x35d03234,
-                0x55ee213f,
-                0x55ee213f,
-                0x55ee213f,
-                0x55ee213f,
-                0x55ee213f,
-                0x55ee213f,
-                0x10ebef91,
-                0x11ebef91,
-                0x12ebef91,
-                0x13ebef91,
-                0x14ebef91,
-                0x15ebef91,
-                0x16ebef91,
-                0x17ebef91,
-                0x18ebef91,
-                0x19ebef91,
-                0xf9cb3eb2
-        };
-        bip32HeaderPub = 0x043587cf;
-        bip32HeaderPriv = 0x04358394 ;
 
-        strSporkAddress = "yjPtiKh2uwk3bDutTEA2q9mCtXyiZRWn55";
+        };
+        bip32HeaderPub = 0x5D405F7A;
+        bip32HeaderPriv = 0xB6F13F50;
+
+        strSporkAddress = "kxkf3ojUeHpzBuU5qdXEWKND5E4LmkQ6qU";
         budgetPaymentsStartBlock = 4100;
         budgetPaymentsCycleBlocks = 50;
         budgetPaymentsWindowBlocks = 10;
@@ -132,7 +95,7 @@ public class TestNet3Params extends AbstractThoughtNetParams {
 
         fulfilledRequestExpireTime = 5*60;
         masternodeMinimumConfirmations = 1;
-        superblockStartBlock = 4200;
+        superblockStartBlock = 250000;
         superblockCycle = 24;
         nGovernanceMinQuorum = 1;
         nGovernanceFilterElements = 500;
@@ -145,8 +108,8 @@ public class TestNet3Params extends AbstractThoughtNetParams {
         instantSendConfirmationsRequired = 2;
         instantSendKeepLock = 6;
 
-        DIP0003BlockHeight = 7000;
-        deterministicMasternodesEnabledHeight = 7300;
+        DIP0003BlockHeight = 300000;
+        deterministicMasternodesEnabledHeight = 300000;
         deterministicMasternodesEnabled = true;
     }
 

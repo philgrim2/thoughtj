@@ -41,7 +41,7 @@ public class SporkManager {
         mapSporkDefaults = new HashMap<Integer, Long>();
         mapSporkDefaults.put(SPORK_2_INSTANTSEND_ENABLED, 0L);
         mapSporkDefaults.put(SPORK_3_INSTANTSEND_BLOCK_FILTERING, 0L);
-        mapSporkDefaults.put(SPORK_5_INSTANTSEND_MAX_VALUE, 1000L);
+        mapSporkDefaults.put(SPORK_5_INSTANTSEND_MAX_VALUE, 100000L);
         mapSporkDefaults.put(SPORK_6_NEW_SIGS, 4070908800L);
         mapSporkDefaults.put(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT, 4070908800L);
         mapSporkDefaults.put(SPORK_9_SUPERBLOCKS_ENABLED, 4070908800L);
