@@ -49,8 +49,8 @@ public class CoinTest {
     public void testValueOf() {
         // int version
         assertEquals(CENT, valueOf(0, 1));
-        assertEquals(SATOSHI, valueOf(1));
-        assertEquals(NEGATIVE_SATOSHI, valueOf(-1));
+        assertEquals(NOTION, valueOf(1));
+        assertEquals(NEGATIVE_NOTION, valueOf(-1));
         assertEquals(MAX_MONEY, valueOf(MAX_MONEY.value));
         assertEquals(MAX_MONEY.negate(), valueOf(MAX_MONEY.value * -1));
         valueOf(MAX_MONEY.value + 1);
@@ -70,12 +70,12 @@ public class CoinTest {
 
     @Test
     public void testOperators() {
-        assertTrue(SATOSHI.isPositive());
-        assertFalse(SATOSHI.isNegative());
-        assertFalse(SATOSHI.isZero());
-        assertFalse(NEGATIVE_SATOSHI.isPositive());
-        assertTrue(NEGATIVE_SATOSHI.isNegative());
-        assertFalse(NEGATIVE_SATOSHI.isZero());
+        assertTrue(NOTION.isPositive());
+        assertFalse(NOTION.isNegative());
+        assertFalse(NOTION.isZero());
+        assertFalse(NEGATIVE_NOTION.isPositive());
+        assertTrue(NEGATIVE_NOTION.isNegative());
+        assertFalse(NEGATIVE_NOTION.isZero());
         assertFalse(ZERO.isPositive());
         assertFalse(ZERO.isNegative());
         assertTrue(ZERO.isZero());
@@ -100,12 +100,12 @@ public class CoinTest {
 
     @Test(expected = ArithmeticException.class)
     public void testAdditionOverflow() {
-        Coin.valueOf(Long.MAX_VALUE).add(Coin.SATOSHI);
+        Coin.valueOf(Long.MAX_VALUE).add(Coin.NOTION);
     }
 
     @Test(expected = ArithmeticException.class)
     public void testSubstractionUnderflow() {
-        Coin.valueOf(Long.MIN_VALUE).subtract(Coin.SATOSHI);
+        Coin.valueOf(Long.MIN_VALUE).subtract(Coin.NOTION);
     }
 
     @Test

@@ -190,11 +190,11 @@ public class BtcFormatTest {
     public void columnAlignmentTest() {
         ThtFormat germany = ThtFormat.getCoinInstance(2,ThtFixedFormat.REPEATING_PLACES);
         char separator = germany.symbols().getDecimalSeparator();
-        Coin[] rows = {MAX_MONEY, MAX_MONEY.subtract(SATOSHI), Coin.parseCoin("1234"),
-                       COIN, COIN.add(SATOSHI), COIN.subtract(SATOSHI),
-                        COIN.divide(1000).add(SATOSHI), COIN.divide(1000), COIN.divide(1000).subtract(SATOSHI),
+        Coin[] rows = {MAX_MONEY, MAX_MONEY.subtract(NOTION), Coin.parseCoin("1234"),
+                       COIN, COIN.add(NOTION), COIN.subtract(NOTION),
+                        COIN.divide(1000).add(NOTION), COIN.divide(1000), COIN.divide(1000).subtract(NOTION),
                        valueOf(100), valueOf(1000), valueOf(10000),
-                       SATOSHI};
+                       NOTION};
         FieldPosition fp = new FieldPosition(DECIMAL_SEPARATOR);
         String[] output = new String[rows.length];
         int[] indexes = new int[rows.length];
@@ -214,7 +214,7 @@ public class BtcFormatTest {
     @Test
     public void repeatingPlaceTest() {
         ThtFormat mega = ThtFormat.getInstance(-6, US);
-        Coin value = MAX_MONEY.subtract(SATOSHI);
+        Coin value = MAX_MONEY.subtract(NOTION);
         assertEquals("21.99999999999999", mega.format(value, 0, ThtFixedFormat.REPEATING_PLACES));
         assertEquals("21.99999999999999", mega.format(value, 0, ThtFixedFormat.REPEATING_PLACES));
         assertEquals("21.99999999999999", mega.format(value, 1, ThtFixedFormat.REPEATING_PLACES));
@@ -814,8 +814,8 @@ public class BtcFormatTest {
         ThtFormat symbolZero = ThtFormat.getSymbolInstance(Locale.US, 0);
         assertEquals("Đ1", symbolZero.format(COIN));
         assertEquals("DASH 1", codedZero.format(COIN));
-        assertEquals("µĐ1,000,000", symbolZero.format(COIN.subtract(SATOSHI)));
-        assertEquals("µDASH 1,000,000", codedZero.format(COIN.subtract(SATOSHI)));
+        assertEquals("µĐ1,000,000", symbolZero.format(COIN.subtract(NOTION)));
+        assertEquals("µDASH 1,000,000", codedZero.format(COIN.subtract(NOTION)));
         assertEquals("µĐ1,000,000", symbolZero.format(COIN.subtract(Coin.valueOf(50))));
         assertEquals("µDASH 1,000,000", codedZero.format(COIN.subtract(Coin.valueOf(50))));
         assertEquals("µĐ999,999", symbolZero.format(COIN.subtract(Coin.valueOf(51))));
@@ -854,8 +854,8 @@ public class BtcFormatTest {
         ThtFormat symbolTwo = ThtFormat.getSymbolInstance(Locale.US, 2);
         assertEquals("Đ1.00", symbolTwo.format(COIN));
         assertEquals("DASH 1.00", codedTwo.format(COIN));
-        assertEquals("µĐ999,999.99", symbolTwo.format(COIN.subtract(SATOSHI)));
-        assertEquals("µDASH 999,999.99", codedTwo.format(COIN.subtract(SATOSHI)));
+        assertEquals("µĐ999,999.99", symbolTwo.format(COIN.subtract(NOTION)));
+        assertEquals("µDASH 999,999.99", codedTwo.format(COIN.subtract(NOTION)));
         assertEquals("Đ1,000.00", symbolTwo.format(COIN.multiply(1000)));
         assertEquals("DASH 1,000.00", codedTwo.format(COIN.multiply(1000)));
         assertEquals("µĐ1.00", symbolTwo.format(Coin.valueOf(100)));
@@ -871,8 +871,8 @@ public class BtcFormatTest {
         ThtFormat symbolThree = ThtFormat.getSymbolInstance(Locale.US, 3);
         assertEquals("Đ1.000", symbolThree.format(COIN));
         assertEquals("DASH 1.000", codedThree.format(COIN));
-        assertEquals("µĐ999,999.99", symbolThree.format(COIN.subtract(SATOSHI)));
-        assertEquals("µDASH 999,999.99", codedThree.format(COIN.subtract(SATOSHI)));
+        assertEquals("µĐ999,999.99", symbolThree.format(COIN.subtract(NOTION)));
+        assertEquals("µDASH 999,999.99", codedThree.format(COIN.subtract(NOTION)));
         assertEquals("Đ1,000.000", symbolThree.format(COIN.multiply(1000)));
         assertEquals("DASH 1,000.000", codedThree.format(COIN.multiply(1000)));
         assertEquals("₥Đ0.001", symbolThree.format(Coin.valueOf(100)));
@@ -1081,7 +1081,7 @@ public class BtcFormatTest {
         assertEquals("1.0000", ThtFormat.getCoinInstance(US, 4).format(COIN));
         assertEquals("1.0000", coinFormat.format(COIN, 4));
 
-        final Coin justNot = COIN.subtract(SATOSHI);
+        final Coin justNot = COIN.subtract(NOTION);
         assertEquals("1", ThtFormat.getCoinInstance(US, 0).format(justNot));
         assertEquals("1", coinFormat.format(justNot, 0));
         assertEquals("1.0", ThtFormat.getCoinInstance(US, 1).format(justNot));
@@ -1108,7 +1108,7 @@ public class BtcFormatTest {
         assertEquals("1.0000", ThtFormat.getCoinInstance(US, 4).format(justNot));
         assertEquals("1.0000", coinFormat.format(justNot, 4));
 
-        final Coin slightlyMore = COIN.add(SATOSHI);
+        final Coin slightlyMore = COIN.add(NOTION);
         assertEquals("1", ThtFormat.getCoinInstance(US, 0).format(slightlyMore));
         assertEquals("1", coinFormat.format(slightlyMore, 0));
         assertEquals("1.0", ThtFormat.getCoinInstance(US, 1).format(slightlyMore));
@@ -1126,7 +1126,7 @@ public class BtcFormatTest {
         assertEquals("1.0000", ThtFormat.getCoinInstance(US, 4).format(slightlyMore));
         assertEquals("1.0000", coinFormat.format(slightlyMore, 4));
 
-        final Coin pivot = COIN.add(SATOSHI.multiply(5));
+        final Coin pivot = COIN.add(NOTION.multiply(5));
         assertEquals("1.00000005", ThtFormat.getCoinInstance(US, 8).format(pivot));
         assertEquals("1.00000005", coinFormat.format(pivot, 8));
         assertEquals("1.00000005", ThtFormat.getCoinInstance(US, 7, 1).format(pivot));
