@@ -64,6 +64,12 @@ public class MainNetParams extends AbstractThoughtNetParams {
         subsidyDecreaseBlockCount = CoinDefinition.subsidyDecreaseBlockCount;
         spendableCoinbaseDepth = CoinDefinition.spendableCoinbaseDepth;
         String genesisHash = genesisBlock.getHashAsString();
+
+
+	System.out.println(genesisBlock.toString());
+	byte[] gb = genesisBlock.bitcoinSerialize();
+        System.out.println(bytesToHex(gb));			
+
         checkState(genesisHash.equals(CoinDefinition.genesisHash),
                 genesisHash);
 
