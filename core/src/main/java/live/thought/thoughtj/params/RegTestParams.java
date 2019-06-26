@@ -47,8 +47,7 @@ public class RegTestParams extends TestNet2Params {
         nGovernanceMinQuorum = 1;
         nGovernanceFilterElements = 100;
 
-        powDGWHeight = 34140;
-        powKGWHeight = 15200;
+
         powAllowMinimumDifficulty = true;
         powNoRetargeting = true;
 

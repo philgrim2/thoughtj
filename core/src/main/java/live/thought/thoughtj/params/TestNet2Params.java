@@ -68,8 +68,6 @@ public class TestNet2Params extends AbstractThoughtNetParams {
         budgetPaymentsCycleBlocks = 50;
         budgetPaymentsWindowBlocks = 10;
 
-        powDGWHeight = 4001;
-        powKGWHeight = 4001;
         powAllowMinimumDifficulty = true;
     }
 

@@ -46,12 +46,15 @@ class Edge
 
 public class Cuckoo
 {
-  public static final int EDGEBITS  = 23;
-  public static final int NEDGES    = 1 << EDGEBITS;
-  public static final int NODEBITS  = EDGEBITS + 1;
-  public static final int NNODES    = 1 << NODEBITS;
-  public static final int EDGEMASK  = NEDGES - 1;
-  public static final int PROOFSIZE = 42;
+  
+  private int nEdges;
+  private int nodeBits;
+  private int nNodes;
+  private int edgeMask;
+  
+  // Defaults
+  private int edgeBits  = 29;
+  private int proofSize = 42;
 
   long                    k[]       = new long[4];
   SHA256d                 hasher    = new SHA256d(32);
@@ -67,8 +70,16 @@ public class Cuckoo
         | u8(p[i + 6]) << 48 | u8(p[i + 7]) << 56;
   }
 
-  public Cuckoo(byte[] header)
+  public Cuckoo(byte[] header, int graphSize, int proofSize)
   {
+    this.nodeBits = graphSize;
+    this.proofSize = proofSize;
+      
+    this.edgeBits  = nodeBits - 1;
+    this.nEdges    = 1 << edgeBits;
+    this.edgeMask  = nEdges - 1;
+    this.nNodes    = 1 << nodeBits;
+    
     byte[] hdrkey;
 
       hasher.update(header);
@@ -189,7 +200,7 @@ public class Cuckoo
   // generate edge in cuckoo graph
   public int sipnode(int nonce, int uorv)
   {
-    return (int) siphash24(2 * nonce + uorv) & EDGEMASK;
+    return (int) siphash24(2 * nonce + uorv) & edgeMask;
   }
 
   // generate edge in cuckoo graph
@@ -199,15 +210,15 @@ public class Cuckoo
   }
 
   // verify that (ascending) nonces, all less than easiness, form a cycle in graph
-  public Boolean verify(int[] nonces, int easiness)
+  public Boolean verify(int[] nonces)
   {
-    int us[] = new int[PROOFSIZE], vs[] = new int[PROOFSIZE];
+    int us[] = new int[proofSize], vs[] = new int[proofSize];
     int i = 0, n;
     int xor0 = 0;
     int xor1 = 0;
-    for (n = 0; n < PROOFSIZE; n++)
+    for (n = 0; n < proofSize; n++)
     {
-      if (nonces[n] >= easiness || (n != 0 && nonces[n] <= nonces[n - 1]))
+      if (nonces[n] >= nNodes || (n != 0 && nonces[n] <= nonces[n - 1]))
         return false;
       us[n] = sipnode(nonces[n], 0);
       vs[n] = sipnode(nonces[n], 1);
@@ -219,7 +230,7 @@ public class Cuckoo
     do
     { // follow cycle until we return to i==0; n edges left to visit
       int j = i;
-      for (int k = 0; k < PROOFSIZE; k++) // find unique other j with same vs[j]
+      for (int k = 0; k < proofSize; k++) // find unique other j with same vs[j]
         if (k != i && vs[k] == vs[i])
         {
           if (j != i)
@@ -229,7 +240,7 @@ public class Cuckoo
       if (j == i)
         return false;
       i = j;
-      for (int k = 0; k < PROOFSIZE; k++) // find unique other i with same us[i]
+      for (int k = 0; k < proofSize; k++) // find unique other i with same us[i]
         if (k != j && us[k] == us[j])
         {
           if (i != j)

@@ -100,8 +100,6 @@ public class TestNet3Params extends AbstractThoughtNetParams {
         nGovernanceMinQuorum = 1;
         nGovernanceFilterElements = 500;
 
-        powDGWHeight = 4002;
-        powKGWHeight = 4002;
         powAllowMinimumDifficulty = true;
         powNoRetargeting = false;
 
@@ -111,6 +109,12 @@ public class TestNet3Params extends AbstractThoughtNetParams {
         DIP0003BlockHeight = 300000;
         deterministicMasternodesEnabledHeight = 300000;
         deterministicMasternodesEnabled = true;
+        
+        maxCuckooTarget = new BigInteger("0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        cuckooHardForkBlockHeight = 44;
+        cuckooRequiredBlockHeight = 100;
+        midasStartHeight = 2;
+        midasValidHeight = 2;
     }
 
     private static TestNet3Params instance;

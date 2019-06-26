@@ -63,9 +63,6 @@ public class UnitTestParams extends AbstractThoughtNetParams {
         superblockStartBlock = 4200;
         superblockCycle = 24;
 
-        powDGWHeight = 34140;
-        powKGWHeight = 15200;
-
         instantSendConfirmationsRequired = MainNetParams.get().getInstantSendConfirmationsRequired();
         instantSendKeepLock = MainNetParams.get().getInstantSendKeepLock();
     }

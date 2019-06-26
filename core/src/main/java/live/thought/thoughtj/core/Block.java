@@ -22,6 +22,7 @@ import com.google.common.base.*;
 import com.google.common.collect.*;
 import com.hashengineering.crypto.X11;
 
+import live.thought.thoughtj.crypto.Cuckoo;
 import live.thought.thoughtj.script.*;
 
 import org.slf4j.*;
@@ -104,6 +105,8 @@ public class Block extends Message {
     private long time;
     private long difficultyTarget; // "nBits"
     private long nonce;
+    
+    private int[] cuckooSolution;
 
     // TODO: Get rid of all the direct accesses to this field. It's a long-since unnecessary holdover from the Dalvik days.
     /** If null, it means this object holds only the headers. */
@@ -130,6 +133,8 @@ public class Block extends Message {
         prevBlockHash = Sha256Hash.ZERO_HASH;
 
         length = HEADER_SIZE;
+        cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
+        Arrays.fill(cuckooSolution, 0);
     }
 
     /**
@@ -213,7 +218,12 @@ public class Block extends Message {
         this.transactions.addAll(transactions);
     }
 
-
+    public boolean isCuckooBlock()
+    {
+      return ((this.version | NetworkParameters.CUCKOO_VERSION_MASK) != 0);
+    }
+    
+    
     /**
      * <p>A utility method that calculates how much new Bitcoin would be created by the block at the given height.
      * The inflation of Bitcoin is predictable and drops roughly every 4 years (210,000 blocks). At the dawn of
@@ -376,6 +386,7 @@ public class Block extends Message {
             stream.write(payload, offset, HEADER_SIZE);
             return;
         }
+        
         // fall back to manual write
         Utils.uint32ToByteStreamLE(version, stream);
         stream.write(prevBlockHash.getReversedBytes());
@@ -383,6 +394,14 @@ public class Block extends Message {
         Utils.uint32ToByteStreamLE(time, stream);
         Utils.uint32ToByteStreamLE(difficultyTarget, stream);
         Utils.uint32ToByteStreamLE(nonce, stream);
+        
+    }
+    
+    private void writeCuckooSolution(OutputStream stream) throws IOException {
+      for (int i : cuckooSolution)
+      {
+        Utils.uint32ToByteStreamLE(i, stream);
+      } 
     }
 
     private void writeTransactions(OutputStream stream) throws IOException {
@@ -413,23 +432,24 @@ public class Block extends Message {
     @Override
     public byte[] bitcoinSerialize() {
         // we have completely cached byte array.
-        if (headerBytesValid && transactionBytesValid) {
-            Preconditions.checkNotNull(payload, "Bytes should never be null if headerBytesValid && transactionBytesValid");
-            if (length == payload.length) {
-                return payload;
-            } else {
-                // byte array is offset so copy out the correct range.
-                byte[] buf = new byte[length];
-                System.arraycopy(payload, offset, buf, 0, length);
-                return buf;
-            }
-        }
+        //if (headerBytesValid && transactionBytesValid) {
+        //    Preconditions.checkNotNull(payload, "Bytes should never be null if headerBytesValid && transactionBytesValid");
+        //    if (length == payload.length) {
+        //        return payload;
+        //    } else {
+        //        // byte array is offset so copy out the correct range.
+        //        byte[] buf = new byte[length];
+        //        System.arraycopy(payload, offset, buf, 0, length);
+        //        return buf;
+        //    }
+        // }
 
         // At least one of the two cacheable components is invalid
         // so fall back to stream write since we can't be sure of the length.
         ByteArrayOutputStream stream = new UnsafeByteArrayOutputStream(length == UNKNOWN_LENGTH ? HEADER_SIZE + guessTransactionsLength() : length);
         try {
             writeHeader(stream);
+            writeCuckooSolution(stream);
             writeTransactions(stream);
         } catch (IOException e) {
             // Cannot happen, we are serializing to a memory stream.
@@ -441,6 +461,7 @@ public class Block extends Message {
     protected void bitcoinSerializeToStream(OutputStream stream) throws IOException {
         writeHeader(stream);
         // We may only have enough data to write the header.
+        writeCuckooSolution(stream);
         writeTransactions(stream);
     }
 
@@ -497,9 +518,10 @@ public class Block extends Message {
      */
     private Sha256Hash calculateHash() {
         try {
-            ByteArrayOutputStream bos = new UnsafeByteArrayOutputStream(HEADER_SIZE);
+            ByteArrayOutputStream bos = new UnsafeByteArrayOutputStream(HEADER_SIZE + cuckooSolution.length * Integer.BYTES);
             writeHeader(bos);
-            return Sha256Hash.wrapReversed(X11.x11Digest(bos.toByteArray()));
+            writeCuckooSolution(bos);
+            return Sha256Hash.wrapReversed(Sha256Hash.hashTwice(bos.toByteArray()));
         } catch (IOException e) {
             throw new RuntimeException(e); // Cannot happen.
         }
@@ -563,6 +585,7 @@ public class Block extends Message {
         block.difficultyTarget = difficultyTarget;
         block.transactions = null;
         block.hash = getHash();
+        block.cuckooSolution = cuckooSolution;
     }
 
     /**
@@ -585,6 +608,12 @@ public class Block extends Message {
         s.append("   time: ").append(time).append(" (").append(Utils.dateTimeFormat(time * 1000)).append(")\n");
         s.append("   difficulty target (nBits): ").append(difficultyTarget).append("\n");
         s.append("   nonce: ").append(nonce).append("\n");
+        s.append("   cuckoo solution:").append("\n");
+        for (int i : cuckooSolution)
+        {
+          s.append("     ").append(String.format("%02d", i)).append(": ").append(cuckooSolution[i]).append("\n");
+        }
+          
         if (transactions != null && transactions.size() > 0) {
             s.append("   with ").append(transactions.size()).append(" transaction(s):\n");
             for (Transaction tx : transactions) {
@@ -604,6 +633,12 @@ public class Block extends Message {
     public void solve() {
         while (true) {
             try {
+                // TODO: Need to add cuckoo solver
+                if (this.isCuckooBlock())
+                {
+                  // Get a cuckoo solution
+                }
+              
                 // Is our proof of work valid yet?
                 if (checkProofOfWork(false))
                     return;
@@ -622,7 +657,7 @@ public class Block extends Message {
      */
     public BigInteger getDifficultyTargetAsInteger() throws VerificationException {
         BigInteger target = Utils.decodeCompactBits(difficultyTarget);
-        if (target.signum() <= 0 || target.compareTo(params.maxTarget) > 0)
+        if (target.signum() <= 0 || target.compareTo(params.maxCuckooTarget) > 0)
             throw new VerificationException("Difficulty target is bad: " + target.toString());
         return target;
     }
@@ -637,18 +672,58 @@ public class Block extends Message {
         //
         // To prevent this attack from being possible, elsewhere we check that the difficultyTarget
         // field is of the right value. This requires us to have the preceeding blocks.
+        
+        boolean retval = false;
+      
         BigInteger target = getDifficultyTargetAsInteger();
-        BigInteger h = getHash().toBigInteger();
-
-        if (h.compareTo(target) > 0) {
-            // Proof of work check failed!
-            if (throwException)
-                throw new VerificationException("Hash is higher than target: " + getHashAsString() + " vs "
-                        + target.toString(16));
-            else
-                return false;
+        BigInteger h = null;
+        if (this.isCuckooBlock())
+        {
+          ByteArrayOutputStream stream = new UnsafeByteArrayOutputStream(HEADER_SIZE);
+          try {
+              writeHeader(stream);
+          } catch (IOException e) {
+              // Cannot happen, we are serializing to a memory stream.
+          }
+          Cuckoo c = new Cuckoo(stream.toByteArray(), NetworkParameters.CUCKOO_GRAPH_SIZE, NetworkParameters.CUCKOO_PROOF_SIZE);
+          
+          if (c.verify(cuckooSolution))
+          {
+            StringBuilder sb = new StringBuilder();
+            for (int n = 0; n < cuckooSolution.length; n++)
+            {
+              sb.append(String.format("%08X", Integer.reverseBytes(cuckooSolution[n])));  
+            }
+            h = Sha256Hash.wrapReversed(Sha256Hash.hashTwice(sb.toString().getBytes())).toBigInteger();
+          }
+          else if (throwException)
+          {
+            throw new VerificationException("Cuckoo cycle not verified");
+          }
+          else
+          {
+            h = null;
+            retval = false;
+          }
+          
         }
-        return true;
+        else
+        {
+          h = getHash().toBigInteger();    
+        }
+        if (null != h && h.compareTo(target) > 0) {
+          // Proof of work check failed!
+          if (throwException)
+              throw new VerificationException("Hash is higher than target: " + getHashAsString() + " vs "
+                      + target.toString(16));
+          else
+              retval = false;
+        }
+        else
+        {
+          retval = true;
+        }
+        return retval;
     }
 
     private void checkTimestamp() throws VerificationException {
@@ -949,6 +1024,20 @@ public class Block extends Message {
         this.nonce = nonce;
         this.hash = null;
     }
+    
+    /** Gets the array of cuckoo nonces. */
+    public void setCuckooSolution(int[] solution)
+    {
+      unCacheHeader();
+      this.cuckooSolution = solution;
+      this.hash = null;
+    }
+    
+    public int[] getCuckooSolution() 
+    {
+      return this.cuckooSolution;  
+    }
+    
 
     /** Returns an immutable list of transactions held in this block, or null if this object represents just a header. */
     @Nullable

@@ -146,7 +146,17 @@ public abstract class NetworkParameters {
     public long getMasternodeMinimumConfirmations() { return masternodeMinimumConfirmations; }
 
 
+    // Thought extra parameters
+    protected BigInteger maxCuckooTarget;
+    protected int cuckooHardForkBlockHeight;
+    protected int cuckooRequiredBlockHeight;
+    protected int midasStartHeight;
+    protected int midasValidHeight;
 
+    public static final int  CUCKOO_PROOF_SIZE = 42;
+    public static final int  CUCKOO_GRAPH_SIZE = 24;
+    public static final long CUCKOO_VERSION_MASK = 0x04;
+    
     public String getSporkAddress() {
         return strSporkAddress;
     }
@@ -340,7 +350,7 @@ public abstract class NetworkParameters {
      *
      * @throws VerificationException if the block's difficulty is not correct.
      */
-    public abstract void checkDifficultyTransitions(StoredBlock storedPrev, Block next, final BlockStore blockStore) throws VerificationException, BlockStoreException;
+    public abstract void checkDifficulty(StoredBlock storedPrev, Block next, final BlockStore blockStore) throws VerificationException, BlockStoreException;
 
     /**
      * Returns true if the block height is either not a checkpoint, or is a checkpoint and the hash matches.
@@ -490,6 +500,11 @@ public abstract class NetworkParameters {
         return maxTarget;
     }
 
+    /** Maximum target represents the easiest allowable cuckoo proof of work. */
+    public BigInteger getMaxCuckooTarget() {
+        return maxCuckooTarget;
+    }
+    
     /**
      * The key used to sign {@link live.thought.thoughtj.core.AlertMessage}s. You can use {@link live.thought.thoughtj.core.ECKey#verify(byte[], byte[], byte[])} to verify
      * signatures using it.

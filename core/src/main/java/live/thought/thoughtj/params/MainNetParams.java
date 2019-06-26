@@ -93,25 +93,6 @@ public class MainNetParams extends AbstractThoughtNetParams {
             checkpoints.put( 248000, Sha256Hash.wrap("006b52a5d017eb2590d25750c46542b2de43f7a3fdc6394d95db458cbcb35f85"));
             checkpoints.put( 388285, Sha256Hash.wrap("00e0d38562e2f576c3c501f4768b282824a7f9489778537c49e3b5492923f5c5"));
 
-/*
-
-        dnsSeeds = new String[] {
-                "seed.bitcoin.sipa.be",         // Pieter Wuille
-                "dnsseed.bluematt.me",          // Matt Corallo
-                "dnsseed.bitcoin.dashjr.org",   // Luke Dashjr
-                "seed.bitcoinstats.com",        // Chris Decker
-                "seed.bitnodes.io",             // Addy Yeow
-                "bitseed.xf2.org",              // Jeff Garzik
-                "seed.bitcoin.jonasschnelli.ch",// Jonas Schnelli
-                "bitcoin.bloqseeds.net",        // Bloq
-        };
-        httpSeeds = new HttpDiscovery.Details[] {
-                // Andreas Schildbach
-                new HttpDiscovery.Details(
-                        ECKey.fromPublicOnly(Utils.HEX.decode("0238746c59d46d5408bf8b1d0af5740fe1a6e1703fcb56b2953f0b965c740d256f")),
-                        URI.create("http://httpseed.bitcoin.schildbach.de/peers")
-                )
-        };                  */
 
         addrSeeds = new int[] {
 
@@ -133,8 +114,6 @@ public class MainNetParams extends AbstractThoughtNetParams {
         nGovernanceMinQuorum = 40;
         nGovernanceFilterElements = 20000;
 
-        powDGWHeight = 34140;
-        powKGWHeight = 15200;
         powAllowMinimumDifficulty = false;
         powNoRetargeting = false;
 
@@ -144,6 +123,12 @@ public class MainNetParams extends AbstractThoughtNetParams {
         DIP0003BlockHeight = 1028160;
         deterministicMasternodesEnabledHeight = 1047200;
         deterministicMasternodesEnabled = true;
+        
+        maxCuckooTarget = new BigInteger("0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        cuckooHardForkBlockHeight = 246500;
+        cuckooRequiredBlockHeight = 248800;
+        midasStartHeight = 337;
+        midasValidHeight = 512;
     }
 
     private static MainNetParams instance;
@@ -157,47 +142,6 @@ public class MainNetParams extends AbstractThoughtNetParams {
     @Override
     public String getPaymentProtocolId() {
         return PAYMENT_PROTOCOL_ID_MAINNET;
-    }
-
-    @Override
-    protected void verifyDifficulty(StoredBlock storedPrev, Block nextBlock, BigInteger newTarget) {
-
-        long newTargetCompact = calculateNextDifficulty(storedPrev, nextBlock, newTarget);
-        long receivedTargetCompact = nextBlock.getDifficultyTarget();
-        int height = storedPrev.getHeight() + 1;
-
-        if (/*height >= powDGWHeight &&*/ height <= 68589) {
-            double n1 = convertBitsToDouble(receivedTargetCompact);
-            double n2 = convertBitsToDouble(newTargetCompact);
-
-            if (java.lang.Math.abs(n1 - n2) > n1 * 0.5 )
-                throw new VerificationException("Network provided difficulty bits do not match what was calculated: " +
-                    Long.toHexString(newTargetCompact) + " vs " + Long.toHexString(receivedTargetCompact));
-        } else {
-            if (newTargetCompact != receivedTargetCompact)
-                throw new VerificationException("Network provided difficulty bits do not match what was calculated: " +
-                        Long.toHexString(newTargetCompact) + " vs " + Long.toHexString(receivedTargetCompact));
-        }
-    }
-
-    static double convertBitsToDouble(long nBits) {
-        long nShift = (nBits >> 24) & 0xff;
-
-        double dDiff =
-                (double)0x0000ffff / (double)(nBits & 0x00ffffff);
-
-        while (nShift < 29)
-        {
-            dDiff *= 256.0;
-            nShift++;
-        }
-        while (nShift > 29)
-        {
-            dDiff /= 256.0;
-            nShift--;
-        }
-
-        return dDiff;
     }
     
     
