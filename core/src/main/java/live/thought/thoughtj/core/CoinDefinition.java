@@ -101,7 +101,7 @@ public class CoinDefinition {
     static public long genesisBlockNonce = (2074325340);
     static public String genesisHash = "00000000917e049641189c33d6b1275155e89b7b498b3b4f16d488f60afe513b"; //chainparams.cpp: hashGenesisBlock
     static public String genesisMerkleRoot = "483a98bfa350f319e52eceaa79585fab8e5ac49c6235f720915e9c671a03c2d6";
-    static public int genesisBlockValue = 50;       // Not sure where this is
+    static public int genesisBlockValue = 1618;       // Not sure where this is
 
 
     // TxOut from chainparams.cpp.  Not sure yet what to use for TxIn.  Block explorer doesn't show one.
