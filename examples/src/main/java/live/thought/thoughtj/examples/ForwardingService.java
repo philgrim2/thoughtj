@@ -17,28 +17,33 @@
 
 package live.thought.thoughtj.examples;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.io.File;
+
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 
-import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.core.Address;
+import live.thought.thoughtj.core.Coin;
+import live.thought.thoughtj.core.Context;
+import live.thought.thoughtj.core.InsufficientMoneyException;
+import live.thought.thoughtj.core.MasternodeManager;
+import live.thought.thoughtj.core.MasternodeSync;
+import live.thought.thoughtj.core.MasternodeSyncListener;
+import live.thought.thoughtj.core.NetworkParameters;
+import live.thought.thoughtj.core.Transaction;
+import live.thought.thoughtj.core.TransactionConfidence;
 import live.thought.thoughtj.crypto.KeyCrypterException;
-import live.thought.thoughtj.kits.LevelDBWalletAppKit;
 import live.thought.thoughtj.kits.WalletAppKit;
 import live.thought.thoughtj.params.MainNetParams;
 import live.thought.thoughtj.params.RegTestParams;
 import live.thought.thoughtj.params.TestNet3Params;
 import live.thought.thoughtj.store.FlatDB;
-import live.thought.thoughtj.store.MasternodeDB;
 import live.thought.thoughtj.utils.BriefLogFormatter;
-import live.thought.thoughtj.utils.Pair;
 import live.thought.thoughtj.wallet.Wallet;
 import live.thought.thoughtj.wallet.listeners.WalletCoinsReceivedEventListener;
-
-import java.io.File;
-import java.util.ArrayList;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * ForwardingService demonstrates basic usage of the library. It sits on the network and when it receives coins, simply

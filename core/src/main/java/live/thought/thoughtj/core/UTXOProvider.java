@@ -22,7 +22,7 @@ import java.util.List;
  * A UTXOProvider encapsulates functionality for returning unspent transaction outputs,
  * for use by the wallet or other code that crafts spends.
  *
- * <p>A {@link live.thought.thoughtj.store.FullPrunedBlockStore} is an internal implementation within bitcoinj.</p>
+ * <p>A {@link live.thought.thoughtj.store.FullPrunedBlockStore} is an internal implementation within thoughtj.</p>
  */
 public interface UTXOProvider {
 

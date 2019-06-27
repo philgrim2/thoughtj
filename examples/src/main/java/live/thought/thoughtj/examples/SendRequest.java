@@ -65,9 +65,9 @@ public class SendRequest {
             System.out.println("Not enough coins in your wallet. Missing " + e.missing.getValue() + " satoshis are missing (including fees)");
             System.out.println("Send money to: " + kit.wallet().currentReceiveAddress().toString());
 
-            // Bitcoinj allows you to define a BalanceFuture to execute a callback once your wallet has a certain balance.
+            // Thoughtj allows you to define a BalanceFuture to execute a callback once your wallet has a certain balance.
             // Here we wait until the we have enough balance and display a notice.
-            // Bitcoinj is using the ListenableFutures of the Guava library. Have a look here for more information: https://github.com/google/guava/wiki/ListenableFutureExplained
+            // Thoughtj is using the ListenableFutures of the Guava library. Have a look here for more information: https://github.com/google/guava/wiki/ListenableFutureExplained
             ListenableFuture<Coin> balanceFuture = kit.wallet().getBalanceFuture(value, BalanceType.AVAILABLE);
             FutureCallback<Coin> callback = new FutureCallback<Coin>() {
                 @Override

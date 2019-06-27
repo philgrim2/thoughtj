@@ -19789,7 +19789,7 @@ public final class Protos {
       "ncryptionType\022\017\n\013UNENCRYPTED\020\001\022\030\n\024ENCRYP" +
       "TED_SCRYPT_AES\020\002\"R\n\014ExchangeRate\022\022\n\ncoin" +
       "_value\030\001 \002(\003\022\022\n\nfiat_value\030\002 \002(\003\022\032\n\022fiat" +
-      "_currency_code\030\003 \002(\tB\035\n\023org.bitcoinj.wal" +
+      "_currency_code\030\003 \002(\tB\035\n\023live.thought.thoughtj.wal" +
       "letB\006Protos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =

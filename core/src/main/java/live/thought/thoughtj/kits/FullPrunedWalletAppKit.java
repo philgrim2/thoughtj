@@ -62,8 +62,8 @@ import static com.google.common.base.Preconditions.checkState;
  * access the objects this class creates until startup is complete.</p>
  *
  * <p>The asynchronous design of this class may seem puzzling (just use {@link #awaitRunning()} if you don't want that).
- * It is to make it easier to fit bitcoinj into GUI apps, which require a high degree of responsiveness on their main
- * thread which handles all the animation and user interaction. Even when blockingStart is false, initializing bitcoinj
+ * It is to make it easier to fit thoughtj into GUI apps, which require a high degree of responsiveness on their main
+ * thread which handles all the animation and user interaction. Even when blockingStart is false, initializing thoughtj
  * means doing potentially blocking file IO, generating keys and other potentially intensive operations. By running it
  * on a background thread, there's no risk of accidentally causing UI lag.</p>
  *

@@ -1762,7 +1762,7 @@ public final class ServerState {
       "nsactionUnlockTimeSecs\030\003 \002(\004\022\033\n\023contract" +
       "Transaction\030\004 \002(\014\022\024\n\014clientOutput\030\005 \001(\014\022" +
       "\r\n\005myKey\030\006 \002(\014\022\027\n\014majorVersion\030\007 \001(\r:\0011\022" +
-      "\021\n\tclientKey\030\010 \001(\014B.\n\037org.bitcoinj.proto",
+      "\021\n\tclientKey\030\010 \001(\014B.\n\037live.thought.thoughtj.proto",
       "cols.channelsB\013ServerState"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =

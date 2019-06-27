@@ -57,7 +57,7 @@ public class BuildCheckpoints {
     private static NetworkParameters params;
 
     public static void main(String[] args) throws Exception {
-        BriefLogFormatter.initWithSilentBitcoinJ();
+        BriefLogFormatter.initWithSilentThoughtJ();
 
         OptionParser parser = new OptionParser();
         parser.accepts("help");
@@ -108,7 +108,7 @@ public class BuildCheckpoints {
         // Sorted map of block height to StoredBlock object.
         final TreeMap<Integer, StoredBlock> checkpoints = new TreeMap<Integer, StoredBlock>();
 
-        // Configure bitcoinj to fetch only headers, not save them to disk, connect to a local fully synced/validated
+        // Configure thoughtj to fetch only headers, not save them to disk, connect to a local fully synced/validated
         // node and to save block headers that are on interval boundaries, as long as they are <1 month old.
 
         Context.getOrCreate(params).initDash(true, false);

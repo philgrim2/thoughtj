@@ -47,13 +47,13 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
 
 /**
  * A collection of various utility methods that are helpful for working with the Bitcoin protocol.
- * To enable debug logging from the library, run with -Dbitcoinj.logging=true on your command line.
+ * To enable debug logging from the library, run with -Dthoughtj.logging=true on your command line.
  */
 public class Utils {
 
     /** The string that prefixes all text messages signed using Bitcoin keys. */
-    public static final String BITCOIN_SIGNED_MESSAGE_HEADER = "DarkCoin Signed Message:\n";  //Dash use DarkCoin here
-    public static final byte[] BITCOIN_SIGNED_MESSAGE_HEADER_BYTES = BITCOIN_SIGNED_MESSAGE_HEADER.getBytes(Charsets.UTF_8);
+    public static final String THOUGHT_SIGNED_MESSAGE_HEADER = "Thought Signed Message:\n";  //Dash use DarkCoin here
+    public static final byte[] THOUGHT_SIGNED_MESSAGE_HEADER_BYTES = THOUGHT_SIGNED_MESSAGE_HEADER.getBytes(Charsets.UTF_8);
 
     private static final Joiner SPACE_JOINER = Joiner.on(" ");
 
@@ -550,8 +550,8 @@ public class Utils {
     public static byte[] formatMessageForSigning(String message) {
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bos.write(BITCOIN_SIGNED_MESSAGE_HEADER_BYTES.length);
-            bos.write(BITCOIN_SIGNED_MESSAGE_HEADER_BYTES);
+            bos.write(THOUGHT_SIGNED_MESSAGE_HEADER_BYTES.length);
+            bos.write(THOUGHT_SIGNED_MESSAGE_HEADER_BYTES);
             byte[] messageBytes = message.getBytes(Charsets.UTF_8);
             VarInt size = new VarInt(messageBytes.length);
             bos.write(size.encode());
@@ -565,8 +565,8 @@ public class Utils {
     public static byte[] formatMessageForSigning(byte[] message) {
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bos.write(BITCOIN_SIGNED_MESSAGE_HEADER_BYTES.length);
-            bos.write(BITCOIN_SIGNED_MESSAGE_HEADER_BYTES);
+            bos.write(THOUGHT_SIGNED_MESSAGE_HEADER_BYTES.length);
+            bos.write(THOUGHT_SIGNED_MESSAGE_HEADER_BYTES);
             byte[] messageBytes = message;
             VarInt size = new VarInt(messageBytes.length);
             bos.write(size.encode());

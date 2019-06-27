@@ -32,8 +32,8 @@ The output will be two data structures with the peers in binary format:
    ...
    }
 
-These should be pasted into `core/src/main/java/org/bitcoinj/params/MainNetParams.java'
-and `core/src/main/java/org/bitcoinj/params/TestNet3Params.java`.
+These should be pasted into `core/src/main/java/org/thoughtj/params/MainNetParams.java'
+and `core/src/main/java/org/thoughtj/params/TestNet3Params.java`.
 '''
 
 from base64 import b32decode

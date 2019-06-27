@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * <p>An object that can carry around and possibly serialize a map of strings to immutable byte arrays. Tagged objects
  * can have data stored on them that might be useful for an application developer. For example a wallet can store tags,
- * and thus this would be a reasonable place to put any important data items that the bitcoinj API does not allow for:
+ * and thus this would be a reasonable place to put any important data items that the thoughtj API does not allow for:
  * things like exchange rates at the time a transaction was made would currently fall into this category. Of course,
  * it helps interop and other developers if you introduce a real type safe API for a new feature instead of using this
  * so please consider that path, if you find yourself tempted to store tags!</p>

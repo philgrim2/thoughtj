@@ -35,7 +35,7 @@ public class TestFeeLevel {
     private static WalletAppKit kit;
 
     public static void main(String[] args) throws Exception {
-        BriefLogFormatter.initWithSilentBitcoinJ();
+        BriefLogFormatter.initWithSilentThoughtJ();
         if (args.length == 0) {
             System.err.println("Specify the fee level to test in satoshis as the first argument.");
             return;

@@ -210,7 +210,7 @@ public class PostgresFullPrunedBlockStore extends DatabaseFullPrunedBlockStore {
                 findS.close();
 
                 // Postgres insert-or-updates are very complex (and finnicky).  This level of transaction isolation
-                // seems to work for bitcoinj
+                // seems to work for thoughtj
                 PreparedStatement s =
                         conn.get().prepareStatement(getUpdateUndoableBlocksSQL());
                 s.setBytes(3, hashBytes);

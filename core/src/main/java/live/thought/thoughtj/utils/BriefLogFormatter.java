@@ -49,9 +49,9 @@ public class BriefLogFormatter extends Formatter {
         logger.log(Level.FINE, "test");
     }
 
-    public static void initWithSilentBitcoinJ() {
+    public static void initWithSilentThoughtJ() {
         init();
-        Logger.getLogger("org.bitcoinj").setLevel(Level.SEVERE);
+        Logger.getLogger("live.thought.thoughtj").setLevel(Level.SEVERE);
     }
 
     @Override

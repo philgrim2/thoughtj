@@ -57,7 +57,7 @@ public class DarkSendSigner {
     {
         //ECKey ecKey = ECKey.fromPublicOnly(key.getBytes());
         try {
-            byte dataToHash [] = (Utils.BITCOIN_SIGNED_MESSAGE_HEADER_BYTES+strMessage).getBytes(Charsets.UTF_8);
+            byte dataToHash [] = (Utils.THOUGHT_SIGNED_MESSAGE_HEADER_BYTES+strMessage).getBytes(Charsets.UTF_8);
 
 
             ECKey.ECDSASignature signature = key.sign(Sha256Hash.twiceOf(dataToHash));

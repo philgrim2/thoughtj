@@ -53,16 +53,16 @@ import java.util.*;
 import java.util.concurrent.atomic.*;
 
 /**
- * A tool for comparing the blocks which are accepted/rejected by dashd/dashj
- * It is designed to run as a testnet-in-a-box network between a single dashd node and dashj
+ * A tool for comparing the blocks which are accepted/rejected by thoughtd/thoughtj
+ * It is designed to run as a testnet-in-a-box network between a single thoughtd node and thoughtj
  * It is not an automated unit-test because it requires a bit more set-up...read comments below
  */
-public class BitcoindComparisonTool {
-    private static final Logger log = LoggerFactory.getLogger(BitcoindComparisonTool.class);
+public class ThoughtdComparisonTool {
+    private static final Logger log = LoggerFactory.getLogger(ThoughtdComparisonTool.class);
 
     private static NetworkParameters params;
     private static FullPrunedBlockChain chain;
-    private static Sha256Hash bitcoindChainHead;
+    private static Sha256Hash thoughtdChainHead;
     private static volatile InventoryMessage mostRecentInv = null;
 
     static class BlockWrapper {
@@ -71,7 +71,7 @@ public class BitcoindComparisonTool {
 
     public static void main(String[] args) throws Exception {
         BriefLogFormatter.init();
-        System.out.println("USAGE: dashjBlockStoreLocation runExpensiveTests(1/0) [port=18444]");
+        System.out.println("USAGE: thoughtdBlockStoreLocation runExpensiveTests(1/0) [port=11618]");
         boolean runExpensiveTests = args.length > 1 && Integer.parseInt(args[1]) == 1;
 
         params = RegTestParams.get();
@@ -86,7 +86,7 @@ public class BitcoindComparisonTool {
         final Iterator<Block> blocks = new BlockFileLoader(params, Arrays.asList(blockFile));
 
         try {
-            H2FullPrunedBlockStore store = new H2FullPrunedBlockStore(params, args.length > 0 ? args[0] : "BitcoindComparisonTool", blockList.maximumReorgBlockCount);
+            H2FullPrunedBlockStore store = new H2FullPrunedBlockStore(params, args.length > 0 ? args[0] : "ThoughtdComparisonTool", blockList.maximumReorgBlockCount);
             store.resetStore();
             //store = new MemoryFullPrunedBlockStore(context, blockList.maximumReorgBlockCount);
             chain = new FullPrunedBlockChain(params, store);
@@ -144,12 +144,12 @@ public class BitcoindComparisonTool {
                     if (!((HeadersMessage) m).getBlockHeaders().isEmpty()) {
                         Block b = Iterables.getLast(((HeadersMessage) m).getBlockHeaders());
                         log.info("Got header from bitcoind " + b.getHashAsString());
-                        bitcoindChainHead = b.getHash();
+                        thoughtdChainHead = b.getHash();
                     } else
-                        log.info("Got empty header message from bitcoind");
+                        log.info("Got empty header message from thoughtd");
                     return null;
                 } else if (m instanceof Block) {
-                    log.error("bitcoind sent us a block it already had, make sure bitcoind has no blocks!");
+                    log.error("thoughtd sent us a block it already had, make sure thoughtd has no blocks!");
                     System.exit(1);
                 } else if (m instanceof GetDataMessage) {
                     for (InventoryItem item : ((GetDataMessage) m).items)
@@ -220,7 +220,7 @@ public class BitcoindComparisonTool {
             }
         });
         
-        bitcoindChainHead = params.getGenesisBlock().getHash();
+        thoughtdChainHead = params.getGenesisBlock().getHash();
         
         // bitcoind MUST be on localhost or we will get banned as a DoSer
         new NioClient(new InetSocketAddress(InetAddress.getByName("127.0.0.1"), args.length > 2 ? Integer.parseInt(args[2]) : params.getPort()), bitcoind, 1000);
@@ -298,31 +298,31 @@ public class BitcoindComparisonTool {
                 for (int i = 0; !shouldntRequest && !blocksRequested.contains(nextBlock.getHash()); i++) {
                     int SLEEP_TIME = 1;
                     if (i % 1000/SLEEP_TIME == 1000/SLEEP_TIME - 1)
-                        log.error("bitcoind still hasn't requested block " + block.ruleName + " with hash " + nextBlock.getHash());
+                        log.error("thoughtd still hasn't requested block " + block.ruleName + " with hash " + nextBlock.getHash());
                     Thread.sleep(SLEEP_TIME);
                     if (i > 60000/SLEEP_TIME) {
-                        log.error("bitcoind failed to request block " + block.ruleName);
+                        log.error("thoughtd failed to request block " + block.ruleName);
                         System.exit(1);
                     }
                 }
                 if (shouldntRequest) {
                     Thread.sleep(100);
                     if (blocksRequested.contains(nextBlock.getHash())) {
-                        log.error("ERROR: bitcoind re-requested block " + block.ruleName + " with hash " + nextBlock.getHash());
+                        log.error("ERROR: thoughtd re-requested block " + block.ruleName + " with hash " + nextBlock.getHash());
                         rulesSinceFirstFail++;
                     }
                 }
                 // If the block throws, we may want to get bitcoind to request the same block again
                 if (block.throwsException)
                     blocksRequested.remove(nextBlock.getHash());
-                //bitcoind.sendMessage(nextBlock);
+                //thoughtd.sendMessage(nextBlock);
                 locator.clear();
-                locator.add(bitcoindChainHead);
+                locator.add(thoughtdChainHead);
                 bitcoind.sendMessage(new GetHeadersMessage(params, locator, hashTo));
                 bitcoind.ping().get();
-                if (!chain.getChainHead().getHeader().getHash().equals(bitcoindChainHead)) {
+                if (!chain.getChainHead().getHeader().getHash().equals(thoughtdChainHead)) {
                     rulesSinceFirstFail++;
-                    log.error("ERROR: bitcoind and bitcoinj acceptance differs on block \"" + block.ruleName + "\"");
+                    log.error("ERROR: thoughtd and thoughtj acceptance differs on block \"" + block.ruleName + "\"");
                 }
                 if (block.sendOnce)
                     preloadedBlocks.remove(nextBlock.getHash());
@@ -332,10 +332,10 @@ public class BitcoindComparisonTool {
                 bitcoind.sendMessage(message);
                 bitcoind.ping().get();
                 if (mostRecentInv == null && !((MemoryPoolState) rule).mempool.isEmpty()) {
-                    log.error("ERROR: bitcoind had an empty mempool, but we expected some transactions on rule " + rule.ruleName);
+                    log.error("ERROR: thoughtd had an empty mempool, but we expected some transactions on rule " + rule.ruleName);
                     rulesSinceFirstFail++;
                 } else if (mostRecentInv != null && ((MemoryPoolState) rule).mempool.isEmpty()) {
-                    log.error("ERROR: bitcoind had a non-empty mempool, but we expected an empty one on rule " + rule.ruleName);
+                    log.error("ERROR: thoughtd had a non-empty mempool, but we expected an empty one on rule " + rule.ruleName);
                     rulesSinceFirstFail++;
                 } else if (mostRecentInv != null) {
                     Set<InventoryItem> originalRuleSet = new HashSet<InventoryItem>(((MemoryPoolState)rule).mempool);
