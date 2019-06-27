@@ -110,7 +110,7 @@ public class TestNet3Params extends AbstractThoughtNetParams {
         deterministicMasternodesEnabledHeight = 300000;
         deterministicMasternodesEnabled = true;
         
-        maxCuckooTarget = new BigInteger("0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        maxCuckooTarget = new BigInteger("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 16);
         cuckooHardForkBlockHeight = 44;
         cuckooRequiredBlockHeight = 100;
         midasStartHeight = 2;
