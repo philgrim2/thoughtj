@@ -144,6 +144,7 @@ public class Block extends Message {
     @Deprecated
     public Block(NetworkParameters params, byte[] payloadBytes) throws ProtocolException {
         super(params, payloadBytes, 0, params.getDefaultSerializer(), payloadBytes.length);
+        cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
     }
 
     /**
@@ -158,6 +159,7 @@ public class Block extends Message {
     public Block(NetworkParameters params, byte[] payloadBytes, MessageSerializer serializer, int length)
             throws ProtocolException {
         super(params, payloadBytes, 0, serializer, length);
+        cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
     }
 
     /**
@@ -173,6 +175,7 @@ public class Block extends Message {
     public Block(NetworkParameters params, byte[] payloadBytes, int offset, MessageSerializer serializer, int length)
             throws ProtocolException {
         super(params, payloadBytes, offset, serializer, length);
+        cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
     }
 
     /**
@@ -192,6 +195,7 @@ public class Block extends Message {
             throws ProtocolException {
         // TODO: Keep the parent
         super(params, payloadBytes, offset, serializer, length);
+        cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
     }
 
     /**
@@ -216,6 +220,7 @@ public class Block extends Message {
         this.nonce = nonce;
         this.transactions = new LinkedList<Transaction>();
         this.transactions.addAll(transactions);
+        cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
     }
 
     public boolean isCuckooBlock()
