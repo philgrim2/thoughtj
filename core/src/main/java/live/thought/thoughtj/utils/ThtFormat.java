@@ -496,11 +496,11 @@ public abstract class ThtFormat extends Format {
      */
 
     /** The conventional international currency code for bitcoins: "BTC" */
-    private static final String COIN_CODE = "DASH";
+    private static final String COIN_CODE = "THT";
     /** The default currency symbols for bitcoins */
-    private static final String COIN_SYMBOL = "Đ"; //U+0110, formerly "฿"
+    private static final String COIN_SYMBOL = "T"; //U+0110, formerly "฿"
     /** An alternative currency symbol to use in locales where the default symbol is used for the national currency. */
-    protected static final String COIN_SYMBOL_ALT = "Ḏ"; //U+1E0E, formerly "Ƀ"
+    protected static final String COIN_SYMBOL_ALT = "T"; //U+1E0E, formerly "Ƀ"
 
     protected final DecimalFormat numberFormat; // warning: mutable
     protected final int minimumFractionDigits;

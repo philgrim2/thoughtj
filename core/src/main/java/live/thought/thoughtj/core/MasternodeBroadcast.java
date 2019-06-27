@@ -293,7 +293,7 @@ public class MasternodeBroadcast extends Masternode {
             }
 
             if (err == COLLATERAL_INVALID_AMOUNT) {
-                log.info("masternode--CMasternodeBroadcast::CheckOutpoint -- Masternode UTXO should have 1000 DASH, masternode={}", info.outpoint.toStringShort());
+                log.info("masternode--CMasternodeBroadcast::CheckOutpoint -- Masternode UTXO should have 314,000 THT, masternode={}", info.outpoint.toStringShort());
                 return false;
             }
 
@@ -325,7 +325,7 @@ public class MasternodeBroadcast extends Masternode {
 
         //TODO: can we do a better job at getting the transaction and the block?
         // verify that sig time is legit in past
-        // should be at least not earlier than block when 1000 DASH tx got nMasternodeMinimumConfirmations
+        // should be at least not earlier than block when 314000 THT tx got nMasternodeMinimumConfirmations
         /*uint256 hashBlock = uint256();
         CTransaction tx2;
         GetTransaction(vin.prevout.hash, tx2, Params().GetConsensus(), hashBlock, true);
@@ -333,7 +333,7 @@ public class MasternodeBroadcast extends Masternode {
             LOCK(cs_main);
             BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
             if (mi != mapBlockIndex.end() && (*mi).second) {
-                CBlockIndex* pMNIndex = (*mi).second; // block for 1000 DASH tx -> 1 confirmation
+                CBlockIndex* pMNIndex = (*mi).second; // block for 314000 THT tx -> 1 confirmation
                 CBlockIndex* pConfIndex = chainActive[pMNIndex->nHeight + params.getMasternodeMinimumConfirmations() - 1]; // block where tx got nMasternodeMinimumConfirmations
                 if(pConfIndex->GetBlockTime() > sigTime) {
                     log.info("CMasternodeBroadcast::CheckOutpoint -- Bad sigTime {} ({} conf block is at {}) for Masternode {} {}",

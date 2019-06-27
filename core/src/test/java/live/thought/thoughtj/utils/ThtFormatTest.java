@@ -44,7 +44,7 @@ import static live.thought.thoughtj.utils.ThtFixedFormat.REPEATING_TRIPLETS;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public class BtcFormatTest {
+public class ThtFormatTest {
 
     @Parameters
     public static Set<Locale[]> data() {
@@ -55,37 +55,37 @@ public class BtcFormatTest {
         return localeSet;
     }
 
-    public BtcFormatTest(Locale defaultLocale) {
+    public ThtFormatTest(Locale defaultLocale) {
         Locale.setDefault(defaultLocale);
     }
  
     @Test
     public void prefixTest() { // prefix b/c symbol is prefixed
         ThtFormat usFormat = ThtFormat.getSymbolInstance(Locale.US);
-        assertEquals("Đ1.00", usFormat.format(COIN));
-        assertEquals("Đ1.01", usFormat.format(101000000));
-        assertEquals("₥Đ0.01", usFormat.format(1000));
-        assertEquals("₥Đ1,011.00", usFormat.format(101100000));
-        assertEquals("₥Đ1,000.01", usFormat.format(100001000));
-        assertEquals("µĐ1,000,001.00", usFormat.format(100000100));
-        assertEquals("µĐ1,000,000.10", usFormat.format(100000010));
-        assertEquals("µĐ1,000,000.01", usFormat.format(100000001));
-        assertEquals("µĐ1.00", usFormat.format(100));
-        assertEquals("µĐ0.10", usFormat.format(10));
-        assertEquals("µĐ0.01", usFormat.format(1));
+        assertEquals("T1.00", usFormat.format(COIN));
+        assertEquals("T1.01", usFormat.format(101000000));
+        assertEquals("₥T0.01", usFormat.format(1000));
+        assertEquals("₥T1,011.00", usFormat.format(101100000));
+        assertEquals("₥T1,000.01", usFormat.format(100001000));
+        assertEquals("µT1,000,001.00", usFormat.format(100000100));
+        assertEquals("µT1,000,000.10", usFormat.format(100000010));
+        assertEquals("µT1,000,000.01", usFormat.format(100000001));
+        assertEquals("µT1.00", usFormat.format(100));
+        assertEquals("µT0.10", usFormat.format(10));
+        assertEquals("µT0.01", usFormat.format(1));
     }
 
     @Test
     public void suffixTest() {
         ThtFormat deFormat = ThtFormat.getSymbolInstance(Locale.GERMANY);
         // int
-        assertEquals("1,00 Đ", deFormat.format(100000000));
-        assertEquals("1,01 Đ", deFormat.format(101000000));
-        assertEquals("1.011,00 ₥Đ", deFormat.format(101100000));
-        assertEquals("1.000,01 ₥Đ", deFormat.format(100001000));
-        assertEquals("1.000.001,00 µĐ", deFormat.format(100000100));
-        assertEquals("1.000.000,10 µĐ", deFormat.format(100000010));
-        assertEquals("1.000.000,01 µĐ", deFormat.format(100000001));
+        assertEquals("1,00 T", deFormat.format(100000000));
+        assertEquals("1,01 T", deFormat.format(101000000));
+        assertEquals("1.011,00 ₥T", deFormat.format(101100000));
+        assertEquals("1.000,01 ₥T", deFormat.format(100001000));
+        assertEquals("1.000.001,00 µT", deFormat.format(100000100));
+        assertEquals("1.000.000,10 µT", deFormat.format(100000010));
+        assertEquals("1.000.000,01 µT", deFormat.format(100000001));
     }
 
     @Test
@@ -107,47 +107,47 @@ public class BtcFormatTest {
         for (int i = 0; i < locales.length; ++i) {
             String cs = ((DecimalFormat)NumberFormat.getCurrencyInstance(locales[i])).
                         getDecimalFormatSymbols().getCurrencySymbol();
-            if (cs.contains("Đ")) {
+            if (cs.contains("T")) {
                 ThtFormat bf = ThtFormat.getSymbolInstance(locales[i]);
                 String coin = bf.format(COIN);
-                assertTrue(coin.contains("Ḏ"));
-                assertFalse(coin.contains("Đ"));
+                assertTrue(coin.contains("T"));
+                assertFalse(coin.contains("T"));
                 String milli = bf.format(valueOf(10000));
-                assertTrue(milli.contains("₥Ḏ"));
-                assertFalse(milli.contains("Đ"));
+                assertTrue(milli.contains("₥T"));
+                assertFalse(milli.contains("T"));
                 String micro = bf.format(valueOf(100));
-                assertTrue(micro.contains("µḎ"));
-                assertFalse(micro.contains("Đ"));
+                assertTrue(micro.contains("µT"));
+                assertFalse(micro.contains("T"));
                 ThtFormat ff = ThtFormat.builder().scale(0).locale(locales[i]).pattern("¤#.#").build();
-                assertEquals("Ḏ", ((ThtFixedFormat)ff).symbol());
-                assertEquals("Ḏ", ff.coinSymbol());
+                assertEquals("T", ((ThtFixedFormat)ff).symbol());
+                assertEquals("T", ff.coinSymbol());
                 coin = ff.format(COIN);
-                assertTrue(coin.contains("Ḏ"));
-                assertFalse(coin.contains("Đ"));
+                assertTrue(coin.contains("T"));
+                assertFalse(coin.contains("T"));
                 ThtFormat mlff = ThtFormat.builder().scale(3).locale(locales[i]).pattern("¤#.#").build();
-                assertEquals("₥Ḏ", ((ThtFixedFormat)mlff).symbol());
-                assertEquals("Ḏ", mlff.coinSymbol());
+                assertEquals("₥T", ((ThtFixedFormat)mlff).symbol());
+                assertEquals("T", mlff.coinSymbol());
                 milli = mlff.format(valueOf(10000));
-                assertTrue(milli.contains("₥Ḏ"));
-                assertFalse(milli.contains("Đ"));
+                assertTrue(milli.contains("₥T"));
+                assertFalse(milli.contains("T"));
                 ThtFormat mcff = ThtFormat.builder().scale(6).locale(locales[i]).pattern("¤#.#").build();
-                assertEquals("µḎ", ((ThtFixedFormat)mcff).symbol());
-                assertEquals("Ḏ", mcff.coinSymbol());
+                assertEquals("µT", ((ThtFixedFormat)mcff).symbol());
+                assertEquals("T", mcff.coinSymbol());
                 micro = mcff.format(valueOf(100));
-                assertTrue(micro.contains("µḎ"));
-                assertFalse(micro.contains("Đ"));
+                assertTrue(micro.contains("µT"));
+                assertFalse(micro.contains("T"));
             }
-            if (cs.contains("Ḏ")) {  // NB: We don't know of any such existing locale, but check anyway.
+            if (cs.contains("T")) {  // NB: We don't know of any such existing locale, but check anyway.
                 ThtFormat bf = ThtFormat.getInstance(locales[i]);
                 String coin = bf.format(COIN);
-                assertTrue(coin.contains("Đ"));
-                assertFalse(coin.contains("Ḏ"));
+                assertTrue(coin.contains("T"));
+                assertFalse(coin.contains("T"));
                 String milli = bf.format(valueOf(10000));
-                assertTrue(milli.contains("₥Đ"));
-                assertFalse(milli.contains("Ḏ"));
+                assertTrue(milli.contains("₥T"));
+                assertFalse(milli.contains("T"));
                 String micro = bf.format(valueOf(100));
-                assertTrue(micro.contains("µĐ"));
-                assertFalse(micro.contains("Ḏ"));
+                assertTrue(micro.contains("µT"));
+                assertFalse(micro.contains("T"));
             }
         }
     }
@@ -157,26 +157,26 @@ public class BtcFormatTest {
         ThtFormat usFormat = ThtFormat.getSymbolInstance(Locale.US);
         // longs are tested above
         // Coin
-        assertEquals("µĐ1,000,000.01", usFormat.format(COIN.add(valueOf(1))));
+        assertEquals("µT1,000,000.01", usFormat.format(COIN.add(valueOf(1))));
         // Integer
-        assertEquals("µĐ21,474,836.47" ,usFormat.format(Integer.MAX_VALUE));
-        assertEquals("(µĐ21,474,836.48)" ,usFormat.format(Integer.MIN_VALUE));
+        assertEquals("µT21,474,836.47" ,usFormat.format(Integer.MAX_VALUE));
+        assertEquals("(µT21,474,836.48)" ,usFormat.format(Integer.MIN_VALUE));
         // Long
-        assertEquals("µĐ92,233,720,368,547,758.07" ,usFormat.format(Long.MAX_VALUE));
-        assertEquals("(µĐ92,233,720,368,547,758.08)" ,usFormat.format(Long.MIN_VALUE));
+        assertEquals("µT92,233,720,368,547,758.07" ,usFormat.format(Long.MAX_VALUE));
+        assertEquals("(µT92,233,720,368,547,758.08)" ,usFormat.format(Long.MIN_VALUE));
         // BigInteger
-        assertEquals("µĐ0.10" ,usFormat.format(java.math.BigInteger.TEN));
-        assertEquals("Đ0.00" ,usFormat.format(java.math.BigInteger.ZERO));
+        assertEquals("µT0.10" ,usFormat.format(java.math.BigInteger.TEN));
+        assertEquals("T0.00" ,usFormat.format(java.math.BigInteger.ZERO));
         // BigDecimal
-        assertEquals("Đ1.00" ,usFormat.format(java.math.BigDecimal.ONE));
-        assertEquals("Đ0.00" ,usFormat.format(java.math.BigDecimal.ZERO));
+        assertEquals("T1.00" ,usFormat.format(java.math.BigDecimal.ONE));
+        assertEquals("T0.00" ,usFormat.format(java.math.BigDecimal.ZERO));
         // use of Double not encouraged but no way to stop user from converting one to BigDecimal
         assertEquals(
-            "Đ179,769,313,486,231,570,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000.00",
+            "T179,769,313,486,231,570,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000.00",
             usFormat.format(java.math.BigDecimal.valueOf(Double.MAX_VALUE)));
-        assertEquals("Đ0.00", usFormat.format(java.math.BigDecimal.valueOf(Double.MIN_VALUE)));
+        assertEquals("T0.00", usFormat.format(java.math.BigDecimal.valueOf(Double.MIN_VALUE)));
         assertEquals(
-            "Đ340,282,346,638,528,860,000,000,000,000,000,000,000.00",
+            "T340,282,346,638,528,860,000,000,000,000,000,000,000.00",
             usFormat.format(java.math.BigDecimal.valueOf(Float.MAX_VALUE)));
         // Bad type
         try {
@@ -246,7 +246,7 @@ public class BtcFormatTest {
 
         char c;
         i = ThtFormat.getCodeInstance(Locale.US).formatToCharacterIterator(new BigDecimal("0.19246362747414458"));
-        // formatted as "µDASH 192,463.63"
+        // formatted as "µTHT 192,463.63"
         assertEquals(0, i.getBeginIndex());
         assertEquals(16, i.getEndIndex());
         int n = 0;
@@ -291,85 +291,85 @@ public class BtcFormatTest {
         ThtFormat us = ThtFormat.getSymbolInstance(Locale.US);
         ThtFormat usCoded = ThtFormat.getCodeInstance(Locale.US);
         // Coins
-        assertEquals(valueOf(200000000), us.parseObject("DASH2"));
-        assertEquals(valueOf(200000000), us.parseObject("XDC2"));
-        assertEquals(valueOf(200000000), us.parseObject("Đ2"));
-        assertEquals(valueOf(200000000), us.parseObject("Ḏ2"));
+        assertEquals(valueOf(200000000), us.parseObject("THT2"));
+        assertEquals(valueOf(200000000), us.parseObject("THT2"));
+        assertEquals(valueOf(200000000), us.parseObject("T2"));
+        assertEquals(valueOf(200000000), us.parseObject("T2"));
         assertEquals(valueOf(200000000), us.parseObject("2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("DASH 2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("XDC 2"));
-        assertEquals(valueOf(200000000), us.parseObject("Đ2.0"));
-        assertEquals(valueOf(200000000), us.parseObject("Ḏ2.0"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("THT 2"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("THT 2"));
+        assertEquals(valueOf(200000000), us.parseObject("T2.0"));
+        assertEquals(valueOf(200000000), us.parseObject("T2.0"));
         assertEquals(valueOf(200000000), us.parseObject("2.0"));
-        assertEquals(valueOf(200000000), us.parseObject("DASH2.0"));
-        assertEquals(valueOf(200000000), us.parseObject("XDC2.0"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("Đ 2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("Ḏ 2"));
+        assertEquals(valueOf(200000000), us.parseObject("THT2.0"));
+        assertEquals(valueOf(200000000), us.parseObject("THT2.0"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("T 2"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("T 2"));
         assertEquals(valueOf(200000000), usCoded.parseObject(" 2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("DASH 2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("XDC 2"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("THT 2"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("THT 2"));
         assertEquals(valueOf(202222420000000L), us.parseObject("2,022,224.20"));
-        assertEquals(valueOf(202222420000000L), us.parseObject("Đ2,022,224.20"));
-        assertEquals(valueOf(202222420000000L), us.parseObject("Ḏ2,022,224.20"));
-        assertEquals(valueOf(202222420000000L), us.parseObject("DASH2,022,224.20"));
-        assertEquals(valueOf(202222420000000L), us.parseObject("XDC2,022,224.20"));
+        assertEquals(valueOf(202222420000000L), us.parseObject("T2,022,224.20"));
+        assertEquals(valueOf(202222420000000L), us.parseObject("T2,022,224.20"));
+        assertEquals(valueOf(202222420000000L), us.parseObject("THT2,022,224.20"));
+        assertEquals(valueOf(202222420000000L), us.parseObject("THT2,022,224.20"));
         assertEquals(valueOf(220200000000L), us.parseObject("2,202.0"));
         assertEquals(valueOf(2100000000000000L), us.parseObject("21000000.00000000"));
         // MilliCoins
-        assertEquals(valueOf(200000), usCoded.parseObject("mDASH 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("mXDC 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("mĐ 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("mḎ 2"));
-        assertEquals(valueOf(200000), us.parseObject("mDASH2"));
-        assertEquals(valueOf(200000), us.parseObject("mXDC2"));
-        assertEquals(valueOf(200000), us.parseObject("₥Đ2"));
-        assertEquals(valueOf(200000), us.parseObject("₥Ḏ2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("mTHT 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("mTHT 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("mT 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("mT 2"));
+        assertEquals(valueOf(200000), us.parseObject("mTHT2"));
+        assertEquals(valueOf(200000), us.parseObject("mTHT2"));
+        assertEquals(valueOf(200000), us.parseObject("₥T2"));
+        assertEquals(valueOf(200000), us.parseObject("₥T2"));
         assertEquals(valueOf(200000), us.parseObject("₥2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥DASH 2.00"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥XDC 2.00"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥DASH 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥XDC 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥Đ 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥Ḏ 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥THT 2.00"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥THT 2.00"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥THT 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥THT 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥T 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥T 2"));
         assertEquals(valueOf(200000), usCoded.parseObject("₥ 2"));
-        assertEquals(valueOf(202222400000L), us.parseObject("₥Đ2,022,224"));
-        assertEquals(valueOf(202222420000L), us.parseObject("₥Ḏ2,022,224.20"));
-        assertEquals(valueOf(202222400000L), us.parseObject("mĐ2,022,224"));
-        assertEquals(valueOf(202222420000L), us.parseObject("mḎ2,022,224.20"));
-        assertEquals(valueOf(202222400000L), us.parseObject("₥DASH2,022,224"));
-        assertEquals(valueOf(202222400000L), us.parseObject("₥XDC2,022,224"));
-        assertEquals(valueOf(202222400000L), us.parseObject("mDASH2,022,224"));
-        assertEquals(valueOf(202222400000L), us.parseObject("mXDC2,022,224"));
+        assertEquals(valueOf(202222400000L), us.parseObject("₥T2,022,224"));
+        assertEquals(valueOf(202222420000L), us.parseObject("₥T2,022,224.20"));
+        assertEquals(valueOf(202222400000L), us.parseObject("mT2,022,224"));
+        assertEquals(valueOf(202222420000L), us.parseObject("mT2,022,224.20"));
+        assertEquals(valueOf(202222400000L), us.parseObject("₥THT2,022,224"));
+        assertEquals(valueOf(202222400000L), us.parseObject("₥THT2,022,224"));
+        assertEquals(valueOf(202222400000L), us.parseObject("mTHT2,022,224"));
+        assertEquals(valueOf(202222400000L), us.parseObject("mTHT2,022,224"));
         assertEquals(valueOf(202222420000L), us.parseObject("₥2,022,224.20"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥Đ 2,022,224"));
-        assertEquals(valueOf(202222420000L), usCoded.parseObject("₥Ḏ 2,022,224.20"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("mĐ 2,022,224"));
-        assertEquals(valueOf(202222420000L), usCoded.parseObject("mḎ 2,022,224.20"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥DASH 2,022,224"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥XDC 2,022,224"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("mDASH 2,022,224"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("mXDC 2,022,224"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥T 2,022,224"));
+        assertEquals(valueOf(202222420000L), usCoded.parseObject("₥T 2,022,224.20"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("mT 2,022,224"));
+        assertEquals(valueOf(202222420000L), usCoded.parseObject("mT 2,022,224.20"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥THT 2,022,224"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥THT 2,022,224"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("mTHT 2,022,224"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("mTHT 2,022,224"));
         assertEquals(valueOf(202222420000L), usCoded.parseObject("₥ 2,022,224.20"));
         // Microcoins
-        assertEquals(valueOf(435), us.parseObject("µĐ4.35"));
-        assertEquals(valueOf(435), us.parseObject("uḎ4.35"));
-        assertEquals(valueOf(435), us.parseObject("uĐ4.35"));
-        assertEquals(valueOf(435), us.parseObject("µḎ4.35"));
-        assertEquals(valueOf(435), us.parseObject("uDASH4.35"));
-        assertEquals(valueOf(435), us.parseObject("uXDC4.35"));
-        assertEquals(valueOf(435), us.parseObject("µDASH4.35"));
-        assertEquals(valueOf(435), us.parseObject("µXDC4.35"));
-        assertEquals(valueOf(435), usCoded.parseObject("uDASH 4.35"));
-        assertEquals(valueOf(435), usCoded.parseObject("uXDC 4.35"));
-        assertEquals(valueOf(435), usCoded.parseObject("µDASH 4.35"));
-        assertEquals(valueOf(435), usCoded.parseObject("µXDC 4.35"));
+        assertEquals(valueOf(435), us.parseObject("µT4.35"));
+        assertEquals(valueOf(435), us.parseObject("uT4.35"));
+        assertEquals(valueOf(435), us.parseObject("uT4.35"));
+        assertEquals(valueOf(435), us.parseObject("µT4.35"));
+        assertEquals(valueOf(435), us.parseObject("uTHT4.35"));
+        assertEquals(valueOf(435), us.parseObject("uTHT4.35"));
+        assertEquals(valueOf(435), us.parseObject("µTHT4.35"));
+        assertEquals(valueOf(435), us.parseObject("µTHT4.35"));
+        assertEquals(valueOf(435), usCoded.parseObject("uTHT 4.35"));
+        assertEquals(valueOf(435), usCoded.parseObject("uTHT 4.35"));
+        assertEquals(valueOf(435), usCoded.parseObject("µTHT 4.35"));
+        assertEquals(valueOf(435), usCoded.parseObject("µTHT 4.35"));
         // fractional satoshi; round up
-        assertEquals(valueOf(435), us.parseObject("uDASH4.345"));
-        assertEquals(valueOf(435), us.parseObject("uXDC4.345"));
+        assertEquals(valueOf(435), us.parseObject("uTHT4.345"));
+        assertEquals(valueOf(435), us.parseObject("uTHT4.345"));
         // negative with mu symbol
-        assertEquals(valueOf(-1), usCoded.parseObject("(µĐ 0.01)"));
-        assertEquals(valueOf(-10), us.parseObject("(µDASH0.100)"));
-        assertEquals(valueOf(-10), us.parseObject("(µXDC0.100)"));
+        assertEquals(valueOf(-1), usCoded.parseObject("(µT 0.01)"));
+        assertEquals(valueOf(-10), us.parseObject("(µTHT0.100)"));
+        assertEquals(valueOf(-10), us.parseObject("(µTHT0.100)"));
 
         // Same thing with addition of custom code, symbol
         us = ThtFormat.builder().locale(US).style(SYMBOL).symbol("£").code("XYZ").build();
@@ -377,117 +377,117 @@ public class BtcFormatTest {
                             pattern("¤ #,##0.00").build();
         // Coins
         assertEquals(valueOf(200000000), us.parseObject("XYZ2"));
-        assertEquals(valueOf(200000000), us.parseObject("DASH2"));
-        assertEquals(valueOf(200000000), us.parseObject("XDC2"));
+        assertEquals(valueOf(200000000), us.parseObject("THT2"));
+        assertEquals(valueOf(200000000), us.parseObject("THT2"));
         assertEquals(valueOf(200000000), us.parseObject("£2"));
-        assertEquals(valueOf(200000000), us.parseObject("Đ2"));
-        assertEquals(valueOf(200000000), us.parseObject("Ḏ2"));
+        assertEquals(valueOf(200000000), us.parseObject("T2"));
+        assertEquals(valueOf(200000000), us.parseObject("T|T2"));
         assertEquals(valueOf(200000000), us.parseObject("2"));
         assertEquals(valueOf(200000000), usCoded.parseObject("XYZ 2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("DASH 2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("XDC 2"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("THT 2"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("THT 2"));
         assertEquals(valueOf(200000000), us.parseObject("£2.0"));
-        assertEquals(valueOf(200000000), us.parseObject("Đ2.0"));
-        assertEquals(valueOf(200000000), us.parseObject("Ḏ2.0"));
+        assertEquals(valueOf(200000000), us.parseObject("T2.0"));
+        assertEquals(valueOf(200000000), us.parseObject("T2.0"));
         assertEquals(valueOf(200000000), us.parseObject("2.0"));
         assertEquals(valueOf(200000000), us.parseObject("XYZ2.0"));
-        assertEquals(valueOf(200000000), us.parseObject("DASH2.0"));
-        assertEquals(valueOf(200000000), us.parseObject("XDC2.0"));
+        assertEquals(valueOf(200000000), us.parseObject("THT2.0"));
+        assertEquals(valueOf(200000000), us.parseObject("THT2.0"));
         assertEquals(valueOf(200000000), usCoded.parseObject("£ 2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("Đ 2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("Ḏ 2"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("T 2"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("T 2"));
         assertEquals(valueOf(200000000), usCoded.parseObject(" 2"));
         assertEquals(valueOf(200000000), usCoded.parseObject("XYZ 2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("DASH 2"));
-        assertEquals(valueOf(200000000), usCoded.parseObject("XDC 2"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("THT 2"));
+        assertEquals(valueOf(200000000), usCoded.parseObject("THT 2"));
         assertEquals(valueOf(202222420000000L), us.parseObject("2,022,224.20"));
         assertEquals(valueOf(202222420000000L), us.parseObject("£2,022,224.20"));
-        assertEquals(valueOf(202222420000000L), us.parseObject("Đ2,022,224.20"));
-        assertEquals(valueOf(202222420000000L), us.parseObject("Ḏ2,022,224.20"));
+        assertEquals(valueOf(202222420000000L), us.parseObject("T2,022,224.20"));
+        assertEquals(valueOf(202222420000000L), us.parseObject("T2,022,224.20"));
         assertEquals(valueOf(202222420000000L), us.parseObject("XYZ2,022,224.20"));
-        assertEquals(valueOf(202222420000000L), us.parseObject("DASH2,022,224.20"));
-        assertEquals(valueOf(202222420000000L), us.parseObject("XDC2,022,224.20"));
+        assertEquals(valueOf(202222420000000L), us.parseObject("THT2,022,224.20"));
+        assertEquals(valueOf(202222420000000L), us.parseObject("THT2,022,224.20"));
         assertEquals(valueOf(220200000000L), us.parseObject("2,202.0"));
         assertEquals(valueOf(2100000000000000L), us.parseObject("21000000.00000000"));
         // MilliCoins
         assertEquals(valueOf(200000), usCoded.parseObject("mXYZ 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("mDASH 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("mXDC 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("mTHT 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("mTHT 2"));
         assertEquals(valueOf(200000), usCoded.parseObject("m£ 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("mĐ 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("mḎ 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("mT 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("mT 2"));
         assertEquals(valueOf(200000), us.parseObject("mXYZ2"));
-        assertEquals(valueOf(200000), us.parseObject("mDASH2"));
-        assertEquals(valueOf(200000), us.parseObject("mXDC2"));
+        assertEquals(valueOf(200000), us.parseObject("mTHT2"));
+        assertEquals(valueOf(200000), us.parseObject("mTHT2"));
         assertEquals(valueOf(200000), us.parseObject("₥£2"));
-        assertEquals(valueOf(200000), us.parseObject("₥Đ2"));
-        assertEquals(valueOf(200000), us.parseObject("₥Ḏ2"));
+        assertEquals(valueOf(200000), us.parseObject("₥T2"));
+        assertEquals(valueOf(200000), us.parseObject("₥T2"));
         assertEquals(valueOf(200000), us.parseObject("₥2"));
         assertEquals(valueOf(200000), usCoded.parseObject("₥XYZ 2.00"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥DASH 2.00"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥XDC 2.00"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥THT 2.00"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥THT 2.00"));
         assertEquals(valueOf(200000), usCoded.parseObject("₥XYZ 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥DASH 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥XDC 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥THT 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥THT 2"));
         assertEquals(valueOf(200000), usCoded.parseObject("₥£ 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥Đ 2"));
-        assertEquals(valueOf(200000), usCoded.parseObject("₥Ḏ 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥T 2"));
+        assertEquals(valueOf(200000), usCoded.parseObject("₥T 2"));
         assertEquals(valueOf(200000), usCoded.parseObject("₥ 2"));
         assertEquals(valueOf(202222400000L), us.parseObject("₥£2,022,224"));
-        assertEquals(valueOf(202222400000L), us.parseObject("₥Đ2,022,224"));
-        assertEquals(valueOf(202222420000L), us.parseObject("₥Ḏ2,022,224.20"));
+        assertEquals(valueOf(202222400000L), us.parseObject("₥T2,022,224"));
+        assertEquals(valueOf(202222420000L), us.parseObject("₥T2,022,224.20"));
         assertEquals(valueOf(202222400000L), us.parseObject("m£2,022,224"));
-        assertEquals(valueOf(202222400000L), us.parseObject("mĐ2,022,224"));
-        assertEquals(valueOf(202222420000L), us.parseObject("mḎ2,022,224.20"));
+        assertEquals(valueOf(202222400000L), us.parseObject("mT2,022,224"));
+        assertEquals(valueOf(202222420000L), us.parseObject("mT2,022,224.20"));
         assertEquals(valueOf(202222400000L), us.parseObject("₥XYZ2,022,224"));
-        assertEquals(valueOf(202222400000L), us.parseObject("₥DASH2,022,224"));
-        assertEquals(valueOf(202222400000L), us.parseObject("₥XDC2,022,224"));
+        assertEquals(valueOf(202222400000L), us.parseObject("₥THT2,022,224"));
+        assertEquals(valueOf(202222400000L), us.parseObject("₥THT2,022,224"));
         assertEquals(valueOf(202222400000L), us.parseObject("mXYZ2,022,224"));
-        assertEquals(valueOf(202222400000L), us.parseObject("mDASH2,022,224"));
-        assertEquals(valueOf(202222400000L), us.parseObject("mXDC2,022,224"));
+        assertEquals(valueOf(202222400000L), us.parseObject("mTHT2,022,224"));
+        assertEquals(valueOf(202222400000L), us.parseObject("mTHT2,022,224"));
         assertEquals(valueOf(202222420000L), us.parseObject("₥2,022,224.20"));
         assertEquals(valueOf(202222400000L), usCoded.parseObject("₥£ 2,022,224"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥Đ 2,022,224"));
-        assertEquals(valueOf(202222420000L), usCoded.parseObject("₥Ḏ 2,022,224.20"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥T 2,022,224"));
+        assertEquals(valueOf(202222420000L), usCoded.parseObject("₥T 2,022,224.20"));
         assertEquals(valueOf(202222400000L), usCoded.parseObject("m£ 2,022,224"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("mĐ 2,022,224"));
-        assertEquals(valueOf(202222420000L), usCoded.parseObject("mḎ 2,022,224.20"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("mT 2,022,224"));
+        assertEquals(valueOf(202222420000L), usCoded.parseObject("mT 2,022,224.20"));
         assertEquals(valueOf(202222400000L), usCoded.parseObject("₥XYZ 2,022,224"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥DASH 2,022,224"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥XDC 2,022,224"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥THT 2,022,224"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("₥THT 2,022,224"));
         assertEquals(valueOf(202222400000L), usCoded.parseObject("mXYZ 2,022,224"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("mDASH 2,022,224"));
-        assertEquals(valueOf(202222400000L), usCoded.parseObject("mXDC 2,022,224"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("mTHT 2,022,224"));
+        assertEquals(valueOf(202222400000L), usCoded.parseObject("mTHT 2,022,224"));
         assertEquals(valueOf(202222420000L), usCoded.parseObject("₥ 2,022,224.20"));
         // Microcoins
         assertEquals(valueOf(435), us.parseObject("µ£4.35"));
-        assertEquals(valueOf(435), us.parseObject("µĐ4.35"));
-        assertEquals(valueOf(435), us.parseObject("uḎ4.35"));
+        assertEquals(valueOf(435), us.parseObject("µT4.35"));
+        assertEquals(valueOf(435), us.parseObject("uT4.35"));
         assertEquals(valueOf(435), us.parseObject("u£4.35"));
-        assertEquals(valueOf(435), us.parseObject("uĐ4.35"));
-        assertEquals(valueOf(435), us.parseObject("µḎ4.35"));
+        assertEquals(valueOf(435), us.parseObject("uT4.35"));
+        assertEquals(valueOf(435), us.parseObject("µT4.35"));
         assertEquals(valueOf(435), us.parseObject("uXYZ4.35"));
-        assertEquals(valueOf(435), us.parseObject("uDASH4.35"));
-        assertEquals(valueOf(435), us.parseObject("uXDC4.35"));
+        assertEquals(valueOf(435), us.parseObject("uTHT4.35"));
+        assertEquals(valueOf(435), us.parseObject("uTHT4.35"));
         assertEquals(valueOf(435), us.parseObject("µXYZ4.35"));
-        assertEquals(valueOf(435), us.parseObject("µDASH4.35"));
-        assertEquals(valueOf(435), us.parseObject("µXDC4.35"));
+        assertEquals(valueOf(435), us.parseObject("µTHT4.35"));
+        assertEquals(valueOf(435), us.parseObject("µTHT4.35"));
         assertEquals(valueOf(435), usCoded.parseObject("uXYZ 4.35"));
-        assertEquals(valueOf(435), usCoded.parseObject("uDASH 4.35"));
-        assertEquals(valueOf(435), usCoded.parseObject("uXDC 4.35"));
+        assertEquals(valueOf(435), usCoded.parseObject("uTHT 4.35"));
+        assertEquals(valueOf(435), usCoded.parseObject("uTHT 4.35"));
         assertEquals(valueOf(435), usCoded.parseObject("µXYZ 4.35"));
-        assertEquals(valueOf(435), usCoded.parseObject("µDASH 4.35"));
-        assertEquals(valueOf(435), usCoded.parseObject("µXDC 4.35"));
+        assertEquals(valueOf(435), usCoded.parseObject("µTHT 4.35"));
+        assertEquals(valueOf(435), usCoded.parseObject("µTHT 4.35"));
         // fractional satoshi; round up
         assertEquals(valueOf(435), us.parseObject("uXYZ4.345"));
-        assertEquals(valueOf(435), us.parseObject("uDASH4.345"));
-        assertEquals(valueOf(435), us.parseObject("uXDC4.345"));
+        assertEquals(valueOf(435), us.parseObject("uTHT4.345"));
+        assertEquals(valueOf(435), us.parseObject("uTHT4.345"));
         // negative with mu symbol
         assertEquals(valueOf(-1), usCoded.parseObject("µ£ -0.01"));
-        assertEquals(valueOf(-1), usCoded.parseObject("µĐ -0.01"));
+        assertEquals(valueOf(-1), usCoded.parseObject("µT -0.01"));
         assertEquals(valueOf(-10), us.parseObject("(µXYZ0.100)"));
-        assertEquals(valueOf(-10), us.parseObject("(µDASH0.100)"));
-        assertEquals(valueOf(-10), us.parseObject("(µXDC0.100)"));
+        assertEquals(valueOf(-10), us.parseObject("(µTHT0.100)"));
+        assertEquals(valueOf(-10), us.parseObject("(µTHT0.100)"));
 
         // parse() method as opposed to parseObject
         try {
@@ -501,118 +501,118 @@ public class BtcFormatTest {
         ThtFormat cp = ThtFormat.getCodeInstance(Locale.US);
         ThtFormat sp = ThtFormat.getSymbolInstance(Locale.US);
         // coin
-        assertEquals(parseCoin("1"), cp.parseObject("DASH 1.00"));
-        assertEquals(parseCoin("1"), sp.parseObject("DASH1.00"));
-        assertEquals(parseCoin("1"), cp.parseObject("Đ 1.00"));
-        assertEquals(parseCoin("1"), sp.parseObject("Đ1.00"));
+        assertEquals(parseCoin("1"), cp.parseObject("THT 1.00"));
+        assertEquals(parseCoin("1"), sp.parseObject("THT1.00"));
+        assertEquals(parseCoin("1"), cp.parseObject("T 1.00"));
+        assertEquals(parseCoin("1"), sp.parseObject("T1.00"));
         assertEquals(parseCoin("1"), cp.parseObject("D⃦ 1.00"));
         assertEquals(parseCoin("1"), sp.parseObject("D⃦1.00"));
-        assertEquals(parseCoin("1"), cp.parseObject("Ḏ 1.00"));
-        assertEquals(parseCoin("1"), sp.parseObject("Ḏ1.00"));
+        assertEquals(parseCoin("1"), cp.parseObject("T 1.00"));
+        assertEquals(parseCoin("1"), sp.parseObject("T1.00"));
         // milli
-        assertEquals(parseCoin("0.001"), cp.parseObject("mDASH 1.00"));
-        assertEquals(parseCoin("0.001"), sp.parseObject("mDASH1.00"));
-        assertEquals(parseCoin("0.001"), cp.parseObject("mĐ 1.00"));
-        assertEquals(parseCoin("0.001"), sp.parseObject("mĐ1.00"));
+        assertEquals(parseCoin("0.001"), cp.parseObject("mTHT 1.00"));
+        assertEquals(parseCoin("0.001"), sp.parseObject("mTHT1.00"));
+        assertEquals(parseCoin("0.001"), cp.parseObject("mT 1.00"));
+        assertEquals(parseCoin("0.001"), sp.parseObject("mT1.00"));
         assertEquals(parseCoin("0.001"), cp.parseObject("mD⃦ 1.00"));
         assertEquals(parseCoin("0.001"), sp.parseObject("mD⃦1.00"));
-        assertEquals(parseCoin("0.001"), cp.parseObject("mḎ 1.00"));
-        assertEquals(parseCoin("0.001"), sp.parseObject("mḎ1.00"));
-        assertEquals(parseCoin("0.001"), cp.parseObject("₥DASH 1.00"));
-        assertEquals(parseCoin("0.001"), sp.parseObject("₥DASH1.00"));
-        assertEquals(parseCoin("0.001"), cp.parseObject("₥Đ 1.00"));
-        assertEquals(parseCoin("0.001"), sp.parseObject("₥Đ1.00"));
+        assertEquals(parseCoin("0.001"), cp.parseObject("mT 1.00"));
+        assertEquals(parseCoin("0.001"), sp.parseObject("mT1.00"));
+        assertEquals(parseCoin("0.001"), cp.parseObject("₥THT 1.00"));
+        assertEquals(parseCoin("0.001"), sp.parseObject("₥THT1.00"));
+        assertEquals(parseCoin("0.001"), cp.parseObject("₥T 1.00"));
+        assertEquals(parseCoin("0.001"), sp.parseObject("₥T1.00"));
         assertEquals(parseCoin("0.001"), cp.parseObject("₥D⃦ 1.00"));
         assertEquals(parseCoin("0.001"), sp.parseObject("₥D⃦1.00"));
-        assertEquals(parseCoin("0.001"), cp.parseObject("₥Ḏ 1.00"));
-        assertEquals(parseCoin("0.001"), sp.parseObject("₥Ḏ1.00"));
+        assertEquals(parseCoin("0.001"), cp.parseObject("₥T 1.00"));
+        assertEquals(parseCoin("0.001"), sp.parseObject("₥T1.00"));
         // micro
-        assertEquals(parseCoin("0.000001"), cp.parseObject("uDASH 1.00"));
-        assertEquals(parseCoin("0.000001"), sp.parseObject("uDASH1.00"));
-        assertEquals(parseCoin("0.000001"), cp.parseObject("uĐ 1.00"));
-        assertEquals(parseCoin("0.000001"), sp.parseObject("uĐ1.00"));
+        assertEquals(parseCoin("0.000001"), cp.parseObject("uTHT 1.00"));
+        assertEquals(parseCoin("0.000001"), sp.parseObject("uTHT1.00"));
+        assertEquals(parseCoin("0.000001"), cp.parseObject("uT 1.00"));
+        assertEquals(parseCoin("0.000001"), sp.parseObject("uT1.00"));
         assertEquals(parseCoin("0.000001"), cp.parseObject("uD⃦ 1.00"));
         assertEquals(parseCoin("0.000001"), sp.parseObject("uD⃦1.00"));
-        assertEquals(parseCoin("0.000001"), cp.parseObject("uḎ 1.00"));
-        assertEquals(parseCoin("0.000001"), sp.parseObject("uḎ1.00"));
-        assertEquals(parseCoin("0.000001"), cp.parseObject("µDASH 1.00"));
-        assertEquals(parseCoin("0.000001"), sp.parseObject("µDASH1.00"));
-        assertEquals(parseCoin("0.000001"), cp.parseObject("µĐ 1.00"));
-        assertEquals(parseCoin("0.000001"), sp.parseObject("µĐ1.00"));
+        assertEquals(parseCoin("0.000001"), cp.parseObject("uT 1.00"));
+        assertEquals(parseCoin("0.000001"), sp.parseObject("uT1.00"));
+        assertEquals(parseCoin("0.000001"), cp.parseObject("µTHT 1.00"));
+        assertEquals(parseCoin("0.000001"), sp.parseObject("µTHT1.00"));
+        assertEquals(parseCoin("0.000001"), cp.parseObject("µT 1.00"));
+        assertEquals(parseCoin("0.000001"), sp.parseObject("µT1.00"));
         assertEquals(parseCoin("0.000001"), cp.parseObject("µD⃦ 1.00"));
         assertEquals(parseCoin("0.000001"), sp.parseObject("µD⃦1.00"));
-        assertEquals(parseCoin("0.000001"), cp.parseObject("µḎ 1.00"));
-        assertEquals(parseCoin("0.000001"), sp.parseObject("µḎ1.00"));
+        assertEquals(parseCoin("0.000001"), cp.parseObject("µT 1.00"));
+        assertEquals(parseCoin("0.000001"), sp.parseObject("µT1.00"));
         // satoshi
-        assertEquals(parseCoin("0.00000001"), cp.parseObject("uDASH 0.01"));
-        assertEquals(parseCoin("0.00000001"), sp.parseObject("uDASH0.01"));
-        assertEquals(parseCoin("0.00000001"), cp.parseObject("uĐ 0.01"));
-        assertEquals(parseCoin("0.00000001"), sp.parseObject("uĐ0.01"));
+        assertEquals(parseCoin("0.00000001"), cp.parseObject("uTHT 0.01"));
+        assertEquals(parseCoin("0.00000001"), sp.parseObject("uTHT0.01"));
+        assertEquals(parseCoin("0.00000001"), cp.parseObject("uT 0.01"));
+        assertEquals(parseCoin("0.00000001"), sp.parseObject("uT0.01"));
         assertEquals(parseCoin("0.00000001"), cp.parseObject("uD⃦ 0.01"));
         assertEquals(parseCoin("0.00000001"), sp.parseObject("uD⃦0.01"));
-        assertEquals(parseCoin("0.00000001"), cp.parseObject("uḎ 0.01"));
-        assertEquals(parseCoin("0.00000001"), sp.parseObject("uḎ0.01"));
-        assertEquals(parseCoin("0.00000001"), cp.parseObject("µDASH 0.01"));
-        assertEquals(parseCoin("0.00000001"), sp.parseObject("µDASH0.01"));
-        assertEquals(parseCoin("0.00000001"), cp.parseObject("µĐ 0.01"));
-        assertEquals(parseCoin("0.00000001"), sp.parseObject("µĐ0.01"));
+        assertEquals(parseCoin("0.00000001"), cp.parseObject("uT 0.01"));
+        assertEquals(parseCoin("0.00000001"), sp.parseObject("uT0.01"));
+        assertEquals(parseCoin("0.00000001"), cp.parseObject("µTHT 0.01"));
+        assertEquals(parseCoin("0.00000001"), sp.parseObject("µTHT0.01"));
+        assertEquals(parseCoin("0.00000001"), cp.parseObject("µT 0.01"));
+        assertEquals(parseCoin("0.00000001"), sp.parseObject("µT0.01"));
         assertEquals(parseCoin("0.00000001"), cp.parseObject("µD⃦ 0.01"));
         assertEquals(parseCoin("0.00000001"), sp.parseObject("µD⃦0.01"));
-        assertEquals(parseCoin("0.00000001"), cp.parseObject("µḎ 0.01"));
-        assertEquals(parseCoin("0.00000001"), sp.parseObject("µḎ0.01"));
+        assertEquals(parseCoin("0.00000001"), cp.parseObject("µT 0.01"));
+        assertEquals(parseCoin("0.00000001"), sp.parseObject("µT0.01"));
         // cents
-        assertEquals(parseCoin("0.01234567"), cp.parseObject("cDASH 1.234567"));
-        assertEquals(parseCoin("0.01234567"), sp.parseObject("cDASH1.234567"));
-        assertEquals(parseCoin("0.01234567"), cp.parseObject("cĐ 1.234567"));
-        assertEquals(parseCoin("0.01234567"), sp.parseObject("cĐ1.234567"));
+        assertEquals(parseCoin("0.01234567"), cp.parseObject("cTHT 1.234567"));
+        assertEquals(parseCoin("0.01234567"), sp.parseObject("cTHT1.234567"));
+        assertEquals(parseCoin("0.01234567"), cp.parseObject("cT 1.234567"));
+        assertEquals(parseCoin("0.01234567"), sp.parseObject("cT1.234567"));
         assertEquals(parseCoin("0.01234567"), cp.parseObject("cD⃦ 1.234567"));
         assertEquals(parseCoin("0.01234567"), sp.parseObject("cD⃦1.234567"));
-        assertEquals(parseCoin("0.01234567"), cp.parseObject("cḎ 1.234567"));
-        assertEquals(parseCoin("0.01234567"), sp.parseObject("cḎ1.234567"));
-        assertEquals(parseCoin("0.01234567"), cp.parseObject("¢DASH 1.234567"));
-        assertEquals(parseCoin("0.01234567"), sp.parseObject("¢DASH1.234567"));
-        assertEquals(parseCoin("0.01234567"), cp.parseObject("¢Đ 1.234567"));
-        assertEquals(parseCoin("0.01234567"), sp.parseObject("¢Đ1.234567"));
+        assertEquals(parseCoin("0.01234567"), cp.parseObject("cT 1.234567"));
+        assertEquals(parseCoin("0.01234567"), sp.parseObject("cT1.234567"));
+        assertEquals(parseCoin("0.01234567"), cp.parseObject("¢THT 1.234567"));
+        assertEquals(parseCoin("0.01234567"), sp.parseObject("¢THT1.234567"));
+        assertEquals(parseCoin("0.01234567"), cp.parseObject("¢T 1.234567"));
+        assertEquals(parseCoin("0.01234567"), sp.parseObject("¢T1.234567"));
         assertEquals(parseCoin("0.01234567"), cp.parseObject("¢D⃦ 1.234567"));
         assertEquals(parseCoin("0.01234567"), sp.parseObject("¢D⃦1.234567"));
-        assertEquals(parseCoin("0.01234567"), cp.parseObject("¢Ḏ 1.234567"));
-        assertEquals(parseCoin("0.01234567"), sp.parseObject("¢Ḏ1.234567"));
+        assertEquals(parseCoin("0.01234567"), cp.parseObject("¢T 1.234567"));
+        assertEquals(parseCoin("0.01234567"), sp.parseObject("¢T1.234567"));
         // dekacoins
-        assertEquals(parseCoin("12.34567"), cp.parseObject("daDASH 1.234567"));
-        assertEquals(parseCoin("12.34567"), sp.parseObject("daDASH1.234567"));
-        assertEquals(parseCoin("12.34567"), cp.parseObject("daĐ 1.234567"));
-        assertEquals(parseCoin("12.34567"), sp.parseObject("daĐ1.234567"));
+        assertEquals(parseCoin("12.34567"), cp.parseObject("daTHT 1.234567"));
+        assertEquals(parseCoin("12.34567"), sp.parseObject("daTHT1.234567"));
+        assertEquals(parseCoin("12.34567"), cp.parseObject("daT 1.234567"));
+        assertEquals(parseCoin("12.34567"), sp.parseObject("daT1.234567"));
         assertEquals(parseCoin("12.34567"), cp.parseObject("daD⃦ 1.234567"));
         assertEquals(parseCoin("12.34567"), sp.parseObject("daD⃦1.234567"));
-        assertEquals(parseCoin("12.34567"), cp.parseObject("daḎ 1.234567"));
-        assertEquals(parseCoin("12.34567"), sp.parseObject("daḎ1.234567"));
+        assertEquals(parseCoin("12.34567"), cp.parseObject("daT 1.234567"));
+        assertEquals(parseCoin("12.34567"), sp.parseObject("daT1.234567"));
         // hectocoins
-        assertEquals(parseCoin("123.4567"), cp.parseObject("hDASH 1.234567"));
-        assertEquals(parseCoin("123.4567"), sp.parseObject("hDASH1.234567"));
-        assertEquals(parseCoin("123.4567"), cp.parseObject("hĐ 1.234567"));
-        assertEquals(parseCoin("123.4567"), sp.parseObject("hĐ1.234567"));
+        assertEquals(parseCoin("123.4567"), cp.parseObject("hTHT 1.234567"));
+        assertEquals(parseCoin("123.4567"), sp.parseObject("hTHT1.234567"));
+        assertEquals(parseCoin("123.4567"), cp.parseObject("hT 1.234567"));
+        assertEquals(parseCoin("123.4567"), sp.parseObject("hT1.234567"));
         assertEquals(parseCoin("123.4567"), cp.parseObject("hD⃦ 1.234567"));
         assertEquals(parseCoin("123.4567"), sp.parseObject("hD⃦1.234567"));
-        assertEquals(parseCoin("123.4567"), cp.parseObject("hḎ 1.234567"));
-        assertEquals(parseCoin("123.4567"), sp.parseObject("hḎ1.234567"));
+        assertEquals(parseCoin("123.4567"), cp.parseObject("hT 1.234567"));
+        assertEquals(parseCoin("123.4567"), sp.parseObject("hT1.234567"));
         // kilocoins
-        assertEquals(parseCoin("1234.567"), cp.parseObject("kDASH 1.234567"));
-        assertEquals(parseCoin("1234.567"), sp.parseObject("kDASH1.234567"));
-        assertEquals(parseCoin("1234.567"), cp.parseObject("kĐ 1.234567"));
-        assertEquals(parseCoin("1234.567"), sp.parseObject("kĐ1.234567"));
+        assertEquals(parseCoin("1234.567"), cp.parseObject("kTHT 1.234567"));
+        assertEquals(parseCoin("1234.567"), sp.parseObject("kTHT1.234567"));
+        assertEquals(parseCoin("1234.567"), cp.parseObject("kT 1.234567"));
+        assertEquals(parseCoin("1234.567"), sp.parseObject("kT1.234567"));
         assertEquals(parseCoin("1234.567"), cp.parseObject("kD⃦ 1.234567"));
         assertEquals(parseCoin("1234.567"), sp.parseObject("kD⃦1.234567"));
-        assertEquals(parseCoin("1234.567"), cp.parseObject("kḎ 1.234567"));
-        assertEquals(parseCoin("1234.567"), sp.parseObject("kḎ1.234567"));
+        assertEquals(parseCoin("1234.567"), cp.parseObject("kT 1.234567"));
+        assertEquals(parseCoin("1234.567"), sp.parseObject("kT1.234567"));
         // megacoins
-        assertEquals(parseCoin("1234567"), cp.parseObject("MDASH 1.234567"));
-        assertEquals(parseCoin("1234567"), sp.parseObject("MDASH1.234567"));
-        assertEquals(parseCoin("1234567"), cp.parseObject("MĐ 1.234567"));
-        assertEquals(parseCoin("1234567"), sp.parseObject("MĐ1.234567"));
+        assertEquals(parseCoin("1234567"), cp.parseObject("MTHT 1.234567"));
+        assertEquals(parseCoin("1234567"), sp.parseObject("MTHT1.234567"));
+        assertEquals(parseCoin("1234567"), cp.parseObject("MT 1.234567"));
+        assertEquals(parseCoin("1234567"), sp.parseObject("MT1.234567"));
         assertEquals(parseCoin("1234567"), cp.parseObject("MD⃦ 1.234567"));
         assertEquals(parseCoin("1234567"), sp.parseObject("MD⃦1.234567"));
-        assertEquals(parseCoin("1234567"), cp.parseObject("MḎ 1.234567"));
-        assertEquals(parseCoin("1234567"), sp.parseObject("MḎ1.234567"));
+        assertEquals(parseCoin("1234567"), cp.parseObject("MT 1.234567"));
+        assertEquals(parseCoin("1234567"), sp.parseObject("MT1.234567"));
     }
 
     @Test
@@ -637,32 +637,32 @@ public class BtcFormatTest {
         ThtFormat deCoded = ThtFormat.getCodeInstance(Locale.GERMANY);
         FieldPosition currField = new FieldPosition(NumberFormat.Field.CURRENCY);
         assertEquals(
-          "µĐ",
+          "µT",
           de.format(valueOf(98765432123L), new StringBuffer(), currField).
           substring(currField.getBeginIndex(), currField.getEndIndex())
         );
         assertEquals(
-          "µDASH",
+          "µTHT",
           deCoded.format(valueOf(98765432123L), new StringBuffer(), currField).
           substring(currField.getBeginIndex(), currField.getEndIndex())
         );
         assertEquals(
-          "₥Đ",
+          "₥T",
           de.format(valueOf(98765432000L), new StringBuffer(), currField).
           substring(currField.getBeginIndex(), currField.getEndIndex())
         );
         assertEquals(
-          "mDASH",
+          "mTHT",
           deCoded.format(valueOf(98765432000L), new StringBuffer(), currField).
           substring(currField.getBeginIndex(), currField.getEndIndex())
         );
         assertEquals(
-          "Đ",
+          "T",
           de.format(valueOf(98765000000L), new StringBuffer(), currField).
           substring(currField.getBeginIndex(), currField.getEndIndex())
         );
         assertEquals(
-          "DASH",
+          "THT",
           deCoded.format(valueOf(98765000000L), new StringBuffer(), currField).
           substring(currField.getBeginIndex(), currField.getEndIndex())
         );
@@ -672,20 +672,20 @@ public class BtcFormatTest {
     public void currencyCodeTest() {
         /* Insert needed space AFTER currency-code */
         ThtFormat usCoded = ThtFormat.getCodeInstance(Locale.US);
-        assertEquals("µDASH 0.01", usCoded.format(1));
-        assertEquals("DASH 1.00", usCoded.format(COIN));
+        assertEquals("µTHT 0.01", usCoded.format(1));
+        assertEquals("THT 1.00", usCoded.format(COIN));
 
         /* Do not insert unneeded space BEFORE currency-code */
         ThtFormat frCoded = ThtFormat.getCodeInstance(Locale.FRANCE);
-        assertEquals("0,01 µDASH", frCoded.format(1));
-        assertEquals("1,00 DASH", frCoded.format(COIN));
+        assertEquals("0,01 µTHT", frCoded.format(1));
+        assertEquals("1,00 THT", frCoded.format(COIN));
 
         /* Insert needed space BEFORE currency-code: no known currency pattern does this? */
 
         /* Do not insert unneeded space AFTER currency-code */
         ThtFormat deCoded = ThtFormat.getCodeInstance(Locale.ITALY);
-        assertEquals("µDASH 0,01", deCoded.format(1));
-        assertEquals("DASH 1,00", deCoded.format(COIN));
+        assertEquals("µTHT 0,01", deCoded.format(1));
+        assertEquals("THT 1,00", deCoded.format(COIN));
     }
 
     @Test
@@ -812,106 +812,106 @@ public class BtcFormatTest {
     public void autoDecimalTest() {
         ThtFormat codedZero = ThtFormat.getCodeInstance(Locale.US, 0);
         ThtFormat symbolZero = ThtFormat.getSymbolInstance(Locale.US, 0);
-        assertEquals("Đ1", symbolZero.format(COIN));
-        assertEquals("DASH 1", codedZero.format(COIN));
-        assertEquals("µĐ1,000,000", symbolZero.format(COIN.subtract(NOTION)));
-        assertEquals("µDASH 1,000,000", codedZero.format(COIN.subtract(NOTION)));
-        assertEquals("µĐ1,000,000", symbolZero.format(COIN.subtract(Coin.valueOf(50))));
-        assertEquals("µDASH 1,000,000", codedZero.format(COIN.subtract(Coin.valueOf(50))));
-        assertEquals("µĐ999,999", symbolZero.format(COIN.subtract(Coin.valueOf(51))));
-        assertEquals("µDASH 999,999", codedZero.format(COIN.subtract(Coin.valueOf(51))));
-        assertEquals("Đ1,000", symbolZero.format(COIN.multiply(1000)));
-        assertEquals("DASH 1,000", codedZero.format(COIN.multiply(1000)));
-        assertEquals("µĐ1", symbolZero.format(Coin.valueOf(100)));
-        assertEquals("µDASH 1", codedZero.format(Coin.valueOf(100)));
-        assertEquals("µĐ1", symbolZero.format(Coin.valueOf(50)));
-        assertEquals("µDASH 1", codedZero.format(Coin.valueOf(50)));
-        assertEquals("µĐ0", symbolZero.format(Coin.valueOf(49)));
-        assertEquals("µDASH 0", codedZero.format(Coin.valueOf(49)));
-        assertEquals("µĐ0", symbolZero.format(Coin.valueOf(1)));
-        assertEquals("µDASH 0", codedZero.format(Coin.valueOf(1)));
-        assertEquals("µĐ500,000", symbolZero.format(Coin.valueOf(49999999)));
-        assertEquals("µDASH 500,000", codedZero.format(Coin.valueOf(49999999)));
+        assertEquals("T1", symbolZero.format(COIN));
+        assertEquals("THT 1", codedZero.format(COIN));
+        assertEquals("µT1,000,000", symbolZero.format(COIN.subtract(NOTION)));
+        assertEquals("µTHT 1,000,000", codedZero.format(COIN.subtract(NOTION)));
+        assertEquals("µT1,000,000", symbolZero.format(COIN.subtract(Coin.valueOf(50))));
+        assertEquals("µTHT 1,000,000", codedZero.format(COIN.subtract(Coin.valueOf(50))));
+        assertEquals("µT999,999", symbolZero.format(COIN.subtract(Coin.valueOf(51))));
+        assertEquals("µTHT 999,999", codedZero.format(COIN.subtract(Coin.valueOf(51))));
+        assertEquals("T1,000", symbolZero.format(COIN.multiply(1000)));
+        assertEquals("THT 1,000", codedZero.format(COIN.multiply(1000)));
+        assertEquals("µT1", symbolZero.format(Coin.valueOf(100)));
+        assertEquals("µTHT 1", codedZero.format(Coin.valueOf(100)));
+        assertEquals("µT1", symbolZero.format(Coin.valueOf(50)));
+        assertEquals("µTHT 1", codedZero.format(Coin.valueOf(50)));
+        assertEquals("µT0", symbolZero.format(Coin.valueOf(49)));
+        assertEquals("µTHT 0", codedZero.format(Coin.valueOf(49)));
+        assertEquals("µT0", symbolZero.format(Coin.valueOf(1)));
+        assertEquals("µTHT 0", codedZero.format(Coin.valueOf(1)));
+        assertEquals("µT500,000", symbolZero.format(Coin.valueOf(49999999)));
+        assertEquals("µTHT 500,000", codedZero.format(Coin.valueOf(49999999)));
 
-        assertEquals("µĐ499,500", symbolZero.format(Coin.valueOf(49950000)));
-        assertEquals("µDASH 499,500", codedZero.format(Coin.valueOf(49950000)));
-        assertEquals("µĐ499,500", symbolZero.format(Coin.valueOf(49949999)));
-        assertEquals("µDASH 499,500", codedZero.format(Coin.valueOf(49949999)));
-        assertEquals("µĐ500,490", symbolZero.format(Coin.valueOf(50049000)));
-        assertEquals("µDASH 500,490", codedZero.format(Coin.valueOf(50049000)));
-        assertEquals("µĐ500,490", symbolZero.format(Coin.valueOf(50049001)));
-        assertEquals("µDASH 500,490", codedZero.format(Coin.valueOf(50049001)));
-        assertEquals("µĐ500,000", symbolZero.format(Coin.valueOf(49999950)));
-        assertEquals("µDASH 500,000", codedZero.format(Coin.valueOf(49999950)));
-        assertEquals("µĐ499,999", symbolZero.format(Coin.valueOf(49999949)));
-        assertEquals("µDASH 499,999", codedZero.format(Coin.valueOf(49999949)));
-        assertEquals("µĐ500,000", symbolZero.format(Coin.valueOf(50000049)));
-        assertEquals("µDASH 500,000", codedZero.format(Coin.valueOf(50000049)));
-        assertEquals("µĐ500,001", symbolZero.format(Coin.valueOf(50000050)));
-        assertEquals("µDASH 500,001", codedZero.format(Coin.valueOf(50000050)));
+        assertEquals("µT499,500", symbolZero.format(Coin.valueOf(49950000)));
+        assertEquals("µTHT 499,500", codedZero.format(Coin.valueOf(49950000)));
+        assertEquals("µT499,500", symbolZero.format(Coin.valueOf(49949999)));
+        assertEquals("µTHT 499,500", codedZero.format(Coin.valueOf(49949999)));
+        assertEquals("µT500,490", symbolZero.format(Coin.valueOf(50049000)));
+        assertEquals("µTHT 500,490", codedZero.format(Coin.valueOf(50049000)));
+        assertEquals("µT500,490", symbolZero.format(Coin.valueOf(50049001)));
+        assertEquals("µTHT 500,490", codedZero.format(Coin.valueOf(50049001)));
+        assertEquals("µT500,000", symbolZero.format(Coin.valueOf(49999950)));
+        assertEquals("µTHT 500,000", codedZero.format(Coin.valueOf(49999950)));
+        assertEquals("µT499,999", symbolZero.format(Coin.valueOf(49999949)));
+        assertEquals("µTHT 499,999", codedZero.format(Coin.valueOf(49999949)));
+        assertEquals("µT500,000", symbolZero.format(Coin.valueOf(50000049)));
+        assertEquals("µTHT 500,000", codedZero.format(Coin.valueOf(50000049)));
+        assertEquals("µT500,001", symbolZero.format(Coin.valueOf(50000050)));
+        assertEquals("µTHT 500,001", codedZero.format(Coin.valueOf(50000050)));
 
         ThtFormat codedTwo = ThtFormat.getCodeInstance(Locale.US, 2);
         ThtFormat symbolTwo = ThtFormat.getSymbolInstance(Locale.US, 2);
-        assertEquals("Đ1.00", symbolTwo.format(COIN));
-        assertEquals("DASH 1.00", codedTwo.format(COIN));
-        assertEquals("µĐ999,999.99", symbolTwo.format(COIN.subtract(NOTION)));
-        assertEquals("µDASH 999,999.99", codedTwo.format(COIN.subtract(NOTION)));
-        assertEquals("Đ1,000.00", symbolTwo.format(COIN.multiply(1000)));
-        assertEquals("DASH 1,000.00", codedTwo.format(COIN.multiply(1000)));
-        assertEquals("µĐ1.00", symbolTwo.format(Coin.valueOf(100)));
-        assertEquals("µDASH 1.00", codedTwo.format(Coin.valueOf(100)));
-        assertEquals("µĐ0.50", symbolTwo.format(Coin.valueOf(50)));
-        assertEquals("µDASH 0.50", codedTwo.format(Coin.valueOf(50)));
-        assertEquals("µĐ0.49", symbolTwo.format(Coin.valueOf(49)));
-        assertEquals("µDASH 0.49", codedTwo.format(Coin.valueOf(49)));
-        assertEquals("µĐ0.01", symbolTwo.format(Coin.valueOf(1)));
-        assertEquals("µDASH 0.01", codedTwo.format(Coin.valueOf(1)));
+        assertEquals("T1.00", symbolTwo.format(COIN));
+        assertEquals("THT 1.00", codedTwo.format(COIN));
+        assertEquals("µT999,999.99", symbolTwo.format(COIN.subtract(NOTION)));
+        assertEquals("µTHT 999,999.99", codedTwo.format(COIN.subtract(NOTION)));
+        assertEquals("T1,000.00", symbolTwo.format(COIN.multiply(1000)));
+        assertEquals("THT 1,000.00", codedTwo.format(COIN.multiply(1000)));
+        assertEquals("µT1.00", symbolTwo.format(Coin.valueOf(100)));
+        assertEquals("µTHT 1.00", codedTwo.format(Coin.valueOf(100)));
+        assertEquals("µT0.50", symbolTwo.format(Coin.valueOf(50)));
+        assertEquals("µTHT 0.50", codedTwo.format(Coin.valueOf(50)));
+        assertEquals("µT0.49", symbolTwo.format(Coin.valueOf(49)));
+        assertEquals("µTHT 0.49", codedTwo.format(Coin.valueOf(49)));
+        assertEquals("µT0.01", symbolTwo.format(Coin.valueOf(1)));
+        assertEquals("µTHT 0.01", codedTwo.format(Coin.valueOf(1)));
 
         ThtFormat codedThree = ThtFormat.getCodeInstance(Locale.US, 3);
         ThtFormat symbolThree = ThtFormat.getSymbolInstance(Locale.US, 3);
-        assertEquals("Đ1.000", symbolThree.format(COIN));
-        assertEquals("DASH 1.000", codedThree.format(COIN));
-        assertEquals("µĐ999,999.99", symbolThree.format(COIN.subtract(NOTION)));
-        assertEquals("µDASH 999,999.99", codedThree.format(COIN.subtract(NOTION)));
-        assertEquals("Đ1,000.000", symbolThree.format(COIN.multiply(1000)));
-        assertEquals("DASH 1,000.000", codedThree.format(COIN.multiply(1000)));
-        assertEquals("₥Đ0.001", symbolThree.format(Coin.valueOf(100)));
-        assertEquals("mDASH 0.001", codedThree.format(Coin.valueOf(100)));
-        assertEquals("µĐ0.50", symbolThree.format(Coin.valueOf(50)));
-        assertEquals("µDASH 0.50", codedThree.format(Coin.valueOf(50)));
-        assertEquals("µĐ0.49", symbolThree.format(Coin.valueOf(49)));
-        assertEquals("µDASH 0.49", codedThree.format(Coin.valueOf(49)));
-        assertEquals("µĐ0.01", symbolThree.format(Coin.valueOf(1)));
-        assertEquals("µDASH 0.01", codedThree.format(Coin.valueOf(1)));
+        assertEquals("T1.000", symbolThree.format(COIN));
+        assertEquals("THT 1.000", codedThree.format(COIN));
+        assertEquals("µT999,999.99", symbolThree.format(COIN.subtract(NOTION)));
+        assertEquals("µTHT 999,999.99", codedThree.format(COIN.subtract(NOTION)));
+        assertEquals("T1,000.000", symbolThree.format(COIN.multiply(1000)));
+        assertEquals("THT 1,000.000", codedThree.format(COIN.multiply(1000)));
+        assertEquals("₥T0.001", symbolThree.format(Coin.valueOf(100)));
+        assertEquals("mTHT 0.001", codedThree.format(Coin.valueOf(100)));
+        assertEquals("µT0.50", symbolThree.format(Coin.valueOf(50)));
+        assertEquals("µTHT 0.50", codedThree.format(Coin.valueOf(50)));
+        assertEquals("µT0.49", symbolThree.format(Coin.valueOf(49)));
+        assertEquals("µTHT 0.49", codedThree.format(Coin.valueOf(49)));
+        assertEquals("µT0.01", symbolThree.format(Coin.valueOf(1)));
+        assertEquals("µTHT 0.01", codedThree.format(Coin.valueOf(1)));
     }
 
 
     @Test
     public void symbolsCodesTest() {
         ThtFixedFormat coin = (ThtFixedFormat)ThtFormat.getCoinInstance(US);
-        assertEquals("DASH", coin.code());
-        assertEquals("Đ", coin.symbol());
+        assertEquals("THT", coin.code());
+        assertEquals("T", coin.symbol());
         ThtFixedFormat cent = (ThtFixedFormat)ThtFormat.getInstance(2, US);
-        assertEquals("cDASH", cent.code());
-        assertEquals("¢Đ", cent.symbol());
+        assertEquals("cTHT", cent.code());
+        assertEquals("¢T", cent.symbol());
         ThtFixedFormat milli = (ThtFixedFormat)ThtFormat.getInstance(3, US);
-        assertEquals("mDASH", milli.code());
-        assertEquals("₥Đ", milli.symbol());
+        assertEquals("mTHT", milli.code());
+        assertEquals("₥T", milli.symbol());
         ThtFixedFormat micro = (ThtFixedFormat)ThtFormat.getInstance(6, US);
-        assertEquals("µDASH", micro.code());
-        assertEquals("µĐ", micro.symbol());
+        assertEquals("µTHT", micro.code());
+        assertEquals("µT", micro.symbol());
         ThtFixedFormat deka = (ThtFixedFormat)ThtFormat.getInstance(-1, US);
-        assertEquals("daDASH", deka.code());
-        assertEquals("daĐ", deka.symbol());
+        assertEquals("daTHT", deka.code());
+        assertEquals("daT", deka.symbol());
         ThtFixedFormat hecto = (ThtFixedFormat)ThtFormat.getInstance(-2, US);
-        assertEquals("hDASH", hecto.code());
-        assertEquals("hĐ", hecto.symbol());
+        assertEquals("hTHT", hecto.code());
+        assertEquals("hT", hecto.symbol());
         ThtFixedFormat kilo = (ThtFixedFormat)ThtFormat.getInstance(-3, US);
-        assertEquals("kDASH", kilo.code());
-        assertEquals("kĐ", kilo.symbol());
+        assertEquals("kTHT", kilo.code());
+        assertEquals("kT", kilo.symbol());
         ThtFixedFormat mega = (ThtFixedFormat)ThtFormat.getInstance(-6, US);
-        assertEquals("MDASH", mega.code());
-        assertEquals("MĐ", mega.symbol());
+        assertEquals("MTHT", mega.code());
+        assertEquals("MT", mega.symbol());
         ThtFixedFormat noSymbol = (ThtFixedFormat)ThtFormat.getInstance(4, US);
         try {
             noSymbol.symbol();
@@ -924,101 +924,101 @@ public class BtcFormatTest {
 
         ThtFixedFormat symbolCoin = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(0).
                                                               symbol("D\u20e6").build();
-        assertEquals("DASH", symbolCoin.code());
+        assertEquals("THT", symbolCoin.code());
         assertEquals("D⃦", symbolCoin.symbol());
         ThtFixedFormat symbolCent = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(2).
                                                               symbol("D\u20e6").build();
-        assertEquals("cDASH", symbolCent.code());
+        assertEquals("cTHT", symbolCent.code());
         assertEquals("¢D⃦", symbolCent.symbol());
         ThtFixedFormat symbolMilli = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(3).
                                                                symbol("D\u20e6").build();
-        assertEquals("mDASH", symbolMilli.code());
+        assertEquals("mTHT", symbolMilli.code());
         assertEquals("₥D⃦", symbolMilli.symbol());
         ThtFixedFormat symbolMicro = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(6).
                                                                symbol("D\u20e6").build();
-        assertEquals("µDASH", symbolMicro.code());
+        assertEquals("µTHT", symbolMicro.code());
         assertEquals("µD⃦", symbolMicro.symbol());
         ThtFixedFormat symbolDeka = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-1).
                                                               symbol("D\u20e6").build();
-        assertEquals("daDASH", symbolDeka.code());
+        assertEquals("daTHT", symbolDeka.code());
         assertEquals("daD⃦", symbolDeka.symbol());
         ThtFixedFormat symbolHecto = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-2).
                                                                symbol("D\u20e6").build();
-        assertEquals("hDASH", symbolHecto.code());
+        assertEquals("hTHT", symbolHecto.code());
         assertEquals("hD⃦", symbolHecto.symbol());
         ThtFixedFormat symbolKilo = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-3).
                                                               symbol("D\u20e6").build();
-        assertEquals("kDASH", symbolKilo.code());
+        assertEquals("kTHT", symbolKilo.code());
         assertEquals("kD⃦", symbolKilo.symbol());
         ThtFixedFormat symbolMega = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-6).
                                                               symbol("D\u20e6").build();
-        assertEquals("MDASH", symbolMega.code());
+        assertEquals("MTHT", symbolMega.code());
         assertEquals("MD⃦", symbolMega.symbol());
 
         ThtFixedFormat codeCoin = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(0).
-                                                            code("XDC").build();
-        assertEquals("XDC", codeCoin.code());
-        assertEquals("Đ", codeCoin.symbol());
+                                                            code("THT").build();
+        assertEquals("THT", codeCoin.code());
+        assertEquals("T", codeCoin.symbol());
         ThtFixedFormat codeCent = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(2).
-                                                            code("XDC").build();
-        assertEquals("cXDC", codeCent.code());
-        assertEquals("¢Đ", codeCent.symbol());
+                                                            code("THT").build();
+        assertEquals("cTHT", codeCent.code());
+        assertEquals("¢T", codeCent.symbol());
         ThtFixedFormat codeMilli = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(3).
-                                                             code("XDC").build();
-        assertEquals("mXDC", codeMilli.code());
-        assertEquals("₥Đ", codeMilli.symbol());
+                                                             code("THT").build();
+        assertEquals("mTHT", codeMilli.code());
+        assertEquals("₥T", codeMilli.symbol());
         ThtFixedFormat codeMicro = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(6).
-                                                             code("XDC").build();
-        assertEquals("µXDC", codeMicro.code());
-        assertEquals("µĐ", codeMicro.symbol());
+                                                             code("THT").build();
+        assertEquals("µTHT", codeMicro.code());
+        assertEquals("µT", codeMicro.symbol());
         ThtFixedFormat codeDeka = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-1).
-                                                            code("XDC").build();
-        assertEquals("daXDC", codeDeka.code());
-        assertEquals("daĐ", codeDeka.symbol());
+                                                            code("THT").build();
+        assertEquals("daTHT", codeDeka.code());
+        assertEquals("daT", codeDeka.symbol());
         ThtFixedFormat codeHecto = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-2).
-                                                             code("XDC").build();
-        assertEquals("hXDC", codeHecto.code());
-        assertEquals("hĐ", codeHecto.symbol());
+                                                             code("THT").build();
+        assertEquals("hTHT", codeHecto.code());
+        assertEquals("hT", codeHecto.symbol());
         ThtFixedFormat codeKilo = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-3).
-                                                            code("XDC").build();
-        assertEquals("kXDC", codeKilo.code());
-        assertEquals("kĐ", codeKilo.symbol());
+                                                            code("THT").build();
+        assertEquals("kTHT", codeKilo.code());
+        assertEquals("kT", codeKilo.symbol());
         ThtFixedFormat codeMega = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-6).
-                                                            code("XDC").build();
-        assertEquals("MXDC", codeMega.code());
-        assertEquals("MĐ", codeMega.symbol());
+                                                            code("THT").build();
+        assertEquals("MTHT", codeMega.code());
+        assertEquals("MT", codeMega.symbol());
 
         ThtFixedFormat symbolCodeCoin = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(0).
-                                                                  symbol("D\u20e6").code("XDC").build();
-        assertEquals("XDC", symbolCodeCoin.code());
+                                                                  symbol("D\u20e6").code("THT").build();
+        assertEquals("THT", symbolCodeCoin.code());
         assertEquals("D⃦", symbolCodeCoin.symbol());
         ThtFixedFormat symbolCodeCent = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(2).
-                                                                  symbol("D\u20e6").code("XDC").build();
-        assertEquals("cXDC", symbolCodeCent.code());
+                                                                  symbol("D\u20e6").code("THT").build();
+        assertEquals("cTHT", symbolCodeCent.code());
         assertEquals("¢D⃦", symbolCodeCent.symbol());
         ThtFixedFormat symbolCodeMilli = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(3).
-                                                                   symbol("D\u20e6").code("XDC").build();
-        assertEquals("mXDC", symbolCodeMilli.code());
+                                                                   symbol("D\u20e6").code("THT").build();
+        assertEquals("mTHT", symbolCodeMilli.code());
         assertEquals("₥D⃦", symbolCodeMilli.symbol());
         ThtFixedFormat symbolCodeMicro = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(6).
-                                                                   symbol("D\u20e6").code("XDC").build();
-        assertEquals("µXDC", symbolCodeMicro.code());
+                                                                   symbol("D\u20e6").code("THT").build();
+        assertEquals("µTHT", symbolCodeMicro.code());
         assertEquals("µD⃦", symbolCodeMicro.symbol());
         ThtFixedFormat symbolCodeDeka = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-1).
-                                                                  symbol("D\u20e6").code("XDC").build();
-        assertEquals("daXDC", symbolCodeDeka.code());
+                                                                  symbol("D\u20e6").code("THT").build();
+        assertEquals("daTHT", symbolCodeDeka.code());
         assertEquals("daD⃦", symbolCodeDeka.symbol());
         ThtFixedFormat symbolCodeHecto = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-2).
-                                                                   symbol("D\u20e6").code("XDC").build();
-        assertEquals("hXDC", symbolCodeHecto.code());
+                                                                   symbol("D\u20e6").code("THT").build();
+        assertEquals("hTHT", symbolCodeHecto.code());
         assertEquals("hD⃦", symbolCodeHecto.symbol());
         ThtFixedFormat symbolCodeKilo = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-3).
-                                                                  symbol("D\u20e6").code("XDC").build();
-        assertEquals("kXDC", symbolCodeKilo.code());
+                                                                  symbol("D\u20e6").code("THT").build();
+        assertEquals("kTHT", symbolCodeKilo.code());
         assertEquals("kD⃦", symbolCodeKilo.symbol());
         ThtFixedFormat symbolCodeMega = (ThtFixedFormat)ThtFormat.builder().locale(US).scale(-6).
-                                                                  symbol("D\u20e6").code("XDC").build();
-        assertEquals("MXDC", symbolCodeMega.code());
+                                                                  symbol("D\u20e6").code("THT").build();
+        assertEquals("MTHT", symbolCodeMega.code());
         assertEquals("MD⃦", symbolCodeMega.symbol());
     }
 
@@ -1163,16 +1163,16 @@ public class BtcFormatTest {
 
     @Test
     public void negativeTest() throws Exception {
-        assertEquals("-1,00 DASH", ThtFormat.getInstance(FRANCE).format(COIN.multiply(-1)));
-        assertEquals("DASH -1,00", ThtFormat.getInstance(ITALY).format(COIN.multiply(-1)));
-        assertEquals("Đ -1,00", ThtFormat.getSymbolInstance(ITALY).format(COIN.multiply(-1)));
-        assertEquals("DASH -1.00", ThtFormat.getInstance(JAPAN).format(COIN.multiply(-1)));
-        assertEquals("Đ-1.00", ThtFormat.getSymbolInstance(JAPAN).format(COIN.multiply(-1)));
-        assertEquals("(DASH 1.00)", ThtFormat.getInstance(US).format(COIN.multiply(-1)));
-        assertEquals("(Đ1.00)", ThtFormat.getSymbolInstance(US).format(COIN.multiply(-1)));
-        // assertEquals("DASH -१.००", ThtFormat.getInstance(Locale.forLanguageTag("hi-IN")).format(COIN.multiply(-1)));
-        assertEquals("DASH -๑.๐๐", ThtFormat.getInstance(new Locale("th","TH","TH")).format(COIN.multiply(-1)));
-        assertEquals("Đ-๑.๐๐", ThtFormat.getSymbolInstance(new Locale("th","TH","TH")).format(COIN.multiply(-1)));
+        assertEquals("-1,00 THT", ThtFormat.getInstance(FRANCE).format(COIN.multiply(-1)));
+        assertEquals("THT -1,00", ThtFormat.getInstance(ITALY).format(COIN.multiply(-1)));
+        assertEquals("T -1,00", ThtFormat.getSymbolInstance(ITALY).format(COIN.multiply(-1)));
+        assertEquals("THT -1.00", ThtFormat.getInstance(JAPAN).format(COIN.multiply(-1)));
+        assertEquals("T-1.00", ThtFormat.getSymbolInstance(JAPAN).format(COIN.multiply(-1)));
+        assertEquals("(THT 1.00)", ThtFormat.getInstance(US).format(COIN.multiply(-1)));
+        assertEquals("(T1.00)", ThtFormat.getSymbolInstance(US).format(COIN.multiply(-1)));
+        // assertEquals("THT -१.००", ThtFormat.getInstance(Locale.forLanguageTag("hi-IN")).format(COIN.multiply(-1)));
+        assertEquals("THT -๑.๐๐", ThtFormat.getInstance(new Locale("th","TH","TH")).format(COIN.multiply(-1)));
+        assertEquals("T-๑.๐๐", ThtFormat.getSymbolInstance(new Locale("th","TH","TH")).format(COIN.multiply(-1)));
     }
 
     /* Warning: these tests assume the state of Locale data extant on the platform on which
@@ -1212,10 +1212,10 @@ public class BtcFormatTest {
         b = (ThtAutoFormat)ThtFormat.getSymbolInstance(US);
         assertEquals(a, b);
         assertEquals(a.hashCode(), b.hashCode());
-        a.parseObject("mDASH2");
+        a.parseObject("mTHT2");
         assertEquals(a, b);
         assertEquals(a.hashCode(), b.hashCode());
-        b.parseObject("µĐ4.35");
+        b.parseObject("µT4.35");
         assertEquals(a, b);
         assertEquals(a.hashCode(), b.hashCode());
 
@@ -1273,12 +1273,12 @@ public class BtcFormatTest {
     @Test
     public void attributeTest() throws Exception {
         String codePat = ThtFormat.getCodeInstance(Locale.US).pattern();
-        assertTrue(codePat.contains("DASH") && ! codePat.contains("(^|[^Đ])Đ([^Đ]|$)") && ! codePat.contains("(^|[^¤])¤([^¤]|$)"));
+        assertTrue(codePat.contains("THT") && ! codePat.contains("(^|[^T])T([^T]|$)") && ! codePat.contains("(^|[^¤])¤([^¤]|$)"));
         String symPat = ThtFormat.getSymbolInstance(Locale.US).pattern();
-        assertTrue(symPat.contains("Đ") && !symPat.contains("DASH") && !symPat.contains("¤¤"));
+        assertTrue(symPat.contains("T") && !symPat.contains("THT") && !symPat.contains("¤¤"));
 
-        assertEquals("DASH #,##0.00;(DASH #,##0.00)", ThtFormat.getCodeInstance(Locale.US).pattern());
-        assertEquals("Đ#,##0.00;(Đ#,##0.00)", ThtFormat.getSymbolInstance(Locale.US).pattern());
+        assertEquals("THT #,##0.00;(THT #,##0.00)", ThtFormat.getCodeInstance(Locale.US).pattern());
+        assertEquals("T#,##0.00;(T#,##0.00)", ThtFormat.getSymbolInstance(Locale.US).pattern());
         assertEquals('0', ThtFormat.getInstance(Locale.US).symbols().getZeroDigit());
         // assertEquals('०', ThtFormat.getInstance(Locale.forLanguageTag("hi-IN")).symbols().getZeroDigit());
         // TODO will this next line work with other JREs?
@@ -1287,10 +1287,10 @@ public class BtcFormatTest {
 
     @Test
     public void toStringTest() {
-        assertEquals("Auto-format Đ#,##0.00;(Đ#,##0.00)", ThtFormat.getSymbolInstance(Locale.US).toString());
-        assertEquals("Auto-format Đ#,##0.0000;(Đ#,##0.0000)", ThtFormat.getSymbolInstance(Locale.US, 4).toString());
-        assertEquals("Auto-format DASH #,##0.00;(DASH #,##0.00)", ThtFormat.getCodeInstance(Locale.US).toString());
-        assertEquals("Auto-format DASH #,##0.0000;(DASH #,##0.0000)", ThtFormat.getCodeInstance(Locale.US, 4).toString());
+        assertEquals("Auto-format T#,##0.00;(T#,##0.00)", ThtFormat.getSymbolInstance(Locale.US).toString());
+        assertEquals("Auto-format T#,##0.0000;(T#,##0.0000)", ThtFormat.getSymbolInstance(Locale.US, 4).toString());
+        assertEquals("Auto-format THT #,##0.00;(THT #,##0.00)", ThtFormat.getCodeInstance(Locale.US).toString());
+        assertEquals("Auto-format THT #,##0.0000;(THT #,##0.0000)", ThtFormat.getCodeInstance(Locale.US, 4).toString());
         assertEquals("Coin-format #,##0.00", ThtFormat.getCoinInstance(Locale.US).toString());
         assertEquals("Millicoin-format #,##0.00", ThtFormat.getMilliInstance(Locale.US).toString());
         assertEquals("Microcoin-format #,##0.00", ThtFormat.getMicroInstance(Locale.US).toString());
@@ -1311,17 +1311,17 @@ public class BtcFormatTest {
         assertEquals("Fixed (-4) format #,##0.000(####)(#######)",
                      ThtFormat.getInstance(-4, Locale.US, 3, 4, 7).toString());
 
-        assertEquals("Auto-format Đ#,##0.00;(Đ#,##0.00)",
+        assertEquals("Auto-format T#,##0.00;(T#,##0.00)",
                      ThtFormat.builder().style(SYMBOL).code("USD").locale(US).build().toString());
         assertEquals("Auto-format #.##0,00 $",
                      ThtFormat.builder().style(SYMBOL).symbol("$").locale(GERMANY).build().toString());
         assertEquals("Auto-format #.##0,0000 $",
                      ThtFormat.builder().style(SYMBOL).symbol("$").fractionDigits(4).locale(GERMANY).build().toString());
-        assertEquals("Auto-format DASH#,00Đ;DASH-#,00Đ",
+        assertEquals("Auto-format THT#,00T;THT-#,00T",
                      ThtFormat.builder().style(SYMBOL).locale(GERMANY).pattern("¤¤#¤").build().toString());
-        assertEquals("Coin-format DASH#,00Đ;DASH-#,00Đ",
+        assertEquals("Coin-format THT#,00T;THT-#,00T",
                      ThtFormat.builder().scale(0).locale(GERMANY).pattern("¤¤#¤").build().toString());
-        assertEquals("Millicoin-format DASH#.00Đ;DASH-#.00Đ",
+        assertEquals("Millicoin-format THT#.00T;THT-#.00T",
                      ThtFormat.builder().scale(3).locale(US).pattern("¤¤#¤").build().toString());
     }
 
@@ -1330,8 +1330,8 @@ public class BtcFormatTest {
         /* The pattern format provided by DecimalFormat includes specification of fractional digits,
          * but we ignore that because we have alternative mechanism for specifying that.. */
         ThtFormat f = ThtFormat.builder().locale(US).scale(3).pattern("¤¤ #.0").fractionDigits(3).build();
-        assertEquals("Millicoin-format DASH #.000;DASH -#.000", f.toString());
-        assertEquals("mDASH 1000.000", f.format(COIN));
+        assertEquals("Millicoin-format THT #.000;THT -#.000", f.toString());
+        assertEquals("mTHT 1000.000", f.format(COIN));
     }
 
     @Test
@@ -1391,13 +1391,13 @@ public class BtcFormatTest {
         assertEquals("100.0000,00", built.format(COIN));
 
         built = ThtFormat.builder().pattern("¤#,####.#").style(CODE).locale(GERMANY).build();
-        assertEquals("Đ-1,00", built.format(COIN.multiply(-1)));
+        assertEquals("T-1,00", built.format(COIN.multiply(-1)));
         built = ThtFormat.builder().pattern("¤¤ #,####.#").style(SYMBOL).locale(GERMANY).build();
-        assertEquals("DASH -1,00", built.format(COIN.multiply(-1)));
+        assertEquals("THT -1,00", built.format(COIN.multiply(-1)));
         built = ThtFormat.builder().pattern("¤¤##,###.#").scale(3).locale(US).build();
-        assertEquals("mDASH1,000.00", built.format(COIN));
+        assertEquals("mTHT1,000.00", built.format(COIN));
         built = ThtFormat.builder().pattern("¤ ##,###.#").scale(3).locale(US).build();
-        assertEquals("₥Đ 1,000.00", built.format(COIN));
+        assertEquals("₥T 1,000.00", built.format(COIN));
 
         try {
             ThtFormat.builder().pattern("¤¤##,###.#").scale(4).locale(US).build().format(COIN);
@@ -1411,46 +1411,46 @@ public class BtcFormatTest {
 
         built = ThtFormat.builder().style(SYMBOL).symbol("D\u20e6").locale(US).build();
         assertEquals("D⃦1.00", built.format(COIN));
-        built = ThtFormat.builder().style(CODE).code("XDC").locale(US).build();
-        assertEquals("XDC 1.00", built.format(COIN));
+        built = ThtFormat.builder().style(CODE).code("THT").locale(US).build();
+        assertEquals("THT 1.00", built.format(COIN));
         built = ThtFormat.builder().style(SYMBOL).symbol("$").locale(GERMANY).build();
         assertEquals("1,00 $", built.format(COIN));
         // Setting the currency code on a DecimalFormatSymbols object can affect the currency symbol.
         built = ThtFormat.builder().style(SYMBOL).code("USD").locale(US).build();
-        assertEquals("Đ1.00", built.format(COIN));
+        assertEquals("T1.00", built.format(COIN));
 
         built = ThtFormat.builder().style(SYMBOL).symbol("D\u20e6").locale(US).build();
         assertEquals("₥D⃦1.00", built.format(COIN.divide(1000)));
-        built = ThtFormat.builder().style(CODE).code("XDC").locale(US).build();
-        assertEquals("mXDC 1.00", built.format(COIN.divide(1000)));
+        built = ThtFormat.builder().style(CODE).code("THT").locale(US).build();
+        assertEquals("mTHT 1.00", built.format(COIN.divide(1000)));
 
         built = ThtFormat.builder().style(SYMBOL).symbol("D\u20e6").locale(US).build();
         assertEquals("µD⃦1.00", built.format(valueOf(100)));
-        built = ThtFormat.builder().style(CODE).code("XDC").locale(US).build();
-        assertEquals("µXDC 1.00", built.format(valueOf(100)));
+        built = ThtFormat.builder().style(CODE).code("THT").locale(US).build();
+        assertEquals("µTHT 1.00", built.format(valueOf(100)));
 
         /* The prefix of a pattern can have number symbols in quotes.
          * Make sure our custom negative-subpattern creator handles this. */
         built = ThtFormat.builder().pattern("'#'¤#0").scale(0).locale(US).build();
-        assertEquals("#Đ-1.00", built.format(COIN.multiply(-1)));
+        assertEquals("#T-1.00", built.format(COIN.multiply(-1)));
         built = ThtFormat.builder().pattern("'#0'¤#0").scale(0).locale(US).build();
-        assertEquals("#0Đ-1.00", built.format(COIN.multiply(-1)));
+        assertEquals("#0T-1.00", built.format(COIN.multiply(-1)));
         // this is an escaped quote between two hash marks in one set of quotes, not
         // two adjacent quote-enclosed hash-marks:
         built = ThtFormat.builder().pattern("'#''#'¤#0").scale(0).locale(US).build();
-        assertEquals("#'#Đ-1.00", built.format(COIN.multiply(-1)));
+        assertEquals("#'#T-1.00", built.format(COIN.multiply(-1)));
         built = ThtFormat.builder().pattern("'#0''#'¤#0").scale(0).locale(US).build();
-        assertEquals("#0'#Đ-1.00", built.format(COIN.multiply(-1)));
+        assertEquals("#0'#T-1.00", built.format(COIN.multiply(-1)));
         built = ThtFormat.builder().pattern("'#0#'¤#0").scale(0).locale(US).build();
-        assertEquals("#0#Đ-1.00", built.format(COIN.multiply(-1)));
+        assertEquals("#0#T-1.00", built.format(COIN.multiply(-1)));
         built = ThtFormat.builder().pattern("'#0'E'#'¤#0").scale(0).locale(US).build();
-        assertEquals("#0E#Đ-1.00", built.format(COIN.multiply(-1)));
+        assertEquals("#0E#T-1.00", built.format(COIN.multiply(-1)));
         built = ThtFormat.builder().pattern("E'#0''#'¤#0").scale(0).locale(US).build();
-        assertEquals("E#0'#Đ-1.00", built.format(COIN.multiply(-1)));
+        assertEquals("E#0'#T-1.00", built.format(COIN.multiply(-1)));
         built = ThtFormat.builder().pattern("E'#0#'¤#0").scale(0).locale(US).build();
-        assertEquals("E#0#Đ-1.00", built.format(COIN.multiply(-1)));
+        assertEquals("E#0#T-1.00", built.format(COIN.multiply(-1)));
         built = ThtFormat.builder().pattern("E'#0''''#'¤#0").scale(0).locale(US).build();
-        assertEquals("E#0''#Đ-1.00", built.format(COIN.multiply(-1)));
+        assertEquals("E#0''#T-1.00", built.format(COIN.multiply(-1)));
         built = ThtFormat.builder().pattern("''#0").scale(0).locale(US).build();
         assertEquals("'-1.00", built.format(COIN.multiply(-1)));
 
