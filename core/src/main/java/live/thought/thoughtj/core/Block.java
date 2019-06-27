@@ -220,7 +220,7 @@ public class Block extends Message {
 
     public boolean isCuckooBlock()
     {
-      return ((this.version | NetworkParameters.CUCKOO_VERSION_MASK) != 0);
+      return ((this.version & NetworkParameters.CUCKOO_VERSION_MASK) != 0);
     }
     
     
@@ -449,7 +449,10 @@ public class Block extends Message {
         ByteArrayOutputStream stream = new UnsafeByteArrayOutputStream(length == UNKNOWN_LENGTH ? HEADER_SIZE + guessTransactionsLength() : length);
         try {
             writeHeader(stream);
-            writeCuckooSolution(stream);
+	    if (isCuckooBlock())
+	    {
+                writeCuckooSolution(stream);
+	    }
             writeTransactions(stream);
         } catch (IOException e) {
             // Cannot happen, we are serializing to a memory stream.
@@ -461,7 +464,10 @@ public class Block extends Message {
     protected void bitcoinSerializeToStream(OutputStream stream) throws IOException {
         writeHeader(stream);
         // We may only have enough data to write the header.
-        writeCuckooSolution(stream);
+	if (isCuckooBlock())
+	{
+            writeCuckooSolution(stream);
+	}
         writeTransactions(stream);
     }
 
