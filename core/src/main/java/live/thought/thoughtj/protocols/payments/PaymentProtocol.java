@@ -27,8 +27,6 @@ import live.thought.thoughtj.core.*;
 import live.thought.thoughtj.crypto.X509Utils;
 import live.thought.thoughtj.script.ScriptBuilder;
 
-import org.bitcoin.protocols.payments.Protos;
-
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.security.*;

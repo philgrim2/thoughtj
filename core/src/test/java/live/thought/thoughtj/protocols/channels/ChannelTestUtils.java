@@ -22,12 +22,11 @@ import com.google.protobuf.ByteString;
 import live.thought.thoughtj.core.Coin;
 import live.thought.thoughtj.core.Sha256Hash;
 import live.thought.thoughtj.core.TransactionBroadcaster;
+import live.thought.thoughtj.paymentchannel.Protos;
 import live.thought.thoughtj.protocols.channels.PaymentChannelClient;
 import live.thought.thoughtj.protocols.channels.PaymentChannelCloseException;
 import live.thought.thoughtj.protocols.channels.PaymentChannelServer;
 import live.thought.thoughtj.wallet.Wallet;
-
-import org.bitcoin.paymentchannel.Protos;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.BlockingQueue;

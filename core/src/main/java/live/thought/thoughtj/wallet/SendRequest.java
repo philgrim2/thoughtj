@@ -24,7 +24,6 @@ import static live.thought.thoughtj.script.ScriptOpCodes.OP_RETURN;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.bitcoin.protocols.payments.Protos.PaymentDetails;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import com.google.common.base.MoreObjects;
@@ -39,6 +38,7 @@ import live.thought.thoughtj.core.TransactionOutput;
 import live.thought.thoughtj.evolution.SubTxRegister;
 import live.thought.thoughtj.evolution.SubTxResetKey;
 import live.thought.thoughtj.evolution.SubTxTopup;
+import live.thought.thoughtj.protocols.payments.Protos.PaymentDetails;
 import live.thought.thoughtj.script.Script;
 import live.thought.thoughtj.script.ScriptBuilder;
 import live.thought.thoughtj.script.ScriptChunk;

@@ -28,9 +28,9 @@ import live.thought.thoughtj.core.Sha256Hash;
 import live.thought.thoughtj.core.Utils;
 import live.thought.thoughtj.net.NioClient;
 import live.thought.thoughtj.net.ProtobufConnection;
+import live.thought.thoughtj.paymentchannel.Protos;
 import live.thought.thoughtj.wallet.Wallet;
 
-import org.bitcoin.paymentchannel.Protos;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import javax.annotation.Nullable;

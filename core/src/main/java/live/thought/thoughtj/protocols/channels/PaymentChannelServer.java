@@ -24,11 +24,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.ByteString;
 
 import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.paymentchannel.Protos;
 import live.thought.thoughtj.protocols.channels.PaymentChannelCloseException.CloseReason;
 import live.thought.thoughtj.utils.Threading;
 import live.thought.thoughtj.wallet.Wallet;
 import net.jcip.annotations.GuardedBy;
-import org.bitcoin.paymentchannel.Protos;
+
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;

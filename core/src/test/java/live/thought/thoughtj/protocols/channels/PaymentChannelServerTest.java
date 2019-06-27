@@ -14,7 +14,6 @@
 
 package live.thought.thoughtj.protocols.channels;
 
-import org.bitcoin.paymentchannel.Protos;
 import org.easymock.Capture;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,14 +23,15 @@ import org.junit.runners.Parameterized;
 import live.thought.thoughtj.core.Coin;
 import live.thought.thoughtj.core.TransactionBroadcaster;
 import live.thought.thoughtj.core.Utils;
+import live.thought.thoughtj.paymentchannel.Protos;
 import live.thought.thoughtj.protocols.channels.PaymentChannelServer;
 import live.thought.thoughtj.wallet.Wallet;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.bitcoin.paymentchannel.Protos.TwoWayChannelMessage;
-import static org.bitcoin.paymentchannel.Protos.TwoWayChannelMessage.MessageType;
+import static live.thought.thoughtj.paymentchannel.Protos.TwoWayChannelMessage;
+import static live.thought.thoughtj.paymentchannel.Protos.TwoWayChannelMessage.MessageType;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

@@ -22,8 +22,8 @@ import com.google.protobuf.*;
 import com.squareup.okhttp.*;
 
 import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.crawler.*;
 
-import org.bitcoin.crawler.*;
 import org.slf4j.*;
 
 import javax.annotation.*;

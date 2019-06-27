@@ -26,9 +26,8 @@ import live.thought.thoughtj.core.TransactionBroadcaster;
 import live.thought.thoughtj.net.NioServer;
 import live.thought.thoughtj.net.ProtobufConnection;
 import live.thought.thoughtj.net.StreamConnectionFactory;
+import live.thought.thoughtj.paymentchannel.Protos;
 import live.thought.thoughtj.wallet.Wallet;
-
-import org.bitcoin.paymentchannel.Protos;
 
 import javax.annotation.Nullable;
 

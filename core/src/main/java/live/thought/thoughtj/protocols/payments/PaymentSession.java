@@ -27,8 +27,6 @@ import live.thought.thoughtj.uri.BitcoinURI;
 import live.thought.thoughtj.utils.Threading;
 import live.thought.thoughtj.wallet.SendRequest;
 
-import org.bitcoin.protocols.payments.Protos;
-
 import javax.annotation.Nullable;
 
 import java.io.*;

@@ -14,7 +14,6 @@
 
 package live.thought.thoughtj.protocols.channels;
 
-import org.bitcoin.paymentchannel.Protos;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -24,6 +23,7 @@ import org.junit.runners.Parameterized;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.paymentchannel.Protos;
 import live.thought.thoughtj.protocols.channels.IPaymentChannelClient;
 import live.thought.thoughtj.protocols.channels.PaymentChannelClient;
 import live.thought.thoughtj.wallet.Wallet;
@@ -33,8 +33,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-import static org.bitcoin.paymentchannel.Protos.TwoWayChannelMessage;
-import static org.bitcoin.paymentchannel.Protos.TwoWayChannelMessage.MessageType.*;
+import static live.thought.thoughtj.paymentchannel.Protos.TwoWayChannelMessage;
+import static live.thought.thoughtj.paymentchannel.Protos.TwoWayChannelMessage.MessageType.*;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;

@@ -28,7 +28,6 @@ import live.thought.thoughtj.protocols.payments.PaymentProtocol;
 import live.thought.thoughtj.protocols.payments.PaymentProtocolException;
 import live.thought.thoughtj.protocols.payments.PaymentSession;
 
-import org.bitcoin.protocols.payments.Protos;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

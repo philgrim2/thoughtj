@@ -16,10 +16,6 @@
 
 package live.thought.thoughtj.protocols.payments;
 
-import org.bitcoin.protocols.payments.Protos;
-import org.bitcoin.protocols.payments.Protos.Payment;
-import org.bitcoin.protocols.payments.Protos.PaymentACK;
-import org.bitcoin.protocols.payments.Protos.PaymentRequest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,6 +28,9 @@ import live.thought.thoughtj.protocols.payments.PaymentSession;
 import live.thought.thoughtj.protocols.payments.PaymentProtocol.Output;
 import live.thought.thoughtj.protocols.payments.PaymentProtocol.PkiVerificationData;
 import live.thought.thoughtj.protocols.payments.PaymentProtocolException.PkiVerificationException;
+import live.thought.thoughtj.protocols.payments.Protos.Payment;
+import live.thought.thoughtj.protocols.payments.Protos.PaymentACK;
+import live.thought.thoughtj.protocols.payments.Protos.PaymentRequest;
 import live.thought.thoughtj.script.ScriptBuilder;
 import live.thought.thoughtj.testing.FakeTxBuilder;
 

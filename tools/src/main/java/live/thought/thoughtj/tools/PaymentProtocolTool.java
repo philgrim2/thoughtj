@@ -20,10 +20,9 @@ import live.thought.thoughtj.crypto.TrustStoreLoader;
 import live.thought.thoughtj.protocols.payments.PaymentProtocol;
 import live.thought.thoughtj.protocols.payments.PaymentProtocolException;
 import live.thought.thoughtj.protocols.payments.PaymentSession;
+import live.thought.thoughtj.protocols.payments.Protos;
 import live.thought.thoughtj.uri.BitcoinURI;
 import live.thought.thoughtj.uri.BitcoinURIParseException;
-
-import org.bitcoin.protocols.payments.Protos;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

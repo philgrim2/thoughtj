@@ -23,8 +23,8 @@ import com.google.protobuf.ByteString;
 import live.thought.thoughtj.core.Coin;
 import live.thought.thoughtj.core.ECKey;
 import live.thought.thoughtj.core.InsufficientMoneyException;
+import live.thought.thoughtj.paymentchannel.Protos;
 
-import org.bitcoin.paymentchannel.Protos;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import javax.annotation.Nullable;

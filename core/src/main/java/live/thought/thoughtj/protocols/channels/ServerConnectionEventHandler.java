@@ -22,8 +22,7 @@ import com.google.protobuf.ByteString;
 import live.thought.thoughtj.core.Coin;
 import live.thought.thoughtj.core.Sha256Hash;
 import live.thought.thoughtj.net.ProtobufConnection;
-
-import org.bitcoin.paymentchannel.Protos;
+import live.thought.thoughtj.paymentchannel.Protos;
 
 import javax.annotation.Nullable;
 

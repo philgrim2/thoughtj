@@ -30,9 +30,9 @@ import live.thought.thoughtj.net.NioClientManager;
 import live.thought.thoughtj.net.NioServer;
 import live.thought.thoughtj.net.ProtobufConnection;
 import live.thought.thoughtj.net.StreamConnectionFactory;
+import live.thought.thoughtj.paymentchannel.Protos;
+import live.thought.thoughtj.paymentchannel.Protos.TwoWayChannelMessage;
 
-import org.bitcoin.paymentchannel.Protos;
-import org.bitcoin.paymentchannel.Protos.TwoWayChannelMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

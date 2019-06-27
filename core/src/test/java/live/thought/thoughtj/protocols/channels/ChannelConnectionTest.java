@@ -22,6 +22,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.google.protobuf.ByteString;
 
 import live.thought.thoughtj.core.*;
+import live.thought.thoughtj.paymentchannel.Protos;
 import live.thought.thoughtj.protocols.channels.PaymentChannelClient;
 import live.thought.thoughtj.protocols.channels.PaymentChannelClientConnection;
 import live.thought.thoughtj.protocols.channels.PaymentChannelClientState;
@@ -43,7 +44,6 @@ import live.thought.thoughtj.wallet.WalletExtension;
 import live.thought.thoughtj.wallet.WalletFiles;
 import live.thought.thoughtj.wallet.WalletProtobufSerializer;
 
-import org.bitcoin.paymentchannel.Protos;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,9 +63,9 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static live.thought.thoughtj.core.Coin.*;
+import static live.thought.thoughtj.paymentchannel.Protos.TwoWayChannelMessage.MessageType;
 import static live.thought.thoughtj.protocols.channels.PaymentChannelCloseException.CloseReason;
 import static live.thought.thoughtj.testing.FakeTxBuilder.createFakeBlock;
-import static org.bitcoin.paymentchannel.Protos.TwoWayChannelMessage.MessageType;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
