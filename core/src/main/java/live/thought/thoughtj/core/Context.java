@@ -89,7 +89,7 @@ public class Context {
      * @param params The network parameters that will be associated with this context.
      */
     public Context(NetworkParameters params) {
-        log.info("Creating bitcoinj {} context.", VersionMessage.BITCOINJ_VERSION);
+        log.info("Creating bitcoinj {} context.", VersionMessage.THOUGHTJ_VERSION);
         this.confidenceTable = new TxConfidenceTable();
         this.voteConfidenceTable = new VoteConfidenceTable();
         this.params = params;

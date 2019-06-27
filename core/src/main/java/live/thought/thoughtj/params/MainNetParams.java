@@ -130,7 +130,7 @@ public class MainNetParams extends AbstractThoughtNetParams {
         deterministicMasternodesEnabledHeight = 1047200;
         deterministicMasternodesEnabled = true;
         
-        maxCuckooTarget = new BigInteger("0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        maxCuckooTarget = new BigInteger("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 16);
         cuckooHardForkBlockHeight = 246500;
         cuckooRequiredBlockHeight = 248800;
         midasStartHeight = 337;

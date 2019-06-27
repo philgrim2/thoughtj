@@ -524,10 +524,19 @@ public class Block extends Message {
      */
     private Sha256Hash calculateHash() {
         try {
-            ByteArrayOutputStream bos = new UnsafeByteArrayOutputStream(HEADER_SIZE + cuckooSolution.length * Integer.BYTES);
-            writeHeader(bos);
-            writeCuckooSolution(bos);
-            return Sha256Hash.wrapReversed(Sha256Hash.hashTwice(bos.toByteArray()));
+                ByteArrayOutputStream bos = null;
+	        if (isCuckooBlock())
+	        {
+	            bos = new UnsafeByteArrayOutputStream(HEADER_SIZE + cuckooSolution.length * Integer.BYTES);
+		    writeHeader(bos);
+		    writeCuckooSolution(bos);
+		}
+	        else
+	        {
+	            bos =  new UnsafeByteArrayOutputStream(HEADER_SIZE + cuckooSolution.length * Integer.BYTES);
+		    writeHeader(bos);
+		}    
+                return Sha256Hash.wrapReversed(Sha256Hash.hashTwice(bos.toByteArray()));
         } catch (IOException e) {
             throw new RuntimeException(e); // Cannot happen.
         }
