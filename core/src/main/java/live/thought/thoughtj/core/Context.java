@@ -353,19 +353,20 @@ public class Context
     if (null != chain)
     {
       hashStore = new HashStore(chain.getBlockStore());
+      chain.addNewBestBlockListener(newBestBlockListener);
+
+      if (initializedDash)
+      {
+        sporkManager.setBlockChain(chain, peerGroup);
+        masternodeManager.setBlockChain(chain);
+        masternodeSync.setBlockChain(chain);
+        instantSend.setBlockChain(chain);
+        masternodeListManager.setBlockChain(chain, peerGroup);
+        chain.addTransactionReceivedListener(evoUserManager);
+        updatedChainHead(chain.getChainHead());
+      }
+      params.setDIPActiveAtTip(chain.getBestChainHeight() >= params.getDIP0001BlockHeight());
     }
-    chain.addNewBestBlockListener(newBestBlockListener);
-    if (initializedDash)
-    {
-      sporkManager.setBlockChain(chain, peerGroup);
-      masternodeManager.setBlockChain(chain);
-      masternodeSync.setBlockChain(chain);
-      instantSend.setBlockChain(chain);
-      masternodeListManager.setBlockChain(chain, peerGroup);
-      chain.addTransactionReceivedListener(evoUserManager);
-      updatedChainHead(chain.getChainHead());
-    }
-    params.setDIPActiveAtTip(chain.getBestChainHeight() >= params.getDIP0001BlockHeight());
   }
 
   public boolean isLiteMode()
@@ -402,23 +403,23 @@ public class Context
                                               public void notifyNewBestBlock(StoredBlock block) throws VerificationException
                                               {
                                                 boolean fInitialDownload = blockChain.getChainHead().getHeader()
-                                                    .getTimeSeconds() < (Utils.currentTimeSeconds() - 6 * 60 * 60);                                                                              // ~144
-                                                                                                                                                                                                 // blocks
-                                                                                                                                                                                                 // behind
-                                                                                                                                                                                                 // ->
-                                                                                                                                                                                                 // 2
-                                                                                                                                                                                                 // x
-                                                                                                                                                                                                 // fork
-                                                                                                                                                                                                 // detection
-                                                                                                                                                                                                 // time,
-                                                                                                                                                                                                 // was
-                                                                                                                                                                                                 // 24
-                                                                                                                                                                                                 // *
-                                                                                                                                                                                                 // 60
-                                                                                                                                                                                                 // *
-                                                                                                                                                                                                 // 60
-                                                                                                                                                                                                 // in
-                                                                                                                                                                                                 // bitcoin
+                                                    .getTimeSeconds() < (Utils.currentTimeSeconds() - 6 * 60 * 60);                                                                                        // ~144
+                                                                                                                                                                                                           // blocks
+                                                                                                                                                                                                           // behind
+                                                                                                                                                                                                           // ->
+                                                                                                                                                                                                           // 2
+                                                                                                                                                                                                           // x
+                                                                                                                                                                                                           // fork
+                                                                                                                                                                                                           // detection
+                                                                                                                                                                                                           // time,
+                                                                                                                                                                                                           // was
+                                                                                                                                                                                                           // 24
+                                                                                                                                                                                                           // *
+                                                                                                                                                                                                           // 60
+                                                                                                                                                                                                           // *
+                                                                                                                                                                                                           // 60
+                                                                                                                                                                                                           // in
+                                                                                                                                                                                                           // bitcoin
                                                 if (masternodeSync != null)
                                                   masternodeSync.updateBlockTip(block, fInitialDownload);
                                               }
