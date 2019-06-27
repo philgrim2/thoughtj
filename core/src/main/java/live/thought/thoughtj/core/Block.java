@@ -629,10 +629,13 @@ public class Block extends Message {
         s.append("   difficulty target (nBits): ").append(difficultyTarget).append("\n");
         s.append("   nonce: ").append(nonce).append("\n");
         s.append("   cuckoo solution:").append("\n");
-        for (int i : cuckooSolution)
-        {
-          s.append("     ").append(String.format("%02d", i)).append(": ").append(cuckooSolution[i]).append("\n");
-        }
+	if (isCuckooBlock())
+	{
+            for (int i = 0; i < cuckooSolution.length; i++)
+            {
+              s.append("     ").append(String.format("%02d", i)).append(": ").append(cuckooSolution[i]).append("\n");
+            }
+	}
           
         if (transactions != null && transactions.size() > 0) {
             s.append("   with ").append(transactions.size()).append(" transaction(s):\n");
