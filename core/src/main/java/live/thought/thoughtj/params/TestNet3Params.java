@@ -64,7 +64,7 @@ public class TestNet3Params extends AbstractThoughtNetParams {
         alertSigningKey = HEX.decode(CoinDefinition.TESTNET_SATOSHI_KEY);
 
         dnsSeeds = new String[] {
-
+            "phee.thought.live", "phi.thought.live"
         };
 
         checkpoints.put(    0, Sha256Hash.wrap("00000000917e049641189c33d6b1275155e89b7b498b3b4f16d488f60afe513b"));
