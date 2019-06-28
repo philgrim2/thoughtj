@@ -439,8 +439,20 @@ public class Block extends Message
     hash = Sha256Hash.wrapReversed(Sha256Hash.hashTwice(payload, offset, cursor - offset));
     headerBytesValid = serializer.isParseRetainMode();
 
+    // Cuckoo, if needed
+    int cuckooSize = 0;
+    if (isCuckooBlock())
+    {
+      for (int i = 0; i < cuckooSolution.length; i++)
+      {
+        cuckooSolution[i] = (int) readUint32();
+      }
+      cuckooSize += Integer.BYTES;
+    }
+      
+    
     // transactions
-    parseTransactions(offset + HEADER_SIZE);
+    parseTransactions(offset + HEADER_SIZE + cuckooSize);
     length = cursor - offset;
   }
 
