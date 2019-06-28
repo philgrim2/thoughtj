@@ -156,7 +156,7 @@ public abstract class NetworkParameters {
     public static final int  CUCKOO_PROOF_SIZE = 42;
     public static final int  CUCKOO_GRAPH_SIZE = 24;
     public static final long CUCKOO_VERSION_MASK = 0x04;
-    
+
     public String getSporkAddress() {
         return strSporkAddress;
     }
@@ -514,7 +514,7 @@ public abstract class NetworkParameters {
     public BigInteger getMaxCuckooTarget() {
         return maxCuckooTarget;
     }
-    
+
     /**
      * The key used to sign {@link live.thought.thoughtj.core.AlertMessage}s. You can use {@link live.thought.thoughtj.core.ECKey#verify(byte[], byte[], byte[])} to verify
      * signatures using it.
@@ -667,7 +667,7 @@ public abstract class NetworkParameters {
     public abstract int getProtocolVersionNum(final ProtocolVersion version);
 
     public static enum ProtocolVersion {
-        MINIMUM(70017),
+        MINIMUM(70016),
         PONG(60001),
         BLOOM_FILTER(MINIMUM.getBitcoinProtocolVersion()),
         DMN_LIST(70020),
