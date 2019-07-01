@@ -160,10 +160,12 @@ public class Block extends Message
     difficultyTarget = 0x1e0fffffL;
     time = System.currentTimeMillis() / 1000;
     prevBlockHash = Sha256Hash.ZERO_HASH;
-
-    length = HEADER_SIZE;
-    cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
-    Arrays.fill(cuckooSolution, 0);
+    int cuckooLength = 0;
+    if (isCuckooBlock())
+    {
+      cuckooLength = NetworkParameters.CUCKOO_PROOF_SIZE * 4;
+    }
+    length = HEADER_SIZE + cuckooLength;
   }
 
   /**
@@ -175,7 +177,6 @@ public class Block extends Message
   public Block(NetworkParameters params, byte[] payloadBytes) throws ProtocolException
   {
     super(params, payloadBytes, 0, params.getDefaultSerializer(), payloadBytes.length);
-    cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
   }
 
   /**
@@ -196,7 +197,6 @@ public class Block extends Message
   public Block(NetworkParameters params, byte[] payloadBytes, MessageSerializer serializer, int length) throws ProtocolException
   {
     super(params, payloadBytes, 0, serializer, length);
-    cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
   }
 
   /**
@@ -220,7 +220,6 @@ public class Block extends Message
       throws ProtocolException
   {
     super(params, payloadBytes, offset, serializer, length);
-    cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
   }
 
   /**
@@ -249,7 +248,6 @@ public class Block extends Message
   {
     // TODO: Keep the parent
     super(params, payloadBytes, offset, serializer, length);
-    cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
   }
 
   /**
@@ -286,12 +284,51 @@ public class Block extends Message
     this.nonce = nonce;
     this.transactions = new LinkedList<Transaction>();
     this.transactions.addAll(transactions);
-    cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
+  }
+
+  /**
+   * Construct a block initialized with all the given fields.
+   * 
+   * @param params
+   *          Which network the block is for.
+   * @param version
+   *          This should usually be set to 1 or 2, depending on if the height is
+   *          in the coinbase input.
+   * @param prevBlockHash
+   *          Reference to previous block in the chain or
+   *          {@link Sha256Hash#ZERO_HASH} if genesis.
+   * @param merkleRoot
+   *          The root of the merkle tree formed by the transactions.
+   * @param time
+   *          UNIX time when the block was mined.
+   * @param difficultyTarget
+   *          Number which this block hashes lower than.
+   * @param nonce
+   *          Arbitrary number to make the block hash lower than the target.
+   * @param transactions
+   *          List of transactions including the coinbase.
+   * @param cuckooSolution
+   *          Array of nonces that make up the cuckoo cycle solution.
+   */
+  public Block(NetworkParameters params, long version, Sha256Hash prevBlockHash, Sha256Hash merkleRoot, long time,
+      long difficultyTarget, long nonce, List<Transaction> transactions, int[] cuckooSolution)
+  {
+    super(params);
+    this.version = version;
+    this.prevBlockHash = prevBlockHash;
+    this.merkleRoot = merkleRoot;
+    this.time = time;
+    this.difficultyTarget = difficultyTarget;
+    this.nonce = nonce;
+    this.transactions = new LinkedList<Transaction>();
+    this.transactions.addAll(transactions);
+    this.cuckooSolution = cuckooSolution;
   }
 
   public boolean isCuckooBlock()
   {
-    return ((this.version & NetworkParameters.CUCKOO_VERSION_MASK) != 0);
+    // Hack for now
+    return (version >= 1610612736L);
   }
 
   /**
@@ -406,6 +443,7 @@ public class Block extends Message
     for (int i = 0; i < numTransactions; i++)
     {
       Transaction tx = new Transaction(params, payload, cursor, this, serializer, UNKNOWN_LENGTH);
+
       // Label the transaction as coming from the P2P network, so code that cares
       // where we first saw it knows.
       tx.getConfidence().setSource(TransactionConfidence.Source.NETWORK);
@@ -436,23 +474,25 @@ public class Block extends Message
     time = readUint32();
     difficultyTarget = readUint32();
     nonce = readUint32();
-    hash = Sha256Hash.wrapReversed(Sha256Hash.hashTwice(payload, offset, cursor - offset));
-    headerBytesValid = serializer.isParseRetainMode();
 
     // Cuckoo, if needed
-    int cuckooSize = 0;
     if (isCuckooBlock())
     {
+      System.out.println("Parsing Cuckoo Solution");
+      if (null == cuckooSolution)
+      {
+	   cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
+      }
       for (int i = 0; i < cuckooSolution.length; i++)
       {
         cuckooSolution[i] = (int) readUint32();
       }
-      cuckooSize += Integer.BYTES;
     }
+    hash = calculateHash();
+    headerBytesValid = serializer.isParseRetainMode();
       
-    
     // transactions
-    parseTransactions(offset + HEADER_SIZE + cuckooSize);
+    parseTransactions(offset + (cursor - offset));
     length = cursor - offset;
   }
 
@@ -636,19 +676,25 @@ public class Block extends Message
   {
     try
     {
-      ByteArrayOutputStream bos = null;
+      Sha256Hash retval;
       if (isCuckooBlock())
       {
-        bos = new UnsafeByteArrayOutputStream(HEADER_SIZE + cuckooSolution.length * Integer.BYTES);
-        writeHeader(bos);
-        writeCuckooSolution(bos);
+        StringBuilder sb = new StringBuilder();
+        for (int n = 0; n < cuckooSolution.length; n++)
+        {
+          sb.append(String.format("%08X", Integer.reverseBytes(cuckooSolution[n])));
+        }
+	byte [] b = Utils.hexStringToByteArray(sb.toString());
+        retval = Sha256Hash.wrapReversed(Sha256Hash.hashTwice(b));
+
       }
-      else
+      else 
       {
-        bos = new UnsafeByteArrayOutputStream(HEADER_SIZE + cuckooSolution.length * Integer.BYTES);
-        writeHeader(bos);
-      }
-      return Sha256Hash.wrapReversed(Sha256Hash.hashTwice(bos.toByteArray()));
+          ByteArrayOutputStream bos = new UnsafeByteArrayOutputStream(HEADER_SIZE);
+          writeHeader(bos);
+          retval = Sha256Hash.wrapReversed(Sha256Hash.hashTwice(bos.toByteArray()));
+      }	  
+      return retval;
     }
     catch (IOException e)
     {
@@ -675,7 +721,7 @@ public class Block extends Message
   public Sha256Hash getHash()
   {
     if (hash == null)
-      hash = calculateHash();
+        hash = calculateHash();
     return hash;
   }
 
@@ -745,11 +791,13 @@ public class Block extends Message
 
     if (isCuckooBlock())
     {
-      s.append("   cuckoo solution:").append("\n");
+      s.append("   cuckoo solution: [");
       for (int i = 0; i < cuckooSolution.length; i++)
       {
-        s.append("     ").append(String.format("%02d", i)).append(": ").append(cuckooSolution[i]).append("\n");
+        s.append(cuckooSolution[i]);
+	if (i+1<cuckooSolution.length) s.append(", ");
       }
+      s.append("]\n");
     }
 
     if (transactions != null && transactions.size() > 0)
@@ -851,12 +899,7 @@ public class Block extends Message
 
       if (c.verify(cuckooSolution))
       {
-        StringBuilder sb = new StringBuilder();
-        for (int n = 0; n < cuckooSolution.length; n++)
-        {
-          sb.append(String.format("%08X", Integer.reverseBytes(cuckooSolution[n])));
-        }
-        h = Sha256Hash.wrapReversed(Sha256Hash.hashTwice(sb.toString().getBytes())).toBigInteger();
+        h = calculateHash().toBigInteger();
       }
       else if (throwException)
       {
@@ -877,7 +920,7 @@ public class Block extends Message
     {
       // Proof of work check failed!
       if (throwException)
-        throw new VerificationException("Hash is higher than target: " + getHashAsString() + " vs " + target.toString(16));
+        throw new VerificationException("Hash is higher than target: " + h.toString(16) + " vs " + target.toString(16));
       else
         retval = false;
     }

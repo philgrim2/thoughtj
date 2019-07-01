@@ -807,4 +807,26 @@ public class Utils {
         }
         return new live.thought.thoughtj.utils.Pair<Integer, String>(port, host);
     }
+
+    
+    public static byte[] hexStringToByteArray(String s)
+    {
+        int len = s.length();
+        String source = null;
+        if (len % 2 != 0)
+        {
+            source = "0" + s;
+	    len++;
+	}
+        else
+        {
+            source = s;
+	}
+	byte[] data = new byte[len / 2];
+	for (int i = 0; i < len; i += 2)
+	{
+	    data[i / 2] = (byte) ((Character.digit(source.charAt(i), 16) << 4) + Character.digit(source.charAt(i + 1), 16));
+	}
+	return data;
+    }
 }
