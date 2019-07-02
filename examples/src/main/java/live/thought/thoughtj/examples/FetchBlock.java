@@ -18,7 +18,7 @@
 package live.thought.thoughtj.examples;
 
 import live.thought.thoughtj.core.*;
-import live.thought.thoughtj.params.TestNet3Params;
+import live.thought.thoughtj.params.MainNetParams;
 import live.thought.thoughtj.store.BlockStore;
 import live.thought.thoughtj.store.MemoryBlockStore;
 import live.thought.thoughtj.utils.BriefLogFormatter;
@@ -33,7 +33,7 @@ public class FetchBlock {
     public static void main(String[] args) throws Exception {
         BriefLogFormatter.init();
         System.out.println("Connecting to node");
-        final NetworkParameters params = TestNet3Params.get();
+        final NetworkParameters params = MainNetParams.get();
 
         BlockStore blockStore = new MemoryBlockStore(params);
         BlockChain chain = new BlockChain(params, blockStore);
