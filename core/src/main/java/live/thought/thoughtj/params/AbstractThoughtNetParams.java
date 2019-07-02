@@ -18,9 +18,12 @@
 package live.thought.thoughtj.params;
 
 import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Stopwatch;
 
 import live.thought.thoughtj.core.Block;
 import live.thought.thoughtj.core.Coin;
@@ -81,10 +84,22 @@ public abstract class AbstractThoughtNetParams extends NetworkParameters
     long receivedTargetCompact = nextBlock.getDifficultyTarget();
 
     if (newTargetCompact != receivedTargetCompact)
+    {
       throw new VerificationException("Network provided difficulty bits do not match what was calculated: "
           + Long.toHexString(newTargetCompact) + " vs " + Long.toHexString(receivedTargetCompact));
+    }
   }
 
+  public void checkDifficulty(StoredBlock storedPrev, Block next, final BlockStore blockStore)
+      throws VerificationException, BlockStoreException
+  {
+    int currentBlockHeight = storedPrev.getHeight() + 1;
+    if (currentBlockHeight >= cuckooRequiredBlockHeight)
+    {
+      checkDifficulty_THT(storedPrev, next, blockStore);
+    }
+  }
+    
   /**
    * Implement MIDAS averaging algorithm.
    * 
@@ -105,7 +120,7 @@ public abstract class AbstractThoughtNetParams extends NetworkParameters
    * @param blockStore
    * @return
    */
-  public void checkDifficulty(StoredBlock storedPrev, Block next, final BlockStore blockStore)
+  public void checkDifficulty_THT(StoredBlock storedPrev, Block next, final BlockStore blockStore)
       throws VerificationException, BlockStoreException
   {
     Averages averages;
@@ -168,12 +183,8 @@ public abstract class AbstractThoughtNetParams extends NetworkParameters
       // in between them. The closer we are
       // to being exactly on schedule the closer our selected interval will be to our
       // nominal interval (TargetSpacing).
-      StoredBlock curindex = storedPrev.getPrev(blockStore);
-      while (curindex != null)
-      {
-        curindex = storedPrev.getPrev(blockStore);
-      }
-      long then = curindex.getHeader().getTimeSeconds();
+
+      long then = blockStore.getParams().getGenesisBlock().getTimeSeconds();
 
       now = storedPrev.getHeader().getTimeSeconds();
       BlockHeightTime = then + storedPrev.getHeight() * TARGET_SPACING;
@@ -307,12 +318,15 @@ public abstract class AbstractThoughtNetParams extends NetworkParameters
     for (int blockoffset = 0; blockoffset < 17; blockoffset++)
     {
       oldblocktime = blocktime;
-      if (null != storedPrev)
+      if (null != prev)
       {
         try
         {
           prev = prev.getPrev(blockStore);
-          blocktime = prev.getHeader().getTimeSeconds();
+          if (null != prev)
+            blocktime = prev.getHeader().getTimeSeconds();
+          else
+            blocktime = 0;
         }
         catch (BlockStoreException e)
         {
@@ -340,6 +354,7 @@ public abstract class AbstractThoughtNetParams extends NetworkParameters
 
     return retval;
   }
+
 
   @Override
   public Coin getMaxMoney()
