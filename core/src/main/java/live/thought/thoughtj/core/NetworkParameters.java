@@ -654,12 +654,18 @@ public abstract class NetworkParameters {
         if (block.getTimeSeconds() >= NetworkParameters.BIP16_ENFORCE_TIME)
             verifyFlags.add(Script.VerifyFlag.P2SH);
 
+
         // Start enforcing CHECKLOCKTIMEVERIFY, (BIP65) for block.nVersion=4
         // blocks, when 75% of the network has upgraded:
-        if (block.getVersion() >= Block.BLOCK_VERSION_BIP65 &&
-            tally.getCountAtOrAbove(Block.BLOCK_VERSION_BIP65) > this.getMajorityEnforceBlockUpgrade()) {
-            verifyFlags.add(Script.VerifyFlag.CHECKLOCKTIMEVERIFY);
-        }
+	 if (block.getVersion() >= Block.BLOCK_VERSION_BIP65)
+         {
+             Integer t = tally.getCountAtOrAbove(Block.BLOCK_VERSION_BIP65);
+             int u = this.getMajorityEnforceBlockUpgrade();
+             if (null != t && t.intValue() > u)
+             {
+                 verifyFlags.add(Script.VerifyFlag.CHECKLOCKTIMEVERIFY);
+             }
+         }
 
         return verifyFlags;
     }
@@ -749,5 +755,8 @@ public abstract class NetworkParameters {
 
     public boolean isDeterministicMasternodesEnabled() {
         return deterministicMasternodesEnabled;
+    }
+    public int getCuckooHardForkBlockHeight() {
+        return cuckooHardForkBlockHeight;
     }
 }
