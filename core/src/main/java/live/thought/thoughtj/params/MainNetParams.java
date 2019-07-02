@@ -85,7 +85,7 @@ public class MainNetParams extends AbstractThoughtNetParams
 
     checkpoints.put(0, Sha256Hash.wrap("00000000917e049641189c33d6b1275155e89b7b498b3b4f16d488f60afe513b"));
     checkpoints.put(2, Sha256Hash.wrap("00000000c4c1989f0979bae2b24840b48ddb5197866a8ee99c9399a2512ec588"));
-    checkpoints.put(5, Sha256Hash.wrap("000000003a062431a6e4430a6ade4ab402a29165462491338c98b336a8afb6ab"));
+    checkpoints.put(5, Sha256Hash.wrap("0000000014d617ebb8b353c7af4ad00875ad8b535997109f3ebb7b5f1127fcf4"));
     checkpoints.put(256, Sha256Hash.wrap("00000000acf5b9f9eb1ea8c56f07ff00c2e3b5335c1b574f98cc3b8b55b70ec3"));
     checkpoints.put(1024, Sha256Hash.wrap("000000006aef3c0953d44120c972061811aca7a59167076573f9063e46265419"));
     checkpoints.put(43010, Sha256Hash.wrap("00000000328f2e44914cf6af972de811d0f4869f9b4e9217e4093dd297c79f49"));
