@@ -487,7 +487,7 @@ public class Block extends Message
     }
     hash = calculateHash();
     headerBytesValid = serializer.isParseRetainMode();
-      
+
     // transactions
     parseTransactions(offset + (cursor - offset));
     length = cursor - offset;
@@ -597,6 +597,25 @@ public class Block extends Message
     return stream.toByteArray();
   }
 
+  public byte[] getCuckooBytes()
+  {
+    byte[] retval = null;
+    if (isCuckooBlock())
+    {
+      ByteArrayOutputStream stream = new UnsafeByteArrayOutputStream(NetworkParameters.CUCKOO_PROOF_SIZE * 4);
+      try
+      {
+        writeCuckooSolution(stream);
+      }
+      catch (IOException e)
+      {
+        // Cannot happen, we are serializing to a memory stream.
+      }
+      retval = stream.toByteArray();
+    }
+    return retval;
+  }
+
   @Override
   protected void bitcoinSerializeToStream(OutputStream stream) throws IOException
   {
@@ -681,16 +700,16 @@ public class Block extends Message
         {
           sb.append(String.format("%08X", Integer.reverseBytes(cuckooSolution[n])));
         }
-	byte [] b = Utils.hexStringToByteArray(sb.toString());
+        byte[] b = Utils.hexStringToByteArray(sb.toString());
         retval = Sha256Hash.wrapReversed(Sha256Hash.hashTwice(b));
 
       }
-      else 
+      else
       {
-          ByteArrayOutputStream bos = new UnsafeByteArrayOutputStream(HEADER_SIZE);
-          writeHeader(bos);
-          retval = Sha256Hash.wrapReversed(Sha256Hash.hashTwice(bos.toByteArray()));
-      }	  
+        ByteArrayOutputStream bos = new UnsafeByteArrayOutputStream(HEADER_SIZE);
+        writeHeader(bos);
+        retval = Sha256Hash.wrapReversed(Sha256Hash.hashTwice(bos.toByteArray()));
+      }
       return retval;
     }
     catch (IOException e)
@@ -718,7 +737,7 @@ public class Block extends Message
   public Sha256Hash getHash()
   {
     if (hash == null)
-        hash = calculateHash();
+      hash = calculateHash();
     return hash;
   }
 
@@ -792,7 +811,8 @@ public class Block extends Message
       for (int i = 0; i < cuckooSolution.length; i++)
       {
         s.append(cuckooSolution[i]);
-	if (i+1<cuckooSolution.length) s.append(", ");
+        if (i + 1 < cuckooSolution.length)
+          s.append(", ");
       }
       s.append("]\n");
     }

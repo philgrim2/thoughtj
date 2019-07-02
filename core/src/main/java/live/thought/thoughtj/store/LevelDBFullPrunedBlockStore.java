@@ -492,7 +492,7 @@ public class LevelDBFullPrunedBlockStore implements FullPrunedBlockStore {
         if (instrument)
             beginMethod("putUpdateStoredBlock");
         Sha256Hash hash = storedBlock.getHeader().getHash();
-        ByteBuffer bb = ByteBuffer.allocate(97);
+        ByteBuffer bb = ByteBuffer.allocate(StoredBlock.COMPACT_SERIALIZED_SIZE);
         storedBlock.serializeCompact(bb);
         bb.put((byte) (wasUndoable ? 1 : 0));
         batchPut(getKey(KeyType.HEADERS_ALL, hash), bb.array());
@@ -633,7 +633,7 @@ public class LevelDBFullPrunedBlockStore implements FullPrunedBlockStore {
                 endMethod("get");
             return null;
         }
-        undoableResult = (result[96] == 1 ? true : false);
+        undoableResult = (result[StoredBlock.COMPACT_SERIALIZED_SIZE - 1] == 1 ? true : false);
         if (wasUndoableOnly && !undoableResult) {
             if (instrument)
                 endMethod("get");

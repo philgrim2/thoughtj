@@ -57,6 +57,7 @@ import java.util.*;
  *     <tr><td>chainwork</td><td>binary</td></tr>
  *     <tr><td>height</td><td>integer</td></tr>
  *     <tr><td>header</td><td>binary</td></tr>
+ *     <tr><td>cuckoo</td><td>binary</td></tr>
  *     <tr><td>wasundoable</td><td>boolean</td></tr>
  * </table>
  * </p>
@@ -106,8 +107,8 @@ public abstract class DatabaseFullPrunedBlockStore implements FullPrunedBlockSto
     private static final String INSERT_SETTINGS_SQL                             = "INSERT INTO settings(name, value) VALUES(?, ?)";
     private static final String UPDATE_SETTINGS_SQL                             = "UPDATE settings SET value = ? WHERE name = ?";
 
-    private static final String SELECT_HEADERS_SQL                              = "SELECT chainwork, height, header, wasundoable FROM headers WHERE hash = ?";
-    private static final String INSERT_HEADERS_SQL                              = "INSERT INTO headers(hash, chainwork, height, header, wasundoable) VALUES(?, ?, ?, ?, ?)";
+    private static final String SELECT_HEADERS_SQL                              = "SELECT chainwork, height, header, cuckoo, wasundoable FROM headers WHERE hash = ?";
+    private static final String INSERT_HEADERS_SQL                              = "INSERT INTO headers(hash, chainwork, height, header, cuckoo, wasundoable) VALUES(?, ?, ?, ?, ?)";
     private static final String UPDATE_HEADERS_SQL                              = "UPDATE headers SET wasundoable=? WHERE hash=?";
 
     private static final String SELECT_UNDOABLEBLOCKS_SQL                       = "SELECT txoutchanges, transactions FROM undoableblocks WHERE hash = ?";
@@ -616,14 +617,22 @@ public abstract class DatabaseFullPrunedBlockStore implements FullPrunedBlockSto
         try {
             PreparedStatement s =
                     conn.get().prepareStatement(getInsertHeadersSQL());
-            // We skip the first 4 bytes because (on mainnet) the minimum target has 4 0-bytes
-            byte[] hashBytes = new byte[28];
-            System.arraycopy(storedBlock.getHeader().getHash().getBytes(), 4, hashBytes, 0, 28);
+            byte[] hashBytes = new byte[32];
+            System.arraycopy(storedBlock.getHeader().getHash().getBytes(), 0, hashBytes, 0, 32);
             s.setBytes(1, hashBytes);
             s.setBytes(2, storedBlock.getChainWork().toByteArray());
             s.setInt(3, storedBlock.getHeight());
             s.setBytes(4, storedBlock.getHeader().cloneAsHeader().unsafeBitcoinSerialize());
-            s.setBoolean(5, wasUndoable);
+            byte[] cuckooBytes = storedBlock.getHeader().cloneAsHeader().getCuckooBytes();
+            if (null == cuckooBytes)
+            {
+              s.setNull(5, Types.BINARY);
+            }
+            else
+            {
+              s.setBytes(5, cuckooBytes);
+            }
+            s.setBoolean(6, wasUndoable);
             s.executeUpdate();
             s.close();
         } catch (SQLException e) {
@@ -634,9 +643,8 @@ public abstract class DatabaseFullPrunedBlockStore implements FullPrunedBlockSto
 
             PreparedStatement s = conn.get().prepareStatement(getUpdateHeadersSQL());
             s.setBoolean(1, true);
-            // We skip the first 4 bytes because (on mainnet) the minimum target has 4 0-bytes
-            byte[] hashBytes = new byte[28];
-            System.arraycopy(storedBlock.getHeader().getHash().getBytes(), 4, hashBytes, 0, 28);
+            byte[] hashBytes = new byte[32];
+            System.arraycopy(storedBlock.getHeader().getHash().getBytes(), 0, hashBytes, 0, 32);
             s.setBytes(2, hashBytes);
             s.executeUpdate();
             s.close();
@@ -657,9 +665,8 @@ public abstract class DatabaseFullPrunedBlockStore implements FullPrunedBlockSto
     @Override
     public void put(StoredBlock storedBlock, StoredUndoableBlock undoableBlock) throws BlockStoreException {
         maybeConnect();
-        // We skip the first 4 bytes because (on mainnet) the minimum target has 4 0-bytes
-        byte[] hashBytes = new byte[28];
-        System.arraycopy(storedBlock.getHeader().getHash().getBytes(), 4, hashBytes, 0, 28);
+        byte[] hashBytes = new byte[32];
+        System.arraycopy(storedBlock.getHeader().getHash().getBytes(), 0, hashBytes, 0, 32);
         int height = storedBlock.getHeight();
         byte[] transactions = null;
         byte[] txOutChanges = null;
@@ -737,9 +744,8 @@ public abstract class DatabaseFullPrunedBlockStore implements FullPrunedBlockSto
         try {
             s = conn.get()
                     .prepareStatement(getSelectHeadersSQL());
-            // We skip the first 4 bytes because (on mainnet) the minimum target has 4 0-bytes
-            byte[] hashBytes = new byte[28];
-            System.arraycopy(hash.getBytes(), 4, hashBytes, 0, 28);
+            byte[] hashBytes = new byte[32];
+            System.arraycopy(hash.getBytes(), 0, hashBytes, 0, 32);
             s.setBytes(1, hashBytes);
             ResultSet results = s.executeQuery();
             if (!results.next()) {
@@ -752,7 +758,22 @@ public abstract class DatabaseFullPrunedBlockStore implements FullPrunedBlockSto
 
             BigInteger chainWork = new BigInteger(results.getBytes(1));
             int height = results.getInt(2);
-            Block b = params.getDefaultSerializer().makeBlock(results.getBytes(3));
+            
+            byte[] cuckooBytes = results.getBytes(4);
+            byte[] headerBytes = results.getBytes(3);
+            Block b;
+            if (null == cuckooBytes || cuckooBytes.length == 0)
+            {
+              b = params.getDefaultSerializer().makeBlock(results.getBytes(3));
+            }
+            else
+            {
+              int l = cuckooBytes.length + headerBytes.length;
+              byte[] tmp = new byte[l];
+              System.arraycopy(headerBytes, 0, tmp, 0, headerBytes.length);
+              System.arraycopy(cuckooBytes, 0, tmp, headerBytes.length, cuckooBytes.length);
+              b = params.getDefaultSerializer().makeBlock(tmp);
+            }           
             b.verifyHeader();
             StoredBlock stored = new StoredBlock(b, chainWork, height);
             return stored;
@@ -793,10 +814,9 @@ public abstract class DatabaseFullPrunedBlockStore implements FullPrunedBlockSto
         try {
             s = conn.get()
                     .prepareStatement(getSelectUndoableBlocksSQL());
-            // We skip the first 4 bytes because (on mainnet) the minimum target has 4 0-bytes
 
-            byte[] hashBytes = new byte[28];
-            System.arraycopy(hash.getBytes(), 4, hashBytes, 0, 28);
+            byte[] hashBytes = new byte[32];
+            System.arraycopy(hash.getBytes(), 0, hashBytes, 0, 32);
             s.setBytes(1, hashBytes);
             ResultSet results = s.executeQuery();
             if (!results.next()) {
