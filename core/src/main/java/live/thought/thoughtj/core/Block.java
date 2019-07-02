@@ -479,11 +479,8 @@ public class Block extends Message
     if (isCuckooBlock())
     {
       System.out.println("Parsing Cuckoo Solution");
-      if (null == cuckooSolution)
-      {
-	   cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
-      }
-      for (int i = 0; i < cuckooSolution.length; i++)
+      cuckooSolution = new int[NetworkParameters.CUCKOO_PROOF_SIZE];
+      for (int i = 0; i < NetworkParameters.CUCKOO_PROOF_SIZE; i++)
       {
         cuckooSolution[i] = (int) readUint32();
       }
